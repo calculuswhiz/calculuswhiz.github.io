@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Scale Demo</title>
+	<meta charset="utf-8">
+	<script src="./jquery-3.3.1.min.js"></script>
+	<script src="./ChromaticScale.js"></script>
+	<style type="text/css">
+		body
+		{
+			font-family: sans-serif;
+		}
+		
+		.TitleLabel
+		{
+			text-align: center;
+			font-size: larger;
+			font-weight: bold;
+		}
+		
+		#Root
+		{
+			border : 1px solid black;
+			display: inline-block;
+			padding: 5px;
+			background-color: antiquewhite;
+		}
+		
+		#Controller > *
+		{
+			margin: 0 auto;
+		}
+		
+		#Parameters
+		{
+			display: table;
+			padding: 5px;
+			border-style: double;
+		}
+		
+		.Param
+		{
+			display: table-row;
+		}
+		
+		.Param .inputLabel,input,select
+		{
+			display: table-cell;
+			padding: 2px;
+		}
+		
+		#Controls 
+		{
+			padding: 3px;
+			border-style: double;
+		}
+		
+		.inputLabel
+		{
+			width: 300px;
+		}
+		
+		#Message
+		{
+			background: black;
+			color: aqua;
+			padding: 3px;
+		}
+	</style>
+	<script>
+		$(document).ready(function ()
+		{
+			let scale;
+			let interval;
+			$('#PlayBtn').click(function ()
+			{
+				if (scale != null && scale.isPlaying())
+				{
+					return;
+				}
+				
+				let params = 
+				{
+					semitones : Number($('#Semitones').val()),
+					octaves : Number($('#Octaves').val()),
+					scaleBase : Number($('#ScaleBase').val()),
+					startFrequency : Number($('#StartFreq').val()),
+					waveType : $('#waveMenu option:selected').val(),
+					msPerNote : Number($('#MsPerNote').val())
+				};
+				
+				scale = new ChromaticScale(params);
+				scale.play();
+				
+				interval = setInterval(function ()
+				{
+					if (scale.isPlaying())
+					{
+						$('#Message').text(`Now playing: ${scale.getPlayingFrequency().toFixed(3)}`);
+					}
+					else
+					{
+						$('#Message').text('Done!');
+						clearInterval(interval);
+					}
+				}, params.msPerNote / 4);
+			});
+			
+			$('#StopBtn').click(function ()
+			{
+				if (scale != null)
+					scale.stop();
+				
+				clearInterval(interval);
+			});
+			
+			$('#ResetBtn').click(function ()
+			{
+				if (scale != null)
+					scale.stop();
+				
+				clearInterval(interval);
+				$('#Semitones').val('12');
+				$('#Octaves').val('1');
+				$('#ScaleBase').val('2');
+				$('#StartFreq').val('440');
+				$('#waveMenu').val('sine');
+				$('#MsPerNote').val('250');
+			})
+		});
+	</script>
+</head>
+<body>
+	<div id="Root">
+		<div class="TitleLabel">Generalized Chromatic Scale Generator</div>
+		<div id="Controller">
+			<div id="Parameters">
+				<div class="Param">
+					<span class="inputLabel">Semitones</span><input type="text" id="Semitones" value="12">
+				</div>
+				<div class="Param">
+					<span class="inputLabel">"Octaves"</span><input type="text" id="Octaves" value="1">
+				</div>
+				<div class="Param">
+					<span class="inputLabel">Scale Base</span><input type="text" id="ScaleBase" value="2">
+				</div>
+				<div class="Param">
+					<span class="inputLabel">Start Frequency</span><input type="text" id="StartFreq" value="440">
+				</div>
+				<div class="Param">
+					<span class="inputLabel">Wave Type</span>
+					<select id="waveMenu">
+						<option value="sine">Sine</option>
+						<option value="square">Square</option>
+						<option value="sawtooth">Sawtooth</option>
+						<option value="triangle">Triangle</option>
+					</select>
+				</div>
+				<div class="Param">
+					<span class="inputLabel">Milliseconds per note</span><input type="text" id="MsPerNote" value="250">
+				</div>
+			</div>
+			<div id="Controls">
+				<div>Controls:</div>
+				<button id="PlayBtn">Play</button>
+				<button id="StopBtn">Stop</button>
+				<button id="ResetBtn">Reset to Defaults</button>
+			</div>
+		</div>
+		<div id="Message">Ready!</div>
+	</div>
+</body>
+</html>
