@@ -10,7 +10,6 @@
 	<script>
 		$(document).ready(function ()
 		{
-			let interval;
 			let canvas = $('#ScopeScreen')[0];
 			
 			// Set up oscilloscope:
@@ -23,12 +22,19 @@
 				beamColor : $('#ScopeColor').val()
 			});
 			scope.getNode().connect(audioContext.destination);
-			let scaleOscillator;
+			let scaleCount = 0;
+			let scaleOscillators = [];
+			
+			function setMessageText(text)
+			{
+				$('#Message').text(text);		
+			}
 			
  			$('#PlayBtn').click(function ()
 			{
 				// Create new oscillator
-				scaleOscillator = new ChromaticScale({ audioContext : audioContext });
+				let scaleOscillator = new ChromaticScale({ audioContext : audioContext });
+				scaleOscillators.push(scaleOscillator);
 				
 				let params = 
 				{
@@ -44,35 +50,41 @@
 				scaleOscillator.turnOn();
 				scaleOscillator.getNode().connect(scope.getNode());
 				
-				interval = setInterval(function ()
+				scaleOscillator.getNode().addEventListener('ended', function ()
 				{
-					if (scaleOscillator.active)
+					setMessageText(`${--scaleCount} scales currently playing.`);
+					if (scaleCount == 0)
 					{
-						$('#Message').text(`Now playing: ${scaleOscillator.getPlayingFrequency().toFixed(3)}`);
+						scaleOscillators = [];
 					}
-					else
-					{
-						$('#Message').text('Done!');
-						clearInterval(interval);
-						scaleOscillator = new ChromaticScale({ audioContext : audioContext });
-					}
-				}, params.msPerNote / 4);
+				});
+				
+				setMessageText(`${++scaleCount} scales currently playing.`);
 			});
+			
+			function stopAll()
+			{
+				// Rip out all connections
+				scaleOscillators.forEach(function (scaleOscillator)
+				{
+					if (scaleOscillator != null)
+					{
+						scaleOscillator.turnOff();
+						scaleOscillator.getNode().disconnect();
+					}
+				});
+				scaleOscillators = [];
+			}
 			
 			$('#StopBtn').click(function ()
 			{
-				if (scaleOscillator != null)
-					scaleOscillator.turnOff();
-				
-				clearInterval(interval);
+				stopAll();
 			});
 			
 			$('#ResetBtn').click(function ()
 			{
-				if (scaleOscillator != null)
-					scaleOscillator.turnOff();
+				stopAll();
 				
-				clearInterval(interval);
 				$('#Semitones').val('12');
 				$('#Octaves').val('1');
 				$('#ScaleBase').val('2');
