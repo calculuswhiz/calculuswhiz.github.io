@@ -19,7 +19,7 @@ body
 	background-color: antiquewhite;
 }
 
-#Parameters
+.Parameters
 {
 	display: table;
 	padding: 5px;
@@ -38,7 +38,7 @@ body
 	padding: 2px;
 }
 
-#Controls 
+#OutputControls 
 {
 	padding: 3px;
 	border-style: double;

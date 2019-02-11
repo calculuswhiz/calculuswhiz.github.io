@@ -19,7 +19,8 @@
 			{ 
 				audioContext : audioContext, 
 				canvas : canvas,
-				fftSize : 2048
+				fftSize : Number($('#FFTMenu option:selected').val()),
+				beamColor : $('#ScopeColor').val()
 			});
 			scope.getNode().connect(audioContext.destination);
 			let scaleOscillator;
@@ -84,14 +85,24 @@
 				$('#waveMenu').val('sine');
 				$('#MsPerNote').val('250');
 			});
+			
+			$('#FFTMenu').change(function ()
+			{
+				scope.setFFTSize(Number($('#FFTMenu option:selected').val()));
+			});
+			
+			$('#ScopeColor').keyup(function ()
+			{
+				scope.beamColor = $('#ScopeColor').val();
+			});
 		});
 	</script>
 </head>
 <body>
 	<div id="GeneratorRoot">
 		<div class="TitleLabel">Generalized Chromatic Scale Generator</div>
-		<div id="Controller">
-			<div id="Parameters">
+		<div id="ScaleController">
+			<div id="ScaleParameters" class="Parameters">
 				<div class="Param">
 					<span class="inputLabel">Semitones</span><input type="text" id="Semitones" value="12">
 				</div>
@@ -117,8 +128,8 @@
 					<span class="inputLabel">Milliseconds per note</span><input type="text" id="MsPerNote" value="250">
 				</div>
 			</div>
-			<div id="Controls">
-				<div>Controls:</div>
+			<div id="OutputControls">
+				<div>Output Controls:</div>
 				<button id="PlayBtn">Play</button>
 				<button id="StopBtn">Stop</button>
 				<button id="ResetBtn">Reset to Defaults</button>
@@ -129,6 +140,20 @@
 	<div id="Scope">
 		<div class="TitleLabel">Scope</div>
 		<canvas id="ScopeScreen" width="1024" height="715"></canvas>
+		<div>Oscilloscope Settings</div>
+		<div id="ScopeParameters" class="Parameters">
+			<div class="Param">
+				<span class="inputLabel">Scope Color</span><input type="text" id="ScopeColor" value="rgb(0,255,0)">
+			</div>
+			<div class="Param">
+				<span class="inputLabel">FFT Size</span>
+				<select id="FFTMenu">
+					<option value="1024">1024</option>
+					<option value="2048" selected="selected">2048</option>
+					<option value="4096">4096</option>
+				</select>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
