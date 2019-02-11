@@ -19,7 +19,8 @@
 				audioContext : audioContext, 
 				canvas : canvas,
 				fftSize : Number($('#FFTMenu option:selected').val()),
-				beamColor : $('#ScopeColor').val()
+				beamColor : $('#ScopeColor').val(),
+				domain : Oscilloscope.domainType[$('#DomainMenu option:selected').val()]
 			});
 			scope.getNode().connect(audioContext.destination);
 			let scaleCount = 0;
@@ -93,14 +94,19 @@
 				$('#MsPerNote').val('250');
 			});
 			
+			$('#ScopeColor').keyup(function ()
+			{
+				scope.beamColor = $('#ScopeColor').val();
+			});
+			
 			$('#FFTMenu').change(function ()
 			{
 				scope.setFFTSize(Number($('#FFTMenu option:selected').val()));
 			});
 			
-			$('#ScopeColor').keyup(function ()
+			$('#DomainMenu').change(function ()
 			{
-				scope.beamColor = $('#ScopeColor').val();
+				scope.domain = Oscilloscope.domainType[$('#DomainMenu option:selected').val()];
 			});
 		});
 	</script>
@@ -158,6 +164,13 @@
 					<option value="1024">1024</option>
 					<option value="2048" selected="selected">2048</option>
 					<option value="4096">4096</option>
+				</select>
+			</div>
+			<div class="Param">
+				<span class="inputLabel">Domain</span>
+				<select id="DomainMenu">
+					<option value="time" selected="selected">Time</option>
+					<option value="frequency">Frequency</option>
 				</select>
 			</div>
 		</div>

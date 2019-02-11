@@ -14,6 +14,15 @@ let Oscilloscope = (function ()
     
 	class Oscilloscope
 	{
+		static get domainType()
+		{
+			return (
+			{
+				frequency : 0,
+				time : 1
+			});
+		}
+		
 		constructor(props)
 		{
 			let my = internal(this);
@@ -27,6 +36,8 @@ let Oscilloscope = (function ()
 			}
 			
 			this.beamColor = coalesce(props, 'beamColor', 'green');
+			
+			this.domain = props.domain || Oscilloscope.domainType.time;
 			
 			my.canvas = props.canvas;
 			my.canvas2d = my.canvas.getContext('2d');
@@ -54,7 +65,18 @@ let Oscilloscope = (function ()
 			let bufferLength = my.analyzer.frequencyBinCount;
 			
 			// Code adapted from MDN website
-			my.analyzer.getByteTimeDomainData(my.dataBuffer);
+			if (this.domain === Oscilloscope.domainType.time)
+			{
+				my.analyzer.getByteTimeDomainData(my.dataBuffer);
+			}
+			else if (this.domain == Oscilloscope.domainType.frequency)
+			{
+				my.analyzer.getByteFrequencyData(my.dataBuffer);
+			}
+			else
+			{
+				my.analyzer.getByteTimeDomainData(my.dataBuffer);
+			}
 			
 			my.canvas2d.fillStyle = '#000000';
 			my.canvas2d.fillRect(0, 0, my.canvas.width, my.canvas.height);
@@ -74,11 +96,11 @@ let Oscilloscope = (function ()
 
 				if (i === 0) 
 				{
-				  	my.canvas2d.moveTo(x, y);
+				  	my.canvas2d.moveTo(x, my.canvas.height - y);
 				} 
 				else 
 				{
-				  	my.canvas2d.lineTo(x, y);
+				  	my.canvas2d.lineTo(x, my.canvas.height - y);
 				}
 
 				x += sliceWidth;
