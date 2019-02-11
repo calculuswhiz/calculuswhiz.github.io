@@ -1,0 +1,62 @@
+body
+{
+	font-family: sans-serif;
+}
+
+.TitleLabel
+{
+	text-align: center;
+	font-size: larger;
+	font-weight: bold;
+}
+
+#GeneratorRoot,#Scope
+{
+	width : 715px;
+	border : 1px solid black;
+	padding: 5px;
+	display: block;
+	background-color: antiquewhite;
+}
+
+#Parameters
+{
+	display: table;
+	padding: 5px;
+	border-style: double;
+	width: calc(100% - 16px);
+}
+
+.Param
+{
+	display: table-row;
+}
+
+.Param .inputLabel,input,select
+{
+	display: table-cell;
+	padding: 2px;
+}
+
+#Controls 
+{
+	padding: 3px;
+	border-style: double;
+}
+
+.inputLabel
+{
+	width: 300px;
+}
+
+#Message
+{
+	background: black;
+	color: aqua;
+	padding: 3px;
+}
+
+#ScopeScreen
+{
+	width: 100%;
+}

@@ -5,76 +5,31 @@
 	<meta charset="utf-8">
 	<script src="./jquery-3.3.1.min.js"></script>
 	<script src="./ChromaticScale.js"></script>
-	<style type="text/css">
-		body
-		{
-			font-family: sans-serif;
-		}
-		
-		.TitleLabel
-		{
-			text-align: center;
-			font-size: larger;
-			font-weight: bold;
-		}
-		
-		#Root
-		{
-			border : 1px solid black;
-			display: inline-block;
-			padding: 5px;
-			background-color: antiquewhite;
-		}
-		
-		#Controller > *
-		{
-			margin: 0 auto;
-		}
-		
-		#Parameters
-		{
-			display: table;
-			padding: 5px;
-			border-style: double;
-		}
-		
-		.Param
-		{
-			display: table-row;
-		}
-		
-		.Param .inputLabel,input,select
-		{
-			display: table-cell;
-			padding: 2px;
-		}
-		
-		#Controls 
-		{
-			padding: 3px;
-			border-style: double;
-		}
-		
-		.inputLabel
-		{
-			width: 300px;
-		}
-		
-		#Message
-		{
-			background: black;
-			color: aqua;
-			padding: 3px;
-		}
-	</style>
+	<script src="./Oscilloscope.js"></script>
+	<link rel="stylesheet" type="text/css" href="./styles.css">
 	<script>
 		$(document).ready(function ()
 		{
-			let scale;
 			let interval;
-			$('#PlayBtn').click(function ()
+			let canvas = $('#ScopeScreen')[0];
+			
+			// Set up oscilloscope:
+			let audioContext = new AudioContext();
+			let scope = new Oscilloscope(
+			{ 
+				audioContext : audioContext, 
+				canvas : canvas,
+				fftSize : 2048
+			});
+			scope.getNode().connect(audioContext.destination);
+			let scaleOscillator;
+			
+ 			$('#PlayBtn').click(function ()
 			{
-				if (scale != null && scale.isPlaying())
+				// Create new oscillator
+				scaleOscillator = new ChromaticScale({ audioContext : audioContext });
+				
+				if (scaleOscillator.active)
 				{
 					return;
 				}
@@ -89,35 +44,37 @@
 					msPerNote : Number($('#MsPerNote').val())
 				};
 				
-				scale = new ChromaticScale(params);
-				scale.play();
+				scaleOscillator.setProperties(params);
+				scaleOscillator.turnOn();
+				scaleOscillator.getNode().connect(scope.getNode());
 				
 				interval = setInterval(function ()
 				{
-					if (scale.isPlaying())
+					if (scaleOscillator.active)
 					{
-						$('#Message').text(`Now playing: ${scale.getPlayingFrequency().toFixed(3)}`);
+						$('#Message').text(`Now playing: ${scaleOscillator.getPlayingFrequency().toFixed(3)}`);
 					}
 					else
 					{
 						$('#Message').text('Done!');
 						clearInterval(interval);
+						scaleOscillator = new ChromaticScale({ audioContext : audioContext });
 					}
 				}, params.msPerNote / 4);
 			});
 			
 			$('#StopBtn').click(function ()
 			{
-				if (scale != null)
-					scale.stop();
+				if (scaleOscillator != null)
+					scaleOscillator.turnOff();
 				
 				clearInterval(interval);
 			});
 			
 			$('#ResetBtn').click(function ()
 			{
-				if (scale != null)
-					scale.stop();
+				if (scaleOscillator != null)
+					scaleOscillator.turnOff();
 				
 				clearInterval(interval);
 				$('#Semitones').val('12');
@@ -126,12 +83,12 @@
 				$('#StartFreq').val('440');
 				$('#waveMenu').val('sine');
 				$('#MsPerNote').val('250');
-			})
+			});
 		});
 	</script>
 </head>
 <body>
-	<div id="Root">
+	<div id="GeneratorRoot">
 		<div class="TitleLabel">Generalized Chromatic Scale Generator</div>
 		<div id="Controller">
 			<div id="Parameters">
@@ -168,6 +125,10 @@
 			</div>
 		</div>
 		<div id="Message">Ready!</div>
+	</div>
+	<div id="Scope">
+		<div class="TitleLabel">Scope</div>
+		<canvas id="ScopeScreen" width="1024" height="715"></canvas>
 	</div>
 </body>
 </html>

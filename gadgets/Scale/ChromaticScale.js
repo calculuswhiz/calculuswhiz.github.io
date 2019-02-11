@@ -1,75 +1,113 @@
-class ChromaticScale
+/*
+	Adds an oscillator source to an existing audioContext. This does not automatically connect anything for you.
+*/
+let ChromaticScale = (function ()
 {
-	constructor(props)
+	let map = new WeakMap();
+	
+	let internal = function (object)
 	{
-		function coalesce(props, key, defaultValue)
+        if (!map.has(object))
+            map.set(object, {});
+        return map.get(object);
+    };
+	
+	class ChromaticScale
+	{
+		constructor(props)
 		{
-			if (props == null || props[key] === undefined)
-				return defaultValue;
-			else
-				return props[key];
+			let my = internal(this);
+			
+			function coalesce(props, key, defaultValue)
+			{
+				if (props == null || props[key] === undefined)
+					return defaultValue;
+				else
+					return props[key];
+			}
+			
+			this.semitones = coalesce(props, 'semitones', 12);
+			this.scaleBase = coalesce(props, 'scaleBase', 2);
+			this.startFrequency = coalesce(props, 'startFrequency', 440);
+			this.waveType = coalesce(props, 'waveType', 'sine');
+			this.msPerNote = coalesce(props, 'msPerNote', 500);
+			this.octaves = coalesce(props, 'octaves', 1);
+			
+ 			my.playing = false;
+			my.timer = null;
+			
+			my.audioContext = props.audioContext;
 		}
 		
-		this.semitones = coalesce(props, 'semitones', 12);
-		this.scaleBase = coalesce(props, 'scaleBase', 2);
-		this.startFrequency = coalesce(props, 'startFrequency', 440);
-		this.waveType = coalesce(props, 'waveType', 'sine');
-		this.msPerNote = coalesce(props, 'msPerNote', 500);
-		this.octaves = coalesce(props, 'octaves', 1)
-		
-		this._playing = false;
-		this._timer = null;
-		this._audioContext = new AudioContext();
-		this._oscillator = this._audioContext.createOscillator();
-		this._oscillator.connect(this._audioContext.destination);
-	}
-	
-	play()
-	{
-		if (this._playing)
-			return;
-		else
-			this._playing = true;
-			
-		// Initial conditions:
-		let { semitones, scaleBase, startFrequency, waveType, msPerNote, octaves } = this;
-		let oscillator = this._oscillator;
-		oscillator.type = waveType;
-		oscillator.frequency.value = startFrequency;
-		let step = 0;
-		let notesToPlay = octaves * semitones;
-		
-		oscillator.start();
-		
-		this._timer = setInterval(function ()
+		setProperties(props)
 		{
-			if (step < notesToPlay)
+			for (let prop in props)
 			{
-				oscillator.frequency.value = startFrequency * Math.pow(scaleBase, ++step / semitones);
+				this[prop] = props[prop];
 			}
+		}
+		
+		turnOn()
+		{
+			let my = internal(this);
+
+			if (my.playing)
+				return;
 			else
+				my.playing = true;
+			
+			// Add oscillator to the existing context
+			my.oscillator = my.audioContext.createOscillator();
+				
+			// Initial conditions:
+			let { semitones, scaleBase, startFrequency, waveType, msPerNote, octaves } = this;
+			let oscillator = my.oscillator;
+			oscillator.type = waveType;
+			oscillator.frequency.value = startFrequency;
+			let step = 0;
+			let notesToPlay = octaves * semitones;
+			
+			oscillator.start();
+			
+			my.timer = setInterval(function ()
 			{
-				oscillator.stop();
-				clearInterval(this._timer);
-				this._playing = false;
-			}
-		}.bind(this), msPerNote);
+				if (step < notesToPlay)
+				{
+					oscillator.frequency.value = startFrequency * Math.pow(scaleBase, ++step / semitones);
+				}
+				else
+				{
+					oscillator.stop();
+					clearInterval(this._timer);
+					my.playing = false;
+				}
+			}.bind(this), msPerNote);
+		}
+		
+		turnOff()
+		{
+			let my = internal(this);
+			
+			my.oscillator.stop();
+			clearInterval(my.timer);
+			my.playing = false;
+		}
+		
+		get active()
+		{
+			return internal(this).playing;
+		}
+		
+		getPlayingFrequency()
+		{
+			return internal(this).oscillator.frequency.value;
+		}
+		
+		getNode()
+		{
+			return internal(this).oscillator;
+		}
 	}
 	
-	stop()
-	{
-		this._oscillator.stop();
-		clearInterval(this._timer);
-		this._playing = false;
-	}
-	
-	isPlaying()
-	{
-		return this._playing;
-	}
-	
-	getPlayingFrequency()
-	{
-		return this._oscillator.frequency.value;
-	}
-}
+	return ChromaticScale;
+})();
