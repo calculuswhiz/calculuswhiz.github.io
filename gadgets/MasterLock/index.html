@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Masterlock Combo Enumerator</title>
+	<style type="text/css">
+		#ListArea
+		{
+			display: flex;
+			flex-wrap: wrap;
+			width: 100%;
+		}
+		
+		.combo
+		{
+			cursor: pointer;
+			background-color: rgb(0, 200, 0);
+			margin: 5px;
+			padding: 2px;
+			width: 100px;
+			/* Selection */
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+		
+		body
+		{
+			font-family: sans-serif;
+		}
+	</style>
+	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+		function exec()
+		{
+			let inputs;
+			try
+			{
+				inputs = $('.SP').map((idx, item) => 
+				{
+					let $item = $(item);
+					
+					if ($item.val() === '' || isNaN($item.val()))
+					{
+						$(`#Validate${idx}`).text('Number please');
+					}
+					else if (Number($item.val()) > 40 || Number($item.val()) < 0)
+					{
+						$(`#Validate${idx}`).text('Between 0 and 40 please.');
+					}
+					else
+					{
+						$(`#Validate${idx}`).text('');
+					}
+					
+					return $item.val();
+				});
+				
+				inputs = [...inputs];
+				
+				if (inputs.indexOf('') > -1)
+					throw new Error('Numbers');
+				
+				let wholes = inputs.filter(item => !item.includes('.'));
+				
+				let digitSet = new Set();
+				let oddOne;
+				for (let whole of wholes)
+				{
+					if (digitSet.size === 0)
+						digitSet.add(whole.slice(-1));
+					else if (!digitSet.has(whole.slice(-1)))
+						oddOne = Number(whole);
+				}
+				if (oddOne === undefined)
+					throw new Error('No odd one');
+				
+				let pos1 = oddOne % 4;
+				let pos2 = (oddOne + 2) % 4;
+				
+				let group1 = [];
+				let group2 = [];
+				while (pos1 < 40 && pos2 < 40)
+				{
+					group1.push(pos1);
+					if (Math.abs(pos2 - oddOne) > 2)
+						group2.push(pos2);
+					
+					pos1 += 4;
+					pos2 += 4;
+				}
+				
+				let combos = [];
+				for (let el1 of group1)
+				{
+					for (let el2 of group2)
+					{
+						combos.push([el1, el2, oddOne]);
+					}
+				}
+				
+				$('#ListArea').html('');
+				combos.forEach(combo => 
+				{
+					$('#ListArea').append(
+						$('<div>')
+							.addClass('combo')
+							.html(`${combo[0]} ${combo[1]} ${combo[2]}`)
+							.click(function (evt)
+							{
+								if ($(this).css('background-color') === 'rgb(0, 200, 0)')
+								{
+									$(this).css('background-color', 'rgb(200, 0, 0)');
+								}
+								else
+								{
+ 									$(this).css('background-color', 'rgb(0, 200, 0)');
+								}
+							})
+					);
+				})
+ 			}
+ 			catch (e)
+ 			{
+ 				console.error(e);
+ 			}
+		}
+	</script>
+</head>
+<body>
+	For the forgetful:
+	<div>
+		Instructions:
+		<ol>
+			<li>Reset your lock</li>
+			<li>Pull up on the shackle to see where the sticking ranges are</li>
+			<li>The midpoint is the sticking point. (e.g. 2-3 => 2.5)</li>
+			<li>List out all the sticking points, and let the gadget list all possible combinations.</li>
+			<li>Try all the combinations.</li>
+		</ol>
+	</div>
+	<div id="Parameters">
+		Sticking points:<br />
+		<input type="text" class="SP" id="SP0" />  <span id="Validate0"></span> <br />
+		<input type="text" class="SP" id="SP1" />  <span id="Validate1"></span> <br />
+		<input type="text" class="SP" id="SP2" />  <span id="Validate2"></span> <br />
+		<input type="text" class="SP" id="SP3" />  <span id="Validate3"></span> <br />
+		<input type="text" class="SP" id="SP4" />  <span id="Validate4"></span> <br />
+		<input type="text" class="SP" id="SP5" />  <span id="Validate5"></span> <br />
+		<input type="text" class="SP" id="SP6" />  <span id="Validate6"></span> <br />
+		<input type="text" class="SP" id="SP7" />  <span id="Validate7"></span> <br />
+		<input type="text" class="SP" id="SP8" />  <span id="Validate8"></span> <br />
+		<input type="text" class="SP" id="SP9" />  <span id="Validate9"></span> <br />
+		<input type="text" class="SP" id="SP10" /> <span id="Validate10"></span> <br />
+		<input type="text" class="SP" id="SP11" /> <span id="Validate11"></span> <br />
+		<button onclick="exec()">Run enumerator...</button>
+	</div>
+	Combos:
+	<div id="ListArea"></div>
+</body>
+</html>
