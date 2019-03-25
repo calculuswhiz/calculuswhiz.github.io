@@ -165,8 +165,28 @@ let server = http.createServer((req, res) =>
   }
   else
   {
-    // under construction
+    let extName = path.extname(myUrl);
+    let mimeType = mimeTypeMap[extName] || 'text/plain';
+    
+    console.log(`GET ${myUrl}: ${mimeType}`);
+    
+    let fileContents = '';
+    
+    try
+    {
+      fileContents = fs.readFileSync(`.${myUrl}`);
+    }
+    catch (exc)
+    {
+      console.error(exc);
+    }
+    
+    res.writeHead(200, { 'Content-Type' : mimeType });
+    res.write(fileContents);
+    res.end();
   }
 });
 server.listen(port, host);
 ```
+
+When you run this in Node.js, it will start up the http server on port 31415. You should then be able to install these packages.
