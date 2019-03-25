@@ -7,9 +7,9 @@ At work, I don't have an Internet connection. This is a rather troublesome thing
 
 However, VS2017 does allow you to specify your own package server. This means that even http://localhost works! So as long as you're allowed to run an http server at localhost, you're off to a good start!
 
-## Setting up an Atom feed.
-
 If you go to Tools>Extensions and Updates, you can add a connection. For my custom connection I used http://localhost:31415. When we set everything up, the downloadable vsix packages will appear under the 'Online' menu.
+
+## Setting up an Atom feed
 
 Unfortunately, you can't just serve a directory listing of vsix files. The Updater specifically requires an [Atom feed](https://docs.microsoft.com/en-us/visualstudio/extensibility/how-to-create-an-atom-feed-for-a-private-gallery?view=vs-2017). Fortunately, Microsoft tells us how to make one. Using this template, we can generate a proper atom.xml file.
 
