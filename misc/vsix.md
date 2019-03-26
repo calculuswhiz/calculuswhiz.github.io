@@ -1,7 +1,7 @@
 Installing VSIX packages the hard way (VS 2017)
 ===============================================
 
-Tools I used: PowerShell, Node.js, and 7zip
+Tools I used: PowerShell, Node.js
 
 At work, I don't have an Internet connection. This is a rather troublesome thing because it leaves me unable to install Visual Studio packages at my discretion. And even if you did manage to get the .VSIX packages downloaded, you'd **still** have to be connected to install the packages.
 
@@ -13,33 +13,32 @@ If you go to Tools>Extensions and Updates, you can add a connection. For my cust
 
 Unfortunately, you can't just serve a directory listing of vsix files. The Updater specifically requires an [Atom feed](https://docs.microsoft.com/en-us/visualstudio/extensibility/how-to-create-an-atom-feed-for-a-private-gallery?view=vs-2017). Fortunately, Microsoft tells us how to make one. Using this template, we can generate a proper atom.xml file.
 
-Using this template, we can generate an xml file using powershell. Yes, I am aware Expand-Archive is a thing. If you can't get 7-zip I suggest you modify the script. Remember that Expand-Archive only accepts .zip files (as in the extension name).
+Using this template, we can generate an xml file using powershell. Expand-Archive is not the right way to go, as it will extract everything and take a really long time.
 
 ```powershell
 # Generates a fresh atom.xml file
 param($Directory = ".")
 
-if (-not (Test-Path "C:\Program Files\7-Zip"))
-{
-  Write-Host -ForegroundColor Red "This script requires 7-zip to run. Please install it."
-  return
-}
-
 # Encode escape characters properly for xml output
 Add-Type -AssemblyName System.Web
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
 $HttpUtility = [System.Web.HttpUtility]
+# Removed dependency on 7-zip
+$ZipFile = [System.IO.Compression.ZipFile]
+$ZipFileExtensions = [System.IO.Compression.ZipFileExtensions]
 
 Write-Host "Erasing backup atom.xml~"
-Remove-Item atom.xml~ -ErrorAction Continue
+Remove-Item $Directory\atom.xml~ -ErrorAction Continue
 
 Write-Host "Creating backup atom.xml~"
-Rename-Item atom.xml atom.xml~ -ErrorAction Continue
+Rename-Item $Directory\atom.xml $Directory\atom.xml~ -ErrorAction Continue
 
 Write-Host "Creating atom.xml"
-New-Item -Name atom.xml -ItemType File
+New-Item -Name $Directory\atom.xml -ItemType File
 
 Write-Host "Writing Contents..."
-Add-Content -Encoding UTF8 -Path .\atom.xml -Value @"
+Add-Content -Encoding UTF8 -Path $Directory\atom.xml -Value @"
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with Generate-Atomfeed.ps1 -->
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -54,7 +53,13 @@ Get-ChildItem "$Directory\*.vsix" | ForEach-Object -Process (
   Write-Host "Reading $filename..."
   
   # Parse file
-  $fileContents = [xml](& 'C:\Program Files\7-Zip\7z.exe' e $_ extension.vsixmanifest -so)
+  $vsix = $ZipFile::OpenRead($_)
+  $vsix.Entries | Where-Object { $_.Name -eq "extension.vsixmanifest" } | ForEach-Object -Process (
+  {
+    $ZipFileExtensions::ExtractToFile($_, "C:\Temp\tempManifest", $true)
+  })
+  $vsix.Dispose()
+  $fileContents = [xml](Get-Content C:\Temp\tempManifest -Encoding UTF8)
   
   $metadata = $fileContents.PackageManifest.Metadata
   
