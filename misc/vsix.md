@@ -3,6 +3,8 @@ Installing VSIX packages the hard way (VS 2017)
 
 Tools I used: PowerShell, Node.js
 
+Source code can be found here: https://github.com/calculuswhiz/calculuswhiz.github.io/tree/master/misc
+
 At work, I don't have an Internet connection. This is a rather troublesome thing because it leaves me unable to install Visual Studio packages at my discretion. And even if you did manage to get the .VSIX packages downloaded, you'd **still** have to be connected to install the packages.
 
 However, VS2017 does allow you to specify your own package server. This means that even http://localhost works! So as long as you're allowed to run an http server at localhost, you're off to a good start!
