@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Microphone Demo</title>
+	<meta charset="utf-8">
+	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
+	<script src="../../javascripts/Oscilloscope.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function ()
+		{
+			let canvas = $('#ScopeScreen')[0];
+			let audioContext = new AudioContext();
+			let scope = new Oscilloscope(
+			{ 
+				audioContext : audioContext, 
+				canvas : canvas,
+				fftSize : Number($('#FFTMenu option:selected').val()),
+				beamColor : $('#ScopeColor').val(),
+				domain : Oscilloscope.domainType[$('#DomainMenu option:selected').val()]
+			});
+			// It will analyze without connecting to destination.
+			
+			// Request microphone
+			navigator.mediaDevices
+				.getUserMedia({ audio : true })
+				.then(function (stream)
+				{
+					let streamNode = audioContext.createMediaStreamSource(stream);
+					streamNode.connect(scope.getNode());
+				});
+			
+			$('#ScopeColor').keyup(function ()
+			{
+				scope.beamColor = $('#ScopeColor').val();
+			});
+			
+			$('#FFTMenu').change(function ()
+			{
+				scope.setFFTSize(Number($('#FFTMenu option:selected').val()));
+			});
+			
+			$('#DomainMenu').change(function ()
+			{
+				scope.domain = Oscilloscope.domainType[$('#DomainMenu option:selected').val()];
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="Scope">
+		<div class="TitleLabel">Scope</div>
+		<canvas id="ScopeScreen" width="1024" height="715"></canvas>
+		<div>Oscilloscope Settings</div>
+		<div id="ScopeParameters" class="Parameters">
+			<div class="Param">
+				<span class="inputLabel">Scope Color</span><input type="text" id="ScopeColor" value="rgb(0,255,0)">
+			</div>
+			<div class="Param">
+				<span class="inputLabel">FFT Size</span>
+				<select id="FFTMenu">
+					<option value="1024">1024</option>
+					<option value="2048" selected="selected">2048</option>
+					<option value="4096">4096</option>
+				</select>
+			</div>
+			<div class="Param">
+				<span class="inputLabel">Domain</span>
+				<select id="DomainMenu">
+					<option value="time" selected="selected">Time</option>
+					<option value="frequency">Frequency</option>
+				</select>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
