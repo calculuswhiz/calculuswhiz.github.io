@@ -94,7 +94,7 @@ let Oscilloscope = (function ()
 			{
 				my.analyzer.getByteTimeDomainData(my.dataBuffer);
 			}
-			else if (this.domain == Oscilloscope.domainType.frequency)
+			else if (this.domain === Oscilloscope.domainType.frequency)
 			{
 				my.analyzer.getByteFrequencyData(my.dataBuffer);
 				let maxValue = Math.max.apply(null, my.dataBuffer);
@@ -114,7 +114,8 @@ let Oscilloscope = (function ()
 
 			for (let i = 0; i < bufferLength; i++) 
 			{
-				let v = my.dataBuffer[i] / 128.0;
+				// Scales to 0-2 range
+				let v = my.dataBuffer[i] / 128;
 				let y = v * my.canvas.height / 2;
 
 				if (i === 0) 
@@ -129,7 +130,11 @@ let Oscilloscope = (function ()
 				x += sliceWidth;
 			}
 
-			my.canvas2d.lineTo(my.canvas.width, my.canvas.height / 2);
+			// If we're in time domain, the axis is at middle:
+			my.canvas2d.lineTo(
+				my.canvas.width, 
+				my.canvas.height >> Number(this.domain === Oscilloscope.domainType.time)
+			);
 			my.canvas2d.stroke();
 			
 			requestAnimationFrame(this.render.bind(this));
