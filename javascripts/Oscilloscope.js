@@ -58,6 +58,9 @@ let Oscilloscope = (function ()
 			
 			my.analyzer = props.audioContext.createAnalyser();
 			this.setFFTSize(props.fftSize || 2048);
+
+			// Sets up my.freqRange
+			this.setFrequencyWindow(0, 22050);
 			
 			this.render();
 		}
@@ -70,11 +73,40 @@ let Oscilloscope = (function ()
 			let my = internal(this);
 			
 			if (newSize >= 0)
-				internal(this).analyzer.fftSize = newSize;
+				my.analyzer.fftSize = newSize;
 			
 			my.dataBuffer = new Uint8Array(my.analyzer.frequencyBinCount);
 		}
 		
+		/*
+			Scale the x axis to match the desired frequency range.
+			min : minimum frequency 0-22049
+			max : maximum frequency 1-22050
+		*/
+		setFrequencyWindow(min, max)
+		{
+			let my = internal(this);
+
+			if (min < 0)
+				min = 0;
+			else if (min > 22049)
+				min = 22049;
+
+			if (max < 1)
+				max = 1;
+			else if (max > 22050)
+				max = 22050;
+
+			if (min > max)
+				max = min + 1;
+
+			my.freqRange = 
+			{
+				min : min,
+				max : max
+			};
+		}
+
 		/*
 			No need to call this function.
 		*/
@@ -90,6 +122,7 @@ let Oscilloscope = (function ()
 			my.canvas2d.strokeStyle = this.beamColor;
 			
 			// Code adapted from MDN website
+			let isFreqMode = false;
 			if (this.domain === Oscilloscope.domainType.time)
 			{
 				my.analyzer.getByteTimeDomainData(my.dataBuffer);
@@ -101,6 +134,7 @@ let Oscilloscope = (function ()
 				let maxIndex = my.dataBuffer.lastIndexOf(maxValue);
 
 				my.canvas2d.strokeText((maxIndex * 22050 / my.dataBuffer.length).toString(), 0, 0);
+				isFreqMode = true;
 			}
 			else
 			{
@@ -109,10 +143,20 @@ let Oscilloscope = (function ()
 
 			my.canvas2d.beginPath();
 
-			let sliceWidth = my.canvas.width * 1.0 / bufferLength;
-			let x = 0;
+			let freqStep = 22050 / bufferLength;
+			let freqToIndex = freq => Math.floor(freq / freqStep);
+			// let indexToFreq = index => Math.floor(index * freqStep);
 
-			for (let i = 0; i < bufferLength; i++) 
+			let x = 0;
+			let minIndex = isFreqMode ? 
+				freqToIndex(my.freqRange.min) :
+				0;
+			let maxIndex = isFreqMode ? 
+				freqToIndex(my.freqRange.max) :
+				bufferLength;
+
+			let xStep = my.canvas.width / (maxIndex - minIndex);
+			for (let i = minIndex; i < maxIndex; i++) 
 			{
 				// Scales to 0-2 range
 				let v = my.dataBuffer[i] / 128;
@@ -127,13 +171,13 @@ let Oscilloscope = (function ()
 				  	my.canvas2d.lineTo(x, my.canvas.height - y);
 				}
 
-				x += sliceWidth;
+				x += xStep;
 			}
 
 			// If we're in time domain, the axis is at middle:
 			my.canvas2d.lineTo(
 				my.canvas.width, 
-				my.canvas.height >> Number(this.domain === Oscilloscope.domainType.time)
+				my.canvas.height >> Number(!isFreqMode)
 			);
 			my.canvas2d.stroke();
 			

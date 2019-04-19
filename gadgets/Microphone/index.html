@@ -9,7 +9,7 @@
 		$(document).ready(function ()
 		{
 			let canvas = $('#ScopeScreen')[0];
-			let audioContext = new AudioContext();
+			let audioContext = new (AudioContext || webkitAudioContext)();
 			let scope = new Oscilloscope(
 			{ 
 				audioContext : audioContext, 
@@ -20,20 +20,25 @@
 			});
 			// It will analyze without connecting to destination.
 			
-			// Set up a band-pass filter:
+			const minFreq = 20;
+			const maxFreq = 10000;
+			const avgFreq = (minFreq + maxFreq) / 2;
 			let bandPassFilter = audioContext.createBiquadFilter();
-			bandPassFilter.frequency = 5010;
-			bandPassFilter.Q = 4090;
+			bandPassFilter.frequency = avgFreq;
+			bandPassFilter.Q = avgFreq - minFreq;
 			bandPassFilter.type = 'bandpass';
 			
+			scope.setFrequencyWindow(minFreq, maxFreq);
+
 			// Request microphone
 			navigator.mediaDevices
 				.getUserMedia({ audio : true })
 				.then(function (stream)
 				{
 					let streamNode = audioContext.createMediaStreamSource(stream);
-					streamNode.connect(bandPassFilter);
-					bandPassFilter.connect(scope.getNode());
+					let analyserNode = scope.getNode();
+					streamNode.connect(analyserNode);
+					analyserNode.connect(bandPassFilter);
 				});
 			
 			$('#ScopeColor').keyup(function ()
