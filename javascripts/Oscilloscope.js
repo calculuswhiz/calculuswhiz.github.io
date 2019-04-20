@@ -15,7 +15,9 @@ let Oscilloscope = (function ()
             map.set(object, {});
         return map.get(object);
     };
-    
+
+    const maxFrequency = 22050;
+
 	class Oscilloscope
 	{
 		static get domainType()
@@ -30,7 +32,7 @@ let Oscilloscope = (function ()
 		/*
 			props: 
 			audioContext - an AudioContext object to attach to
-			canvas - the cavas to render to
+			canvas - the canvas to render to
 			fftSize - the size of the Fourier Transform
 			beamColor = 'green' - html color string
 			domain = 1 - One of the values in Oscilloscope.domainType, specifies frequency or time domain
@@ -39,7 +41,7 @@ let Oscilloscope = (function ()
 		{
 			let my = internal(this);
 			
-			function coalesce(props, key, defaultValue)
+			function propagate(props, key, defaultValue)
 			{
 				if (props == null || props[key] === undefined)
 					return defaultValue;
@@ -47,7 +49,7 @@ let Oscilloscope = (function ()
 					return props[key];
 			}
 			
-			this.beamColor = coalesce(props, 'beamColor', 'green');
+			this.beamColor = propagate(props, 'beamColor', 'green');
 			
 			this.domain = props.domain == null ? Oscilloscope.domainType.time : props.domain;
 			
@@ -56,11 +58,11 @@ let Oscilloscope = (function ()
 			my.canvas2d.font = '14px monospace';
 			my.canvas2d.textBaseline = 'top';
 			
-			my.analyzer = props.audioContext.createAnalyser();
+			my.analyser = props.audioContext.createAnalyser();
 			this.setFFTSize(props.fftSize || 2048);
 
 			// Sets up my.freqRange
-			this.setFrequencyWindow(0, 22050);
+			this.setFrequencyWindow(0, maxFrequency);
 			
 			this.render();
 		}
@@ -72,10 +74,15 @@ let Oscilloscope = (function ()
 		{
 			let my = internal(this);
 			
+			let allowableFFTSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768];
+
+			if (allowableFFTSizes.indexOf(newSize) === -1)
+				throw new Error('FFT size invalid:', newSize);
+
 			if (newSize >= 0)
-				my.analyzer.fftSize = newSize;
+				my.analyser.fftSize = newSize;
 			
-			my.dataBuffer = new Uint8Array(my.analyzer.frequencyBinCount);
+			my.dataBuffer = new Uint8Array(my.analyser.frequencyBinCount);
 		}
 		
 		/*
@@ -85,22 +92,20 @@ let Oscilloscope = (function ()
 		*/
 		setFrequencyWindow(min, max)
 		{
-			let my = internal(this);
-
 			if (min < 0)
 				min = 0;
-			else if (min > 22049)
-				min = 22049;
+			else if (min > maxFrequency - 1)
+				min = maxFrequency - 1;
 
 			if (max < 1)
 				max = 1;
-			else if (max > 22050)
-				max = 22050;
+			else if (max > maxFrequency)
+				max = maxFrequency;
 
 			if (min > max)
 				max = min + 1;
 
-			my.freqRange = 
+			internal(this).freqRange = 
 			{
 				min : min,
 				max : max
@@ -114,38 +119,42 @@ let Oscilloscope = (function ()
 		{
 			let my = internal(this);
 			
-			let bufferLength = my.analyzer.frequencyBinCount;
+			let dataBuffer = my.dataBuffer;
+			let bufferLength = dataBuffer.length;
 			
-			my.canvas2d.fillStyle = '#000000';
-			my.canvas2d.fillRect(0, 0, my.canvas.width, my.canvas.height);
-			my.canvas2d.lineWidth = 2;
-			my.canvas2d.strokeStyle = this.beamColor;
+			let cWidth = my.canvas.width;
+			let cHeight = my.canvas.height;
+			let ctx2d = my.canvas2d;
+			ctx2d.fillStyle = '#000000';
+			ctx2d.fillRect(0, 0, cWidth, cHeight);
+			ctx2d.lineWidth = 2;
+			ctx2d.strokeStyle = this.beamColor;
 			
 			// Code adapted from MDN website
 			let isFreqMode = false;
 			if (this.domain === Oscilloscope.domainType.time)
 			{
-				my.analyzer.getByteTimeDomainData(my.dataBuffer);
+				my.analyser.getByteTimeDomainData(dataBuffer);
 			}
 			else if (this.domain === Oscilloscope.domainType.frequency)
 			{
-				my.analyzer.getByteFrequencyData(my.dataBuffer);
-				let maxValue = Math.max.apply(null, my.dataBuffer);
-				let maxIndex = my.dataBuffer.lastIndexOf(maxValue);
+				my.analyser.getByteFrequencyData(dataBuffer);
+				let maxValue = Math.max.apply(null, dataBuffer);
+				let maxIndex = dataBuffer.lastIndexOf(maxValue);
 
-				my.canvas2d.strokeText((maxIndex * 22050 / my.dataBuffer.length).toString(), 0, 0);
+				ctx2d.strokeText((maxIndex * maxFrequency / bufferLength).toString(), 0, 0);
 				isFreqMode = true;
 			}
 			else
 			{
-				my.analyzer.getByteTimeDomainData(my.dataBuffer);
+				my.analyser.getByteTimeDomainData(dataBuffer);
 			}
 
-			my.canvas2d.beginPath();
+			ctx2d.beginPath();
 
-			let freqStep = 22050 / bufferLength;
+			let freqStep = maxFrequency / bufferLength;
 			let freqToIndex = freq => Math.floor(freq / freqStep);
-			// let indexToFreq = index => Math.floor(index * freqStep);
+			// let indexToFreq = index => Math.floor(freqStep * index);
 
 			let x = 0;
 			let minIndex = isFreqMode ? 
@@ -155,41 +164,41 @@ let Oscilloscope = (function ()
 				freqToIndex(my.freqRange.max) :
 				bufferLength;
 
-			let xStep = my.canvas.width / (maxIndex - minIndex);
+			let xStep = cWidth / (maxIndex - minIndex);
 			for (let i = minIndex; i < maxIndex; i++) 
 			{
 				// Scales to 0-2 range
-				let v = my.dataBuffer[i] / 128;
-				let y = v * my.canvas.height / 2;
+				let v = dataBuffer[i] / 128;
+				let y = v * cHeight / 2;
 
 				if (i === 0) 
 				{
-				  	my.canvas2d.moveTo(x, my.canvas.height - y);
+				  	ctx2d.moveTo(x, cHeight - y);
 				} 
 				else 
 				{
-				  	my.canvas2d.lineTo(x, my.canvas.height - y);
+				  	ctx2d.lineTo(x, cHeight - y);
 				}
 
 				x += xStep;
 			}
 
 			// If we're in time domain, the axis is at middle:
-			my.canvas2d.lineTo(
-				my.canvas.width, 
-				my.canvas.height >> Number(!isFreqMode)
+			ctx2d.lineTo(
+				cWidth, 
+				cHeight >> Number(!isFreqMode)
 			);
-			my.canvas2d.stroke();
+			ctx2d.stroke();
 			
 			requestAnimationFrame(this.render.bind(this));
 		}
 		
 		/*
-			Return the Analyzer Node.
+			Return the Analyser Node.
 		*/
 		getNode()
 		{
-			return internal(this).analyzer;
+			return internal(this).analyser;
 		}
 	}
 	

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Tuner</title>
+	<meta charset="utf-8">
+	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
+	<script src="../../javascripts/Pitch.js"></script>
+	<script src="../../javascripts/Seismometer.js"></script>
+	<script type="text/javascript">
+		let concertA = 440;
+
+		let scale = ['A', 'A#/Bb', 'B', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab'];
+
+		function getNearestNote(pitch)
+		{
+			let stepsOff = 12 * Math.log2(pitch / concertA);
+			let intStepsOff = Math.round(stepsOff);
+			let noteOffset = (intStepsOff % 12 + 12) % 12;
+			let idealFrequency = concertA * 2 ** (intStepsOff / 12);
+
+			return (
+			{
+				stepsOff : stepsOff,
+				name : scale[noteOffset] || '???',
+				delta : pitch - idealFrequency
+			});
+		}
+
+		$(document).ready(function ()
+		{
+			let audioContext = new (AudioContext || webkitAudioContext)();
+			audioContext.sampleRate
+			let tuner = new PitchAnalyser(
+			{ 
+				audioContext : audioContext, 
+				fftSize : 8192
+			});
+			// It will analyze without connecting to destination.
+
+			// Set up mic gain
+			let gainNode = audioContext.createGain();
+			gainNode.gain.setValueAtTime(10, audioContext.currentTime);
+
+			// Request microphone
+			navigator.mediaDevices
+				.getUserMedia({ audio : true })
+				.then(function (stream)
+				{
+					let streamNode = audioContext.createMediaStreamSource(stream);
+					let analyserNode = tuner.getNode();
+					streamNode.connect(gainNode);
+					gainNode.connect(analyserNode);
+				});
+
+			$('#ConcertA').change(function (evt)
+			{
+				concertA = $(this).val();
+			});
+
+			let seismo = new Seismometer($('#seismo1')[0], 
+			{
+				yMax : 13,
+				yMin : 0,
+				numberOfLines : 13,
+				maxJump : 5
+			});
+
+			setInterval(function ()
+			{
+				let pitchData = tuner.getPitchFromSource();
+				let note = getNearestNote(pitchData.pitch);
+
+				$('#Note').text(note.name);
+				$('#Delta').text(note.delta.toFixed(2));
+				$('#Pitch').text(pitchData.pitch.toFixed(2));
+				$('#Certainty').text(pitchData.p.toFixed(2) * 100 + '%');
+
+				let seismoValue = note.stepsOff === -Infinity ? 0 : (note.stepsOff % 12 + 12) % 12;
+				seismo.pushNewValue(seismoValue);
+				seismo.render();
+			}, 50);
+		});
+	</script>
+</head>
+<body>
+	<table id="Display">
+		<tbody>
+			<tr>
+				<td>Note</td>
+				<td><span id="Note">???</span></td>
+			</tr>
+			<tr>
+				<td>Delta</td>
+				<td><span id="Delta">???</span></td>
+			</tr>
+			<tr>
+				<td>Pitch (Hz)</td>
+				<td><span id="Pitch"></span></td>
+			</tr>
+			<tr>
+				<td>Certainty</td>
+				<td><span id="Certainty"></span></td>
+			</tr>
+		</tbody>
+	</table>
+	Concert A: <input type="number" id="ConcertA" value="440"><br />
+	<canvas width="600" height="300" class="seismometer" id='seismo1'></canvas>
+</body>
+</html>
