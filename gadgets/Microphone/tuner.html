@@ -9,13 +9,32 @@
 	<script type="text/javascript">
 		let concertA = 440;
 		let scale = ['A', 'A#/Bb', 'B', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab'];
+		const semitones = 12;
+
+		function rotateArray(array, amount)
+		{
+			amount = amount % array.length;
+			if (amount === 0)
+			{
+				return [...array];
+			}
+
+			let right = array.slice(0, -amount);
+			let left = array.slice(-amount);
+			return left.concat(right);
+		}
+
+		function cycModulo(a, b)
+		{
+			return (a % b + b) % b;
+		}
 
 		function getNearestNote(pitch)
 		{
-			let stepsOff = 12 * Math.log2(pitch / concertA);
+			let stepsOff = semitones * Math.log2(pitch / concertA);
 			let intStepsOff = Math.round(stepsOff);
-			let noteOffset = (intStepsOff % 12 + 12) % 12;
-			let idealFrequency = concertA * 2 ** (intStepsOff / 12);
+			let noteOffset = cycModulo(intStepsOff, semitones);
+			let idealFrequency = concertA * 2 ** (intStepsOff / semitones);
 
 			return (
 			{
@@ -60,16 +79,18 @@
 			let graphOffset = Number($('#GraphOffset').val());
 			$('#GraphOffset').change(function (evt)
 			{
-				$(this).val($(this).val() % 12);
+				$(this).val($(this).val() % semitones);
 				graphOffset = Number($(this).val());
+				seismo.valueMap = [' ', ...rotateArray(scale, graphOffset), ' '];
 			});
 
 			let seismo = new Seismometer($('#seismo1')[0], 
 			{
-				yMax : 13,
+				yMax : semitones + 1,
 				yMin : 0,
-				numberOfLines : 13,
-				maxJump : 5
+				numberOfLines : semitones + 1,
+				maxJump : 5,
+				valueMap : [' ', ...rotateArray(scale, graphOffset), ' ']
 			});
 
 			setInterval(function ()
@@ -83,7 +104,9 @@
 				$('#Certainty').text(pitchData.p.toFixed(2) * 100 + '%');
 
 				// +6 so A is moved to not the bottom
-				let seismoValue = note.stepsOff === -Infinity ? 0 : ((note.stepsOff + graphOffset) % 12 + 12) % 12;
+				let seismoValue = (note.stepsOff === -Infinity) ? 
+					0 : 
+					cycModulo(note.stepsOff + graphOffset, semitones);
 				seismo.pushNewValue(seismoValue);
 				seismo.render();
 			}, 50);
@@ -113,6 +136,6 @@
 	</table>
 	Concert A: <input type="number" id="ConcertA" value="440"><br />
 	Graph offset (half steps from A): <input type="number" id="GraphOffset" value="1"><br />
-	<canvas width="600" height="300" class="seismometer" id='seismo1'></canvas>
+	<canvas width="600" height="800" class="seismometer" id='seismo1'></canvas>
 </body>
 </html>

@@ -8,6 +8,7 @@ class Seismometer
         this.yMin          = graphProps.yMin;
         this.numberOfLines = graphProps.numberOfLines;
         this.maxJump       = graphProps.maxJump;
+        this.valueMap      = graphProps.valueMap || {};
         
         this.bgColor        = (styleProps && styleProps.bgColor) ? styleProps.bgColor : 'white';
         this.fgColor        = (styleProps && styleProps.fgColor) ? styleProps.fgColor : 'black';
@@ -67,7 +68,12 @@ class Seismometer
             ctx.moveTo(0, ycalc);
             ctx.lineTo(width, ycalc);
             ctx.stroke();
-            ctx.fillText(`${Math.round(i * deltaY / numberOfLines) + yMin}`, 0, ycalc);
+            let label = Math.round(i * deltaY / numberOfLines) + yMin;
+            let mapped = this.valueMap[label];
+            if (mapped != null)
+                ctx.fillText(mapped, 0, ycalc);
+            else
+                ctx.fillText(label, 0, ycalc);
         }
         
         // Draw graph:
