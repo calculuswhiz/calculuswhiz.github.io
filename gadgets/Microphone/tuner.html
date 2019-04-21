@@ -8,7 +8,6 @@
 	<script src="../../javascripts/Seismometer.js"></script>
 	<script type="text/javascript">
 		let concertA = 440;
-
 		let scale = ['A', 'A#/Bb', 'B', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab'];
 
 		function getNearestNote(pitch)
@@ -52,9 +51,17 @@
 					gainNode.connect(analyserNode);
 				});
 
+			concertA = $('#ConcertA').val();
 			$('#ConcertA').change(function (evt)
 			{
 				concertA = $(this).val();
+			});
+
+			let graphOffset = Number($('#GraphOffset').val());
+			$('#GraphOffset').change(function (evt)
+			{
+				$(this).val($(this).val() % 12);
+				graphOffset = Number($(this).val());
 			});
 
 			let seismo = new Seismometer($('#seismo1')[0], 
@@ -75,7 +82,8 @@
 				$('#Pitch').text(pitchData.pitch.toFixed(2));
 				$('#Certainty').text(pitchData.p.toFixed(2) * 100 + '%');
 
-				let seismoValue = note.stepsOff === -Infinity ? 0 : (note.stepsOff % 12 + 12) % 12;
+				// +6 so A is moved to not the bottom
+				let seismoValue = note.stepsOff === -Infinity ? 0 : ((note.stepsOff + graphOffset) % 12 + 12) % 12;
 				seismo.pushNewValue(seismoValue);
 				seismo.render();
 			}, 50);
@@ -104,6 +112,7 @@
 		</tbody>
 	</table>
 	Concert A: <input type="number" id="ConcertA" value="440"><br />
+	Graph offset (half steps from A): <input type="number" id="GraphOffset" value="1"><br />
 	<canvas width="600" height="300" class="seismometer" id='seismo1'></canvas>
 </body>
 </html>
