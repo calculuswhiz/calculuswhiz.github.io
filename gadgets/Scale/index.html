@@ -10,106 +10,113 @@
 	<script>
 		function ready()
 		{
-			let canvas = $('#ScopeScreen')[0];
-			
-			// Set up oscilloscope:
-			let audioContext = new (AudioContext || webkitAudioContext)();
-			let scope = new Oscilloscope(
-			{ 
-				audioContext : audioContext, 
-				canvas : canvas,
-				fftSize : Number($('#FFTMenu option:selected').val()),
-				beamColor : $('#ScopeColor').val(),
-				domain : Oscilloscope.domainType[$('#DomainMenu option:selected').val()]
-			});
-			scope.getNode().connect(audioContext.destination);
-			let scaleCount = 0;
-			let scaleOscillators = [];
-			
-			function setMessageText(text)
+			try
 			{
-				$('#Message').text(text);		
-			}
-			
- 			$('#PlayBtn').click(function ()
-			{
-				// Create new oscillator
-				let scaleOscillator = new ChromaticScale({ audioContext : audioContext });
-				scaleOscillators.push(scaleOscillator);
+				let canvas = $('#ScopeScreen')[0];
 				
-				let params = 
+				// Set up oscilloscope:
+				let audioContext = new (AudioContext || webkitAudioContext)();
+				let scope = new Oscilloscope(
+				{ 
+					audioContext : audioContext, 
+					canvas : canvas,
+					fftSize : Number($('#FFTMenu option:selected').val()),
+					beamColor : $('#ScopeColor').val(),
+					domain : Oscilloscope.domainType[$('#DomainMenu option:selected').val()]
+				});
+				scope.getNode().connect(audioContext.destination);
+				let scaleCount = 0;
+				let scaleOscillators = [];
+				
+				function setMessageText(text)
 				{
-					semitones : Number($('#Semitones').val()),
-					octaves : Number($('#Octaves').val()),
-					scaleBase : Number($('#ScaleBase').val()),
-					startFrequency : Number($('#StartFreq').val()),
-					waveType : $('#waveMenu option:selected').val(),
-					msPerNote : Number($('#MsPerNote').val())
-				};
+					$('#Message').text(text);		
+				}
 				
-				scaleOscillator.setProperties(params);
-				scaleOscillator.turnOn();
-				scaleOscillator.getNode().connect(scope.getNode());
-				
-				scaleOscillator.getNode().addEventListener('ended', function ()
+	 			$('#PlayBtn').click(function ()
 				{
-					setMessageText(`${--scaleCount} scales currently playing.`);
-					if (scaleCount == 0)
+					// Create new oscillator
+					let scaleOscillator = new ChromaticScale({ audioContext : audioContext });
+					scaleOscillators.push(scaleOscillator);
+					
+					let params = 
 					{
-						scaleOscillators = [];
-					}
+						semitones : Number($('#Semitones').val()),
+						octaves : Number($('#Octaves').val()),
+						scaleBase : Number($('#ScaleBase').val()),
+						startFrequency : Number($('#StartFreq').val()),
+						waveType : $('#waveMenu option:selected').val(),
+						msPerNote : Number($('#MsPerNote').val())
+					};
+					
+					scaleOscillator.setProperties(params);
+					scaleOscillator.turnOn();
+					scaleOscillator.getNode().connect(scope.getNode());
+					
+					scaleOscillator.getNode().addEventListener('ended', function ()
+					{
+						setMessageText(`${--scaleCount} scales currently playing.`);
+						if (scaleCount == 0)
+						{
+							scaleOscillators = [];
+						}
+					});
+					
+					setMessageText(`${++scaleCount} scales currently playing.`);
 				});
 				
-				setMessageText(`${++scaleCount} scales currently playing.`);
-			});
-			
-			function stopAll()
-			{
-				// Rip out all connections
-				scaleOscillators.forEach(function (scaleOscillator)
+				function stopAll()
 				{
-					if (scaleOscillator != null)
+					// Rip out all connections
+					scaleOscillators.forEach(function (scaleOscillator)
 					{
-						scaleOscillator.turnOff();
-						scaleOscillator.getNode().disconnect();
-					}
-				});
-				scaleOscillators = [];
-			}
-			
-			$('#StopBtn').click(function ()
-			{
-				stopAll();
-			});
-			
-			$('#ResetBtn').click(function ()
-			{
-				stopAll();
+						if (scaleOscillator != null)
+						{
+							scaleOscillator.turnOff();
+							scaleOscillator.getNode().disconnect();
+						}
+					});
+					scaleOscillators = [];
+				}
 				
-				$('#Semitones').val('12');
-				$('#Octaves').val('1');
-				$('#ScaleBase').val('2');
-				$('#StartFreq').val('440');
-				$('#waveMenu').val('sine');
-				$('#MsPerNote').val('250');
-			});
-			
-			$('#ScopeColor').keyup(function ()
+				$('#StopBtn').click(function ()
+				{
+					stopAll();
+				});
+				
+				$('#ResetBtn').click(function ()
+				{
+					stopAll();
+					
+					$('#Semitones').val('12');
+					$('#Octaves').val('1');
+					$('#ScaleBase').val('2');
+					$('#StartFreq').val('440');
+					$('#waveMenu').val('sine');
+					$('#MsPerNote').val('250');
+				});
+				
+				$('#ScopeColor').keyup(function ()
+				{
+					scope.beamColor = $('#ScopeColor').val();
+				});
+				
+				$('#FFTMenu').change(function ()
+				{
+					scope.setFFTSize(Number($('#FFTMenu option:selected').val()));
+				});
+				
+				$('#DomainMenu').change(function ()
+				{
+					scope.domain = Oscilloscope.domainType[$('#DomainMenu option:selected').val()];
+				});
+				
+				$('#Activator').remove();
+			}
+			catch (exc)
 			{
-				scope.beamColor = $('#ScopeColor').val();
-			});
-			
-			$('#FFTMenu').change(function ()
-			{
-				scope.setFFTSize(Number($('#FFTMenu option:selected').val()));
-			});
-			
-			$('#DomainMenu').change(function ()
-			{
-				scope.domain = Oscilloscope.domainType[$('#DomainMenu option:selected').val()];
-			});
-		
-			$('#Activator').remove();
+				$('body').text(exc.message);
+			}
 		}
 	</script>
 </head>
