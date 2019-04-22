@@ -9,12 +9,14 @@ let PitchAnalyser = (function ()
         return map.get(object);
     };
 
-    // I found this implementation by Alejandro Perez, but I found a lot of things to optimize for efficiency.
+	const allowableFFTSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768];    
+
+    // I found this YIN implementation by Alejandro Perez, but I found a lot of things to optimize for efficiency.
     const sampleRate = 44100;
-    const threshold = 0.05;
+    let threshold;
     function yinPitch(inputBuffer)
     {
-    	let halfBufferLength = inputBuffer.length >> 1;
+    	let halfBufferLength = inputBuffer.length / 2;
     	let meanBuffer = new Float32Array(halfBufferLength);
     	meanBuffer[0] = 1;
     	let accumulator = 0;
@@ -22,9 +24,9 @@ let PitchAnalyser = (function ()
     	let minMean = Infinity;
     	let minTau = 0;
 
-    	// Squared difference:
     	for (let tau = 1; tau < halfBufferLength; tau++)
     	{
+    		// Squared difference:
     		for (let i = 0; i < halfBufferLength; i++)
     		{
     			let diff = inputBuffer[i] - inputBuffer[i + tau];
@@ -87,11 +89,12 @@ let PitchAnalyser = (function ()
     	{
     		let my = internal(this);
 
-    		// this.minPitch = props.minPitch;
-    		// this.maxPitch = props.maxPitch;
-
 			my.analyser = props.audioContext.createAnalyser();
 			this.setFFTSize(props.fftSize || 2048);
+			if (props.threshold == null)
+				threshold = 0.05;
+			else
+				threshold = props.threshold;
     	}
 
     	/*
@@ -101,9 +104,7 @@ let PitchAnalyser = (function ()
 		{
 			let my = internal(this);
 			
-			let allowableFFTSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768];
-
-			if (allowableFFTSizes.indexOf(newSize) === -1)
+			if (!allowableFFTSizes.includes(newSize))
 				throw new Error('FFT size invalid:', newSize);
 
 			if (newSize >= 0)
