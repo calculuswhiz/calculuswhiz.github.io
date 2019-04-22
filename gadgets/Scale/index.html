@@ -15,7 +15,7 @@
 				let canvas = $('#ScopeScreen')[0];
 				
 				// Set up oscilloscope:
-				let audioContext = new (AudioContext || webkitAudioContext)();
+				let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 				let scope = new Oscilloscope(
 				{ 
 					audioContext : audioContext, 

@@ -46,7 +46,7 @@
 				});
 			}
 
-			let audioContext = new (AudioContext || webkitAudioContext)();
+			let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 			audioContext.sampleRate
 			let tuner = new PitchAnalyser(
 			{ 
