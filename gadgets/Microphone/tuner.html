@@ -7,7 +7,7 @@
 	<script src="../../javascripts/Pitch.js"></script>
 	<script src="../../javascripts/Seismometer.js"></script>
 	<script type="text/javascript">
-		$(document).ready(function ()
+		function ready()
 		{
 			let concertA = 440;
 			let scale = ['A', 'A#/Bb', 'B', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab'];
@@ -111,7 +111,9 @@
 				seismo.pushNewValue(seismoValue);
 				seismo.render();
 			}, 33.333);
-		});
+
+			$('#Activator').remove();
+		}
 	</script>
 </head>
 <body>
@@ -137,6 +139,7 @@
 	</table>
 	Concert A: <input type="number" id="ConcertA" value="440"><br />
 	Graph offset (half steps from A): <input type="number" id="GraphOffset" value="1"><br />
+	<button id="Activator" onclick="ready()">Activate it!</button><br />
 	<canvas width="600" height="800" class="seismometer" id='seismo1'></canvas>
 </body>
 </html>

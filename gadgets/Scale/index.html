@@ -8,7 +8,7 @@
 	<script src="../../javascripts/Oscilloscope.js"></script>
 	<link rel="stylesheet" type="text/css" href="./styles.css">
 	<script>
-		$(document).ready(function ()
+		function ready()
 		{
 			let canvas = $('#ScopeScreen')[0];
 			
@@ -108,7 +108,9 @@
 			{
 				scope.domain = Oscilloscope.domainType[$('#DomainMenu option:selected').val()];
 			});
-		});
+		
+			$('#Activator').remove();
+		}
 	</script>
 </head>
 <body>
@@ -152,6 +154,7 @@
 	</div>
 	<div id="Scope">
 		<div class="TitleLabel">Scope</div>
+		<button id="Activator" onclick="ready()">Activate it!</button><br />
 		<canvas id="ScopeScreen" width="1024" height="715"></canvas>
 		<div>Oscilloscope Settings</div>
 		<div id="ScopeParameters" class="Parameters">
