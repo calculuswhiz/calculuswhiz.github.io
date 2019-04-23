@@ -3,6 +3,31 @@
 <head>
 	<title>Web Tuner</title>
 	<meta charset="utf-8">
+	<style type="text/css">
+		body
+		{
+			font-family: monospace;
+			font-size: 16pt;
+		}
+
+		#Display
+		{
+			border: 1px solid black;
+			width : 300px;
+		}
+
+			#Display td
+			{
+				text-align: center;
+				border: 1px dotted gray;
+			}
+
+			#Display .TunerDataCol
+			{
+				width : 180px;
+				background-color: #eee;
+			}
+	</style>
 	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
 	<script src="../../javascripts/Pitch.js"></script>
 	<script src="../../javascripts/Seismometer.js"></script>
@@ -42,7 +67,7 @@
 				{
 					stepsOff : stepsOff,
 					name     : scale[noteOffset] || '???',
-					delta    : pitch - idealFrequency
+					cents    : 1200 * Math.log2(pitch / idealFrequency)
 				});
 			}
 
@@ -100,7 +125,7 @@
 				let note = getNearestNote(pitchData.pitch);
 
 				$('#Note').text(note.name);
-				$('#Delta').text(note.delta.toFixed(2));
+				$('#Cents').text(note.cents.toFixed(2).replace(/^(\w)/, '+$1'));
 				$('#Pitch').text(pitchData.pitch.toFixed(2));
 				$('#Certainty').text((pitchData.p * 100).toFixed(2) + '%');
 
@@ -118,14 +143,18 @@
 </head>
 <body>
 	<table id="Display">
+		<colgroup>
+			<col>
+			<col class='TunerDataCol'>
+		</colgroup>
 		<tbody>
 			<tr>
 				<td>Note</td>
 				<td><span id="Note">???</span></td>
 			</tr>
 			<tr>
-				<td>Delta</td>
-				<td><span id="Delta">???</span></td>
+				<td>Cents</td>
+				<td><span id="Cents">???</span></td>
 			</tr>
 			<tr>
 				<td>Pitch (Hz)</td>
