@@ -71,6 +71,39 @@
 				});
 			}
 
+			const meterCharCount = 50;
+			const valuePerChar = 2.5;
+			const meterChar = '|';
+			const fillerChar = '-';
+			function displayCentIMeter(cents)
+			{
+				if (isNaN(cents))
+				{
+					cents = 0;
+				}
+				let offset = Math.floor(cents / valuePerChar);
+				let position = meterCharCount / 2 + offset;
+				let leftFill = fillerChar.repeat(position - 1);
+				let rightFill = fillerChar.repeat(meterCharCount - position - 1);
+
+				// For mixing colors:
+				let max = meterCharCount / 4 * valuePerChar;
+				let absence = Math.abs(cents) / max; // (get it?)
+				let color = `rgb(${absence * 255}, ${(1 - absence) * 255}, 0)`;
+				$('#cent-i-meter')
+					.css(
+					{
+						color : color
+					})
+					.text(`[${leftFill}${meterChar}${rightFill}]`);
+				$('#Cents')
+					.css(
+					{
+						color : color
+					})
+					.text(cents.toFixed(0).replace(/^(-?)(\d)$/, '$10$2').replace(/^(\d)/, '+$1'));
+			}
+
 			let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 			audioContext.sampleRate
 			let tuner = new PitchAnalyser(
@@ -117,6 +150,11 @@
 				numberOfLines : semitones + 1,
 				maxJump       : 2,
 				valueMap      : [' ', ...rotateArray(scale, graphOffset), ' ']
+			},
+			{
+				bgColor : 'black',
+				fgColor : 'white',
+				seismocolor : 'cyan'
 			});
 
 			setInterval(function ()
@@ -125,7 +163,6 @@
 				let note = getNearestNote(pitchData.pitch);
 
 				$('#Note').text(note.name);
-				$('#Cents').text(note.cents.toFixed(2).replace(/^(\w)/, '+$1'));
 				$('#Pitch').text(pitchData.pitch.toFixed(2));
 				$('#Certainty').text((pitchData.p * 100).toFixed(2) + '%');
 
@@ -135,6 +172,8 @@
 					cycModulo(note.stepsOff + graphOffset, semitones);
 				seismo.pushNewValue(seismoValue + 1);
 				seismo.render();
+
+				displayCentIMeter(note.cents);
 			}, 33.333);
 
 			$('#Activator').remove();
@@ -168,7 +207,8 @@
 	</table>
 	Concert A: <input type="number" id="ConcertA" value="440"><br />
 	Graph offset (half steps from A): <input type="number" id="GraphOffset" value="1"><br />
+	<div id='cent-i-meter'></div>
 	<button id="Activator" onclick="ready()">Activate it!</button><br />
-	<canvas width="600" height="800" class="seismometer" id='seismo1'></canvas>
+	<canvas width="600" height="800" class="seismometer" id='seismo1'></canvas><br />
 </body>
 </html>
