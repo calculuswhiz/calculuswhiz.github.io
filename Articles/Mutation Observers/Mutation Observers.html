@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Why the Internet Needs Mutation Observers</title>
+	<style type="text/css">
+		body
+		{
+			padding-left: 10px;
+			padding-bottom: 10vh;
+			font-family: sans-serif;
+			width: 800px;
+		}
+
+		#title
+		{
+			margin-bottom: 10px;
+			text-align: center;
+		}
+
+		#subtitle
+		{
+			margin-bottom: 10px;
+			text-align: center;
+		}
+
+		#header-1
+		{
+			font-size: larger;
+			font-weight: bold;
+		}
+
+		.code
+		{
+			background-color: #eee;
+			-moz-tab-size: 4;
+			tab-size: 4;
+		}
+
+		.bank-info
+		{
+			border: 1px solid black;
+			background: dodgerblue;
+			color: white;
+		}
+
+		.bank-amount
+		{
+			float: right;
+			background: lightyellow;
+			color: black;
+		}
+	</style>
+	<script src="jquery.js"></script>
+</head>
+<body>
+	<h1 id="title">Why the Internet Needs Mutation Observers</h1>
+	<h2 id="subtitle">How Banking Websites Can Help Stop Refund Scams</h2>
+
+	<h3>Anatomy of a Scam</h3>
+	<ol>
+		<li>Victim receives call in which the scammer claims that he is from a reputable company (usually Microsoft).</li>
+		<li>The scammer, usually with an obvious Indian accent, provides an American sounding name, and says that the victim is eligible for a refund from their alleged company. The scammer offers to give this refund himself.</li>
+		<li>The scammer gets the victim to install and use Google Chrome.</li>
+		<li>The scammer gets the victim to download some Remote Desktop client such as TeamViewer to allow the scammer access to the victim's computer.</li>
+		<li>The scammer gets the victim to login to the victim's bank and permit the scammer to connect via the aforementioned client.</li>
+		<li>The scammer, now having access to the victim's computer, tells the victim to look away, and then the magic starts.</li>
+		<li>The scammer right clicks the bank account and hits "Inspect Element," which lets them edit the HTML.</li>
+		<li>The scammer types in the original number, plus some number much larger than the agreed upon amount.</li>
+		<li>The scammer permits the victim to see the amount, telling them that they have refunded them too much money. They then urge the victim to pay them back the amount minus the refund. This is, of course, money that the victim does not have.</li>
+		<li>The scammer, upon receiving payment, hangs up, and the victim usually doesn't notice until much later.</li>
+	</ol>
+
+	<h3>How to Detect "Inspect Element" Tampering</h3>
+	<p>
+		Fortunately, web designers for online banking can detect tampering using a JavaScript API called <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver">Mutation Observers</a>, which has been available since IE11. In short, Mutation Observers watch for changes in the HTML DOM and triggers callbacks when this happens. As an example, try using the Inspect Element trick on the number below. There is also a script that increments the value every 5 seconds, so be quick! This shows that you can still set the innerHTML with JavaScript/jQuery yourself, while still detecting Inspect Element changes. That way you can still use AJAX to refresh the values. This works because when jQuery does it, it triggers a mutation of type childList instead of characterData.
+	</p>
+	Demo:
+	<div id="bank-info-1" class="bank-info">
+		Bank Acct 1 amount: <span id="bank-amount-1" class="bank-amount">$30000.00</span>
+	</div>
+	<script id="source-code-1" type="text/javascript">
+		// Using jQuery
+		(function()
+		{
+			// Node to watch:
+			let amountTag = document.getElementById('bank-amount-1');
+			let config = 
+			{ 
+				subtree: true, 
+				characterData: true,
+				childList: true
+			};
+
+			function callback(mutationsList, observer) 
+			{
+			    for (let mutation of mutationsList) 
+			    {
+			        if (mutation.type === 'characterData') 
+			        {
+			        	// Detected change, take action:
+			        	let message = 'It is highly possible you are being scammed by someone on the phone! \
+			        	 	If you are receiving remote help, SHUT DOWN IMMEDIATELY. For safety, you have \
+			        	 	logged out of your account, after which you will have to change your password. \
+			        	 	We have emailed you regarding the details. (Refresh to reset the page.)';
+			            alert(message.replace(/\s+/g, ' '));
+			            $(document.body).html('<h1>' + message + '</h1>');
+			            
+			            // Any additional actions here...
+			            // Log out, close tab, etc.
+
+			            // Disconnect observer
+			            observer.disconnect();
+			        }
+			    }
+			}
+
+			// Create an observer instance linked to the callback function
+			let observer = new MutationObserver(callback);
+
+			// Start observing the target node for configured mutations
+			observer.observe(amountTag, config);
+		})();
+	</script>
+	<script type="text/javascript">
+		(function ()
+		{
+			let counter = 30000;
+			setInterval(function ()
+			{
+				$('#bank-amount-1').text('$' + String((counter += 0.01).toFixed(2)));
+			}, 5000);
+		})();
+	</script>
+	<p>
+		And here is the source code for it:
+		<pre id="source-viewer-1" class="code">
+			<!-- Inject code here -->
+		</pre>
+	</p>
+	<script type="text/javascript">
+		(function ()
+		{
+			// Copy from source tag
+			let viewerTag = document.getElementById('source-viewer-1');
+			let source = document.getElementById('source-code-1').innerHTML;
+
+			viewerTag.innerHTML = source
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/^\t{2}/mg, '');
+		})();
+	</script>
+	<p>
+		You can close the tab, lock the user out, or prevent changes altogether. Be creative! (As a side note, the alert box does not block the inspector. If you want to undo any inspect-element changes, don't use an alert box.)
+	</p>
+
+	<h3>Conclusion</h3>
+	<p>
+		These types of scams are becoming more and more prevalent. A simple solution like this can easily put a stop to them, or at least slow them down long enough for the user to become suspicious.
+	</p>
+</body>
+</html>
