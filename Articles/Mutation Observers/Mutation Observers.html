@@ -3,61 +3,37 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Why the Internet Needs Mutation Observers</title>
-	<style type="text/css">
-		body
-		{
-			padding-left: 10px;
-			padding-bottom: 10vh;
-			font-family: sans-serif;
-			width: 800px;
-		}
-
-		#title
-		{
-			margin-bottom: 10px;
-			text-align: center;
-		}
-
-		#subtitle
-		{
-			margin-bottom: 10px;
-			text-align: center;
-		}
-
-		#header-1
-		{
-			font-size: larger;
-			font-weight: bold;
-		}
-
-		.code
-		{
-			background-color: #eee;
-			-moz-tab-size: 4;
-			tab-size: 4;
-		}
-
-		.bank-info
-		{
-			border: 1px solid black;
-			background: dodgerblue;
-			color: white;
-		}
-
-		.bank-amount
-		{
-			float: right;
-			background: lightyellow;
-			color: black;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="./style.css">
 	<script src="jquery.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function ()
+		{
+			let sections = $('.section');
+			$.each(sections, function (i, section)
+			{
+				$(section).attr({ id: 'section-' + i });
+				$('#TOC-list').append(
+					$('<li>').append(
+						$('<a>').attr({ href: '#section-' + i }).text($(section).text())
+					)
+				);
+			});
+		});
+	</script>
 </head>
 <body>
 	<h1 id="title">Why the Internet Needs Mutation Observers</h1>
 	<h2 id="subtitle">How Banking Websites Can Help Stop Refund Scams</h2>
 
-	<h3>Anatomy of a Scam</h3>
+	<div id="TOC">
+		Table of Contents:
+		<ol id="TOC-list">
+		</ol>
+	</div>
+
+	Last revision: 07JUL19
+
+	<h3 class="section">Anatomy of a Scam (Inspect Element Method)</h3>
 	<ol>
 		<li>Victim receives call in which the scammer claims that he is from a reputable company (usually Microsoft).</li>
 		<li>The scammer, usually with an obvious Indian accent, provides an American sounding name, and says that the victim is eligible for a refund from their alleged company. The scammer offers to give this refund himself.</li>
@@ -71,7 +47,7 @@
 		<li>The scammer, upon receiving payment, hangs up, and the victim usually doesn't notice until much later.</li>
 	</ol>
 
-	<h3>How to Detect "Inspect Element" Tampering</h3>
+	<h3 class="section">How to Detect "Inspect Element" Tampering</h3>
 	<p>
 		Fortunately, web designers for online banking can detect tampering using a JavaScript API called <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver">Mutation Observers</a>, which has been available since IE11. In short, Mutation Observers watch for changes in the HTML DOM and triggers callbacks when this happens. As an example, try using the Inspect Element trick on the number below. There is also a script that increments the value every 5 seconds, so be quick! This shows that you can still set the innerHTML with JavaScript/jQuery yourself, while still detecting Inspect Element changes. That way you can still use AJAX to refresh the values. This works because when jQuery does it, it triggers a mutation of type childList instead of characterData.
 	</p>
@@ -152,12 +128,42 @@
 		})();
 	</script>
 	<p>
-		You can close the tab, lock the user out, or prevent changes altogether. Be creative! (As a side note, the alert box does not block the inspector. If you want to undo any inspect-element changes, don't use an alert box.)
+		You can close the tab, lock the customer out, or prevent changes altogether. (As a side note, the alert box does not block the inspector. If you want to undo any inspect-element changes, don't use an alert box.)
 	</p>
 
-	<h3>Conclusion</h3>
+	<h3 class="section">Alternative Method: Interfund Tranfser (IFT) Method</h3>
+	This is an alternative to the first method, which is slightly less subtle, but worth mentioning as it bypasses the detection method above.
+	<ol>
+		<li>Instead of using "Inspect Element," the scammer transfers funds in between accounts, distracting the victim from what he's doing.</li>
+		<li>The scammer hopes to convince the scammer that his account has more money, and the scam proceeds as in the first section.</li>
+	</ol>
+	Unfortunately, it's pretty much impossible to distinguish between this and a legitimate transfer, so you can't really use an automated method here like the first method. However, there are steps that you can take to protect your customers. I will discuss this in the following section.
+
+	<h3 class="section">Recommended Measures for Banks and Other Financial Institutions</h3>
 	<p>
-		These types of scams are becoming more and more prevalent. A simple solution like this can easily put a stop to them, or at least slow them down long enough for the user to become suspicious.
+		As a somewhat experienced Full Stack Dev, I do have a few recommended actions. My personal philosophy with this is to do EVERYTHING reasonably possible to alert and protect the customer.
+		<ul>
+			<li>Use alert boxes to show that something is wrong. I recommend that the alert is displayed a few times in case the scammer tries to close the window. If the customer has not blacked out the screen, this will be warning sign #1.</li>
+			<li>Log the customer out and replace the page with a pure HTML warning like above. A more concise and direct message would be better. Contact your legal team and work with your managers to tailor it to your business logic and needs. This will mitigate immediate damage that the scammer can cause to the account. When the customer closes, trigger an alert with onbeforeunload to stall for more time for the customer to read the message.</li>
+			<li>Time out the customer for an hour, and/or set a temporary password. This will prevent the scammer from getting back in to the account immediately after he retreats.</li>
+			<li>Email, SMS, and Call the customer with detailed instructions on how to unlock the account. Always confirm changes to contact information with the customer in case the scammer tries to change it via customer profile settings. The confirmation message should include a warning that the contact should never be anyone other than the customer or an authorized account manager, and especially not someone claiming to refund money. (Specifically call out this type of scam.)</li>
+			<li>To deal with the IFT method, encourage customers to put alerts on their accounts to show that a large sum of money has been transferred. Further, pages should display status information at the top of the Account Summary page showing that the last transfer was an IFT of x amount.</li>
+		</ul>
+	</p>
+
+	<h3 class="section">Ideas for Scambaiters Making Fake Websites</h3>
+	<p>
+		I decided to add this section because scambaiting seems to be one of the most effective ways of dealing with scammers. (I mean, it's not like their government is doing anything about it.) This list is not meant to be exhaustive by any means. Though I do have a lot of ideas for nasty tricks, I want to keep this article short. This is just meant to give scambaiters some inspiration.
+		<ul>
+			<li>Obviously, you don't want to end the scam prematurely, so I would use a more subtle message. How about: "All fund transfers are final. If you have been over-refunded, you are under no legal obligation to return any money to the refunder. Enjoy your extra cash!"</li>
+			<li>Then, if they try to change it to 0.00, change the value to 10000.00. Make the message say, "Thank you for your generosity!"</li>
+			<li>Or you can track the old pre-change value by adding 'characterDataOldValue' to the config list (See <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserverInit">MDN's website</a>). This means you can calculate the difference, divide that by 100, and set it to the expected refund amount for extra confusion. Make sure you use the 'toFixed' method.</li>
+		</ul>
+	</p>
+
+	<h3 class="section">Conclusion</h3>
+	<p>
+		These types of scams are becoming more and more prevalent. A simple solution like this can easily put a stop to them, or at least slow them down long enough for the customer to become suspicious.
 	</p>
 </body>
 </html>

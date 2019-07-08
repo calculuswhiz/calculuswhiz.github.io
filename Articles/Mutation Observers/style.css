@@ -1,0 +1,51 @@
+body
+{
+	padding-left: 10px;
+	padding-bottom: 10vh;
+	font-family: sans-serif;
+	width: 800px;
+	line-height: 1.5;
+}
+
+#title
+{
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+a:visited
+{
+	color: blue;
+}
+
+#subtitle
+{
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+#TOC
+{
+	border: 1px solid black;
+}
+
+.code
+{
+	background-color: #eee;
+	-moz-tab-size: 4;
+	tab-size: 4;
+}
+
+.bank-info
+{
+	border: 1px solid black;
+	background: dodgerblue;
+	color: white;
+}
+
+.bank-amount
+{
+	float: right;
+	background: lightyellow;
+	color: black;
+}
