@@ -121,70 +121,72 @@
 	</script>
 </head>
 <body>
-	<div id="GeneratorRoot">
-		<div class="TitleLabel">Generalized Chromatic Scale Generator</div>
-		<div id="ScaleController">
-			<div id="ScaleParameters" class="Parameters">
+	<div id="app-root">
+		<div id="Generator-Root">
+			<div class="TitleLabel">Generalized Chromatic Scale Generator</div>
+			<div id="ScaleController">
+				<div id="ScaleParameters" class="Parameters">
+					<div class="Param">
+						<span class="inputLabel">Semitones</span><input type="text" id="Semitones" value="12">
+					</div>
+					<div class="Param">
+						<span class="inputLabel">"Octaves"</span><input type="text" id="Octaves" value="1">
+					</div>
+					<div class="Param">
+						<span class="inputLabel">Scale Base</span><input type="text" id="ScaleBase" value="2">
+					</div>
+					<div class="Param">
+						<span class="inputLabel">Start Frequency</span><input type="text" id="StartFreq" value="440">
+					</div>
+					<div class="Param">
+						<span class="inputLabel">Wave Type</span>
+						<select id="waveMenu">
+							<option value="sine">Sine</option>
+							<option value="square">Square</option>
+							<option value="sawtooth">Sawtooth</option>
+							<option value="triangle">Triangle</option>
+						</select>
+					</div>
+					<div class="Param">
+						<span class="inputLabel">Milliseconds per note</span><input type="text" id="MsPerNote" value="250">
+					</div>
+				</div>
+				<div>Output Controls:</div>
+				<div id="Output-Controls">
+					<button id="PlayBtn">Play</button>
+					<button id="StopBtn">Stop</button>
+					<button id="ResetBtn">Reset to Defaults</button>
+				</div>
+			</div>
+			<div id="Message">Ready!</div>
+		</div>
+		<div id="Scope-Root">
+			<div class="TitleLabel">Scope</div>
+			<button id="Activator" onclick="ready()">Activate it!</button><br />
+			<canvas id="ScopeScreen" width="1024" height="715"></canvas>
+			<div>Oscilloscope Settings</div>
+			<div id="ScopeParameters" class="Parameters">
 				<div class="Param">
-					<span class="inputLabel">Semitones</span><input type="text" id="Semitones" value="12">
+					<span class="inputLabel">Scope Color</span><input type="text" id="ScopeColor" value="rgb(0,255,0)">
 				</div>
 				<div class="Param">
-					<span class="inputLabel">"Octaves"</span><input type="text" id="Octaves" value="1">
-				</div>
-				<div class="Param">
-					<span class="inputLabel">Scale Base</span><input type="text" id="ScaleBase" value="2">
-				</div>
-				<div class="Param">
-					<span class="inputLabel">Start Frequency</span><input type="text" id="StartFreq" value="440">
-				</div>
-				<div class="Param">
-					<span class="inputLabel">Wave Type</span>
-					<select id="waveMenu">
-						<option value="sine">Sine</option>
-						<option value="square">Square</option>
-						<option value="sawtooth">Sawtooth</option>
-						<option value="triangle">Triangle</option>
+					<span class="inputLabel">FFT Size</span>
+					<select id="FFTMenu">
+						<option value="1024">1024</option>
+						<option value="2048" selected="selected">2048</option>
+						<option value="4096">4096</option>
+						<option value="8192">8192</option>
+						<option value="16384">16384</option>
+						<option value="32768">32768</option>
 					</select>
 				</div>
 				<div class="Param">
-					<span class="inputLabel">Milliseconds per note</span><input type="text" id="MsPerNote" value="250">
+					<span class="inputLabel">Domain</span>
+					<select id="DomainMenu">
+						<option value="time" selected="selected">Time</option>
+						<option value="frequency">Frequency</option>
+					</select>
 				</div>
-			</div>
-			<div id="OutputControls">
-				<div>Output Controls:</div>
-				<button id="PlayBtn">Play</button>
-				<button id="StopBtn">Stop</button>
-				<button id="ResetBtn">Reset to Defaults</button>
-			</div>
-		</div>
-		<div id="Message">Ready!</div>
-	</div>
-	<div id="Scope">
-		<div class="TitleLabel">Scope</div>
-		<button id="Activator" onclick="ready()">Activate it!</button><br />
-		<canvas id="ScopeScreen" width="1024" height="715"></canvas>
-		<div>Oscilloscope Settings</div>
-		<div id="ScopeParameters" class="Parameters">
-			<div class="Param">
-				<span class="inputLabel">Scope Color</span><input type="text" id="ScopeColor" value="rgb(0,255,0)">
-			</div>
-			<div class="Param">
-				<span class="inputLabel">FFT Size</span>
-				<select id="FFTMenu">
-					<option value="1024">1024</option>
-					<option value="2048" selected="selected">2048</option>
-					<option value="4096">4096</option>
-					<option value="8192">8192</option>
-					<option value="16384">16384</option>
-					<option value="32768">32768</option>
-				</select>
-			</div>
-			<div class="Param">
-				<span class="inputLabel">Domain</span>
-				<select id="DomainMenu">
-					<option value="time" selected="selected">Time</option>
-					<option value="frequency">Frequency</option>
-				</select>
 			</div>
 		</div>
 	</div>

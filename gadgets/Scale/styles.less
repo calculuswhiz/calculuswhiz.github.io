@@ -1,0 +1,101 @@
+/*
+while inotifywait -e close_write styles.less; do lessc styles.less > styles.css; done
+*/
+
+body
+{
+	font-family: sans-serif;
+	height: calc(100vh - 2 * 8px);
+}
+
+.TitleLabel
+{
+	text-align: center;
+	font-size: larger;
+	font-weight: bold;
+}
+
+#Generator-Root, #Scope-Root
+{
+	border : 1px solid black;
+	display: block;
+	background-color: antiquewhite;
+}
+
+.Parameters
+{
+	border-style: double;
+	width: calc(100% - 8px);
+	display: table;
+	.Param
+	{
+		display: table-row;
+
+		.inputLabel,input,select
+		{
+			display: table-cell;
+			padding: 2px;
+		}
+	}
+}
+
+@media (orientation: landscape)
+{
+	#app-root
+	{
+		flex-direction: row;
+	}
+}
+
+@media (orientation: portrait)
+{
+	#app-root
+	{
+		flex-direction: column;
+	}
+}
+
+#app-root
+{
+	width: 100%;
+	height: 100%;
+	display: flex;
+
+	.inputLabel
+	{
+		text-align: right;
+		width: 300px;
+	}
+
+	#Generator-Root
+	{
+		#Output-Controls 
+		{
+			border-style: double;
+			display: flex;
+
+			button
+			{
+				margin: 3px;
+			}
+		}
+
+		#Message
+		{
+			background: black;
+			color: aqua;
+		}
+	}
+
+	#Scope-Root
+	{
+		display: flex;
+		flex-direction: column;
+
+		#ScopeScreen
+		{
+			height: 100%;
+			width: 100%;
+		}
+	}
+}
