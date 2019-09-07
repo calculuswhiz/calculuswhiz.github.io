@@ -74,7 +74,11 @@ let Oscilloscope = (function ()
 		{
 			let my = internal(this);
 			
-			let allowableFFTSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768];
+			let allowableFFTSizes = 
+			[
+				32, 64, 128, 256, 512, 1024, 
+				2048, 4096, 8192, 16384, 32768
+			];
 
 			if (allowableFFTSizes.indexOf(newSize) === -1)
 				throw new Error('FFT size invalid:', newSize);

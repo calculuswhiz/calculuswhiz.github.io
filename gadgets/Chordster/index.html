@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chord Generator</title>
+	<meta charset="utf-8">
+	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
+	<script src="../../javascripts/Oscilloscope.js"></script>
+	<link rel="stylesheet" type="text/css" href="./styles.css">
+	<script>
+		// C0
+		const baseC = 16.35;
+		const defaultOctaveMod = 4;
+		const semitones = 12;
+		// Backwards scale so that up/down adjusts semitones as expected in the dropdown
+		let scale = 
+		[
+		  	'B',     'A#/Bb', 'A',
+		  	'G#/Ab', 'G',     'F#/Gb',
+		  	'F',     'E',     'D#/Eb',
+		  	'D',     'C#/Db', 'C'
+		];
+		// Swap enharmonics
+		scale = scale.map(item => item.split('/').reverse().join('/'));
+
+		// 0 is always root
+		let presets = 
+		{
+			'Major' :        [4, 7, 12, 16, 19, 24, 28, 31, 36],
+			'Minor' :        [3, 7, 12, 16, 18, 24, 28, 30, 36],
+			'Dominant 7th' : [4, 7, 10, 12, 16, 19, 22, 24, 28]
+		};
+		function setPresets()
+		{
+			let key = $('#presets-menu').val();
+			let intervals = presets[key];
+
+			let $rootChannel = $('#channel-ctl-0');
+			let rootNoteIndex = Number($rootChannel.find('.note-selector').val());
+			let rootOctaveModifier = Number($rootChannel.find('.octave-input').val());
+
+			for (let i = 0; i < intervals.length; i++)
+			{
+				let $affectedChannel = $('#channel-ctl-' + (i + 1));
+				let offsetIndex = rootNoteIndex + intervals[i];
+				$affectedChannel
+					.find('.note-selector')
+					.val((offsetIndex % semitones + semitones) % semitones)
+					.trigger('change');
+				$affectedChannel
+					.find('.octave-input')
+					.val(rootOctaveModifier + Math.floor(offsetIndex / semitones))
+					.trigger('change');
+			}
+		}
+
+		const numOscillators = 10;
+		let audioContext, scope;
+
+		let numActive = 0;
+
+		let outputBag = [];
+
+		function adjustAllGains()
+		{
+			outputBag.forEach(function (channelItem)
+			{
+				channelItem.gainNode.gain.setValueAtTime(
+					numActive > 0 ? 
+						1 / (numActive) : 
+						0,
+					0
+				);
+			});
+		}
+
+		function toggleChannelCallbackGen(i)
+		{
+			return function (evt)
+			{
+				let $channel = $('#channel-ctl-' + i);
+				let channelItem = outputBag[i];
+				channelItem.isConnected = !channelItem.isConnected;
+				if (channelItem.isConnected)
+				{
+					numActive++;
+					$channel.find('.channel-switch').removeClass('switch-off').addClass('switch-on');
+					channelItem.gainNode.connect(scope.getNode());
+					adjustAllGains();
+				}
+				else
+				{
+					numActive--;
+					$channel.find('.channel-switch').removeClass('switch-on').addClass('switch-off');
+					channelItem.gainNode.disconnect(scope.getNode());
+					adjustAllGains();
+				}
+			};
+		}
+
+		function setChannelFreqGen(i)
+		{
+			return function (evt)
+			{
+				let $channel = $('#channel-ctl-' + i);
+				let oscillatorNode = outputBag[i].oscillatorNode;
+
+				let noteIndex = Number($channel.find('.note-selector').val());
+				let octaveModifier = Number($channel.find('.octave-input').val());
+				let frequency = baseC * 2 ** (octaveModifier + noteIndex / semitones);
+				oscillatorNode.frequency.value = frequency;
+			};
+		}
+
+		function buildMixer(audioContext)
+		{
+			let $root = $('#channels-root');
+			scope = new Oscilloscope(
+			{
+				audioContext : audioContext, 
+				canvas : $('canvas')[0],
+				fftSize: 2048,
+				beamColor : '#0f0',
+				domain : Oscilloscope.domainType.time
+			});
+			scope.getNode().connect(audioContext.destination);
+
+			for (let i = 0; i < numOscillators; i++)
+			{
+				let oscillatorNode = audioContext.createOscillator();
+				oscillatorNode.type = 'sine';
+				oscillatorNode.frequency.value = baseC * 2 ** defaultOctaveMod;
+				oscillatorNode.start();
+
+				let gainNode = audioContext.createGain();
+				oscillatorNode.connect(gainNode);
+
+				outputBag.push(
+				{
+					oscillatorNode: oscillatorNode,
+					gainNode: gainNode,
+					isConnected : false
+				});
+
+				// To play, connect it to destination
+				// To stap, disconnect it
+
+				let $channel = $('<div>').attr(
+				{
+					id : 'channel-ctl-' + i,
+					class : 'channel-ctl'
+				}).append(
+					$('<div>').addClass('channel-ind').text('Channel: ' + i),
+					$('<div>').append(
+						$('<span>').addClass('label').text('Note: '),
+						$('<select>')
+							.addClass('note-selector')
+							.append(
+								scale.map((noteName, index) => 
+									$('<option>')
+										.attr(
+										{ 
+											value: scale.length - index - 1,
+											selected: index === scale.length - 1
+										})
+										.text(noteName)
+								)
+							)
+							.on('change', setChannelFreqGen(i))
+					),
+					$('<div>').append(
+						$('<span>').addClass('label').text('Octave Modifier: '),
+						$('<input>') 
+							.attr({ type: 'text', class: 'octave-input', value: defaultOctaveMod })
+							.on('change', setChannelFreqGen(i))
+					),
+					$('<div>').append(
+						$('<span>').addClass('label').text('On/off:'),
+						$('<button>')
+							.attr({ id: 'channel-switch-' + i })
+							.addClass('channel-switch switch-off')
+							.on('click', toggleChannelCallbackGen(i))
+					),
+				);
+
+				$root.append($channel);
+			}
+
+			for (let preset in presets)
+			{
+				$('#presets-menu').append(
+					$('<option>').attr({ value: preset }).text(preset)
+				);
+				$('#apply-preset').on('click', setPresets);
+			}
+
+			$('#master-killswitch').on('click', function ()
+			{
+				for (let i = 0; i < numOscillators; i++)
+				{
+					let $channelSwitch = $('#channel-switch-' + i);
+					if ($channelSwitch.hasClass('switch-on'))
+					{
+						$channelSwitch.click();
+					}
+				}
+			});
+		}
+
+		function keyboardHandler(evt)
+		{
+			for (let i = 0; i < numOscillators; i++)
+			{
+				if (evt.ctrlKey && evt.key === i.toString())
+				{
+					$('#channel-switch-' + i).click();
+					break;
+				}
+			}
+		}
+
+		function ready()
+		{
+			audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+			buildMixer(audioContext);
+
+			$(document.body).on('keyup', keyboardHandler);
+
+			$('#activator').remove();
+		}
+	</script>
+</head>
+<body>
+	<button id="activator" onclick="ready()">Activate AudioContext</button>
+	Control up to 10 different pitches!
+	<div id="channels-root">
+	</div>
+	<div id="master-controls">
+		<select id="presets-menu">
+			<option value="">Presets:</option>
+		</select>
+		<button id="apply-preset">Apply</button>
+		<button id="master-killswitch">Shut it off!</button>
+	</div>
+	<canvas id="scope" width='500' height='300'></canvas>
+</body>
+</html>
