@@ -1,6 +1,10 @@
 body
 {
 	font-family: sans-serif;
+	background-color: #2d2d2d;
+	color: #ddd;
+	width: 50%;
+	min-width: 1024px;
 }
 
 #activator
@@ -14,15 +18,32 @@ body
 
 #channels-root
 {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: auto auto auto;
 }
 
 .channel-ctl
 {
-	border: 1px solid black;
-	padding: 3px;
+	border: 1px solid cornflowerblue;
+	padding: 8px;
 }
+	
+	.channel-ctl > div
+	{
+		padding: 10px 0;
+	}
+
+	.note-selector
+	{
+		padding-left: 3px;
+		float: right;
+	}
+
+	.note-selector:focus
+	{
+		background-color: #333;
+		color: cyan;
+	}
 
 	.channel-ind
 	{
@@ -31,9 +52,10 @@ body
 
 	.channel-switch
 	{
+		display: inline-block;
 		width: 50px;
 		height: 25px;
-		float: right;
+		margin-left: 10px;
 	}
 
 	.switch-off
@@ -41,7 +63,27 @@ body
 		background-color: red;
 	}
 
+	.switch-off::before
+	{
+		content: "Off";
+	}
+
 	.switch-on
 	{
 		background-color: #0f0;
+	}
+
+	.switch-on::before
+	{
+		content: "On";
+	}
+
+	.octave-input 
+	{
+		float: right;
+		width: 50px;
+		background-color: black;
+		color: cyan;
+		font-weight: bold;
+		text-align: right;
 	}

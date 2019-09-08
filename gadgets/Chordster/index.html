@@ -25,22 +25,41 @@
 		// 0 is always root
 		let presets = 
 		{
-			'Major' :        [4, 7, 12, 16, 19, 24, 28, 31, 36],
-			'Minor' :        [3, 7, 12, 16, 18, 24, 28, 30, 36],
-			'Dominant 7th' : [4, 7, 10, 12, 16, 19, 22, 24, 28]
+			'Unison' : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			
+			'Maj' : [0, 4, 7, 12, 16, 19, 24, 28, 31, 36],
+			'Maj6': [0, 4, 7, 9, 12, 16, 19, 21, 24, 28],
+			'Dom7' : [0, 4, 7, 10, 12, 16, 19, 22, 24, 28],
+			'Maj7': [0, 4, 7, 11, 12, 16, 19, 23, 24, 28],
+			'Aug' : [0, 4, 8, 12, 16, 20, 24, 28, 32, 36],
+			'Aug7' : [0, 4, 8, 10, 12, 16, 20, 22, 24, 28],
+
+			'Min' : [0, 3, 7, 12, 15, 19, 24, 27, 31, 36],
+			'Min6' : [0, 3, 7, 9, 12, 15, 19, 21, 24, 27],
+			'Min7' : [0, 3, 7, 10, 12, 15, 19, 22, 24, 27],
+			'Min/maj7' : [0, 3, 7, 11, 12, 15, 19, 23, 24, 27],
+			'Dim' : [0, 3, 6, 12, 15, 18, 24, 27, 30, 36],
+			'Dim7' : [0, 3, 6, 9, 12, 15, 18, 21, 24, 27],
+			'1/2 Dim7' : [0, 3, 6, 10, 12, 15, 18, 22, 24, 27]
 		};
 		function setPresets()
 		{
 			let key = $('#presets-menu').val();
+			if (key === '')
+			{
+				alert('Please select a preset first.')
+				return;
+			}
+
 			let intervals = presets[key];
 
-			let $rootChannel = $('#channel-ctl-0');
+			let $rootChannel = $('#master-controls');
 			let rootNoteIndex = Number($rootChannel.find('.note-selector').val());
 			let rootOctaveModifier = Number($rootChannel.find('.octave-input').val());
 
 			for (let i = 0; i < intervals.length; i++)
 			{
-				let $affectedChannel = $('#channel-ctl-' + (i + 1));
+				let $affectedChannel = $('#channel-ctl-' + i);
 				let offsetIndex = rootNoteIndex + intervals[i];
 				$affectedChannel
 					.find('.note-selector')
@@ -118,7 +137,7 @@
 			{
 				audioContext : audioContext, 
 				canvas : $('canvas')[0],
-				fftSize: 2048,
+				fftSize: 4096,
 				beamColor : '#0f0',
 				domain : Oscilloscope.domainType.time
 			});
@@ -142,14 +161,18 @@
 				});
 
 				// To play, connect it to destination
-				// To stap, disconnect it
+				// To stop, disconnect it
 
 				let $channel = $('<div>').attr(
 				{
 					id : 'channel-ctl-' + i,
 					class : 'channel-ctl'
 				}).append(
-					$('<div>').addClass('channel-ind').text('Channel: ' + i),
+					$('<span>').addClass('channel-ind').text('Channel: ' + i),
+					$('<span>')
+						.attr({ id: 'channel-switch-' + i })
+						.addClass('channel-switch switch-off')
+						.on('click', toggleChannelCallbackGen(i)),
 					$('<div>').append(
 						$('<span>').addClass('label').text('Note: '),
 						$('<select>')
@@ -172,26 +195,20 @@
 						$('<input>') 
 							.attr({ type: 'text', class: 'octave-input', value: defaultOctaveMod })
 							.on('change', setChannelFreqGen(i))
-					),
-					$('<div>').append(
-						$('<span>').addClass('label').text('On/off:'),
-						$('<button>')
-							.attr({ id: 'channel-switch-' + i })
-							.addClass('channel-switch switch-off')
-							.on('click', toggleChannelCallbackGen(i))
-					),
+					)
 				);
 
 				$root.append($channel);
 			}
 
+			$('#presets-menu').on('change', setPresets);
 			for (let preset in presets)
 			{
 				$('#presets-menu').append(
 					$('<option>').attr({ value: preset }).text(preset)
 				);
-				$('#apply-preset').on('click', setPresets);
 			}
+			$('#apply-preset').on('click', setPresets);
 
 			$('#master-killswitch').on('click', function ()
 			{
@@ -202,6 +219,50 @@
 					{
 						$channelSwitch.click();
 					}
+				}
+			});
+
+			$('#master-onswitch').on('click', function ()
+			{
+				for (let i = 0; i < numOscillators; i++)
+				{
+					let $channelSwitch = $('#channel-switch-' + i);
+					if ($channelSwitch.hasClass('switch-off'))
+					{
+						$channelSwitch.click();
+					}
+				}
+			});
+
+			$('#single-octave-btn').on('click', function ()
+			{
+				let $rootChannel = $('#master-controls');
+				let rootNoteIndex = Number($rootChannel.find('.note-selector').val());
+				let rootOctaveModifier = Number($rootChannel.find('.octave-input').val());
+
+				for (let i = 0; i < numOscillators; i++)
+				{
+ 					let $channelSwitch = $('#channel-switch-' + i);
+ 					let $channel = $('#channel-ctl-' + i);
+					let noteIndex = Number($channel.find('.note-selector').val());
+					let octaveModifier = Number($channel.find('.octave-input').val());
+
+					let semitoneDifference = (octaveModifier - rootOctaveModifier) * 12 + (noteIndex - rootNoteIndex);
+
+					if (semitoneDifference < 12 && semitoneDifference >= 0)
+					{
+						if ($channelSwitch.hasClass('switch-off'))
+						{
+							$channelSwitch.click();
+						}
+ 					}
+ 					else
+ 					{
+ 						if ($channelSwitch.hasClass('switch-on'))
+						{
+							$channelSwitch.click();
+						}
+ 					}
 				}
 			});
 		}
@@ -232,16 +293,43 @@
 </head>
 <body>
 	<button id="activator" onclick="ready()">Activate AudioContext</button>
-	Control up to 10 different pitches!
+	Control up to 10 different pitches! (You can press ctrl+(0-9) to toggle the channels.)
 	<div id="channels-root">
 	</div>
-	<div id="master-controls">
-		<select id="presets-menu">
-			<option value="">Presets:</option>
-		</select>
-		<button id="apply-preset">Apply</button>
-		<button id="master-killswitch">Shut it off!</button>
+	<div id="master-controls" class="channel-ctl">
+		<div class="channel-ind">Root Note</div>
+		<div>
+			<span class="label">Note: </span>
+			<select class="note-selector" autocomplete="off">
+				<option value="11">B</option>
+				<option value="10">Bb/A#</option>
+				<option value="9">A</option>
+				<option value="8">Ab/G#</option>
+				<option value="7">G</option>
+				<option value="6">Gb/F#</option>
+				<option value="5">F</option>
+				<option value="4">E</option>
+				<option value="3">Eb/D#</option>
+				<option value="2">D</option>
+				<option value="1">Db/C#</option>
+				<option value="0" selected>C</option>
+			</select>
+		</div>
+		<div>
+			<span class="label">Octave Modifier: </span>
+			<input type="text" class="octave-input" value="4">
+		</div>
+		<div>
+			Other Controls:<br />
+			<select id="presets-menu">
+				<option value="" disabled selected>Presets:</option>
+			</select>
+			<button id="apply-preset">Apply</button>
+			<button id="master-killswitch">Shut it off!</button>
+			<button id="master-onswitch">Play All</button>
+			<button id="single-octave-btn">Single Octave</button>
+		</div>
 	</div>
-	<canvas id="scope" width='500' height='300'></canvas>
+	<canvas id="scope" width='800' height='300'></canvas>
 </body>
 </html>
