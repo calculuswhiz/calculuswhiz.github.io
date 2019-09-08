@@ -87,3 +87,8 @@ body
 		font-weight: bold;
 		text-align: right;
 	}
+
+#master-controls
+{
+	width: 50%;
+}
