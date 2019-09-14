@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Trees!</title>
+	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+		let running = false;
+
+		class Vector
+		{
+			constructor(start, length, angle, depth)
+			{
+				this.x0 = start.x;
+				this.y0 = start.y;
+				this.length = length;
+				this.angle = angle;
+
+				// Metadata
+				this.depth = depth;
+			}
+
+			get displacement()
+			{
+				return (
+				{
+					x: this.x0 + this.length * Math.cos(this.angle),
+					y: this.y0 + this.length * Math.sin(this.angle)
+				});
+			}
+		}
+
+		let eventSwitch;
+
+		function go()
+		{
+			if (running)
+			{
+		    	createjs.Ticker.off('tick', eventSwitch);
+			}
+
+    		$('#status-info').text('Running');
+			running = true;
+
+			let color      = $('#color-input').val();
+			let branches   = Number($('#branches-input').val());
+			let splitAngle = 2 * Math.PI / (branches + 1);
+			let maxDepth   = Number($('#depth-input').val());
+			let isDepthFirst = $('#df-ckbox').is(':checked');
+
+		    let stage = new createjs.Stage('main-canvas');
+		    stage.clear();
+		    
+		    eventSwitch = createjs.Ticker.on('tick', handleTick);
+		    createjs.Ticker.framerate = 60;
+
+		    let initialLengthFactor = 1 / 2;
+		    let vectorQueue = 
+		    [
+			    new Vector(
+			    	{
+						x: $('#main-canvas').attr('width') / 2,
+						y: 0
+					}, 
+					$('#main-canvas').attr('height') * initialLengthFactor,
+					Math.PI / 2,
+					0
+				)
+			];
+
+			function drawStick(stick)
+			{
+				if (stick.depth >= maxDepth || stick.length < 1)
+				{
+					// Do not draw
+					return false;
+				}
+
+				let stickLine = new createjs.Shape();
+				let displacement = stick.displacement;
+				stickLine.graphics
+					.s(color)
+					.mt(stick.x0, stick.y0)
+					.lt(displacement.x, displacement.y)
+					.cp();
+
+				stage.addChild(stickLine);
+
+				return true;
+			}
+
+		    function handleTick()
+		    {
+		    	if (vectorQueue.length === 0)
+		    	{
+		    		running = false;
+		    		createjs.Ticker.off('tick', eventSwitch);
+		    		$('#status-info').text('Done!');
+		    		return;
+		    	}
+
+		    	let currentStick = vectorQueue.pop();
+
+		    	if (!drawStick(currentStick))
+		    	{
+		    		// Did not draw
+		    		return;
+		    	}
+
+		    	let baseAngle = currentStick.angle - Math.PI;
+		    	let basePos = currentStick.displacement;
+		    	for (let i = 0; i < branches; i++)
+		    	{
+		    		vectorQueue[isDepthFirst ? 'push' : 'unshift'](new Vector(
+			    		{
+			    			x: basePos.x,
+			    			y: basePos.y
+			    		},
+			    		currentStick.length / branches,
+			    		baseAngle + (i + 1) * splitAngle,
+			    		currentStick.depth + 1
+	    			));
+		    	}
+
+			    //Update stage will render next frame
+			    stage.update();
+		    }
+
+		}
+
+		/*
+			For your memory: 
+				shift - remove,
+				unshift - add
+		*/
+	</script>
+</head>
+<body>
+	<canvas id="main-canvas" width="1024" height="1024"></canvas>
+	<div id="control-area">
+		Color: <input type="text" id="color-input" value="green" />
+		Branches: <input type="text" id="branches-input" value="2" />
+		Max Depth: <input type="text" id="depth-input" value="8" />
+		Depth-first: <input type="checkbox" id="df-ckbox" />
+		<button id="start-btn" onclick="go()">Go!</button>
+		<span id="status-info"></span>
+	</div>
+</body>
+</html>

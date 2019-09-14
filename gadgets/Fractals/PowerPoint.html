@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>PowerPoint Simulator</title>
+	<link rel="stylesheet" type="text/css" href="./pptStyle.css">
+	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+		let mode = 'edit';
+
+		$(document.body).ready(function ()
+		{
+			// Drawing stuff:
+			let $masterSlideCanvas = $('#master-slide');
+			let ctx = $masterSlideCanvas[0].getContext("2d");
+			ctx.lineWidth = 2;
+
+			let isPainting = false;
+			let origin;
+			let destination;
+			
+			function strokeLineSegment(from, to)
+			{
+				ctx.strokeStyle = $('#color-input').val();
+				ctx.beginPath();
+				ctx.moveTo(from.x, from.y);
+				ctx.lineTo(to.x, to.y);
+				ctx.closePath();
+				ctx.stroke();
+			}
+
+			$masterSlideCanvas.on('mousedown', function (e)
+			{
+				let mouseX = e.pageX - this.offsetLeft;
+  				let mouseY = e.pageY - this.offsetTop;
+
+  				isPainting = true;
+  				origin = { x: mouseX, y: mouseY };
+			}).on('mousemove', function (e)
+			{
+				if (!isPainting)
+					return;
+
+				let mouseX = e.pageX - this.offsetLeft;
+  				let mouseY = e.pageY - this.offsetTop;
+
+  				destination = { x: mouseX, y: mouseY };
+  				strokeLineSegment(origin, destination);
+
+  				origin = destination;
+			}).on('mouseup', function (e)
+			{
+				isPainting = false;
+			}).on('mouseleave', function (e)
+			{
+				isPainting = false;
+			});
+
+			// Stamping stuff
+			let clones = [];
+			function cloneMasterCanvas(id)
+			{
+				let $canvas = $('<canvas>').attr(
+				{ 
+					width: $masterSlideCanvas.attr('width'), 
+					height: $masterSlideCanvas.attr('height'),
+					id: 'master-clone-' + id
+				});
+
+				$canvas[0].getContext('2d').drawImage($masterSlideCanvas[0], 0, 0);
+
+				clones.push(
+				{
+					$canvas : $canvas,
+					scale : 1,
+					rotate : 0,
+					x : 0,
+					y : 0
+				});
+
+				return $canvas;
+			}
+
+			$('#snap-btn').on('click', function (evt)
+			{
+				// Done editing, start the fun
+				$(this).remove();
+				$('#color-input').remove();
+				$masterSlideCanvas.css({ display: 'none' });
+
+				// Clone the canvas
+				let $rootCanvas = $('<canvas>').attr(
+				{ 
+					width: $masterSlideCanvas.attr('width'), 
+					height: $masterSlideCanvas.attr('height'),
+					id: 'root-canvas'
+				});
+
+				ctx = $rootCanvas[0].getContext('2d');
+				ctx.drawImage($masterSlideCanvas[0], 0, 0);
+
+				$('body').append(
+					$rootCanvas,
+					$('<button>').attr(
+					{
+						id: 'embed-slide'
+					}).text('Embed Slide')
+					.on('click', function ()
+					{
+						$('body').append(cloneMasterCanvas(clones.length - 1));
+					})
+				);
+			});
+		})
+	</script>
+</head>
+<body>
+	<canvas id="master-slide" width="512" height="512"></canvas>
+	<div id="control-area">
+		<input type="text" id="color-input" placeholder="Color" value="orange" />
+		<button id="snap-btn">Done Drawing?</button>
+	</div>
+</body>
+</html>
