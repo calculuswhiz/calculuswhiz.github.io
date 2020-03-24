@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Fret-o-phone</title>
+	<link rel="stylesheet" type="text/css" href="./styles.css">
+	<!-- Extern -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!-- User -->
+	<script src="./TheoryData.js"></script>
+	<script src="./Fretophone.js"></script>
+	<script src="./Instruments.js"></script>
+	<!-- Inline -->
+	<script type="text/javascript">
+		function drawFretboard(instrument)
+		{
+			let $fretboard = $('#fretboard');
+
+			$('#fretboard').empty();
+
+			// Draw nut
+			let $stringSegContainer = $('<div>')
+				.attr({id: 'string-segment-container-' + 0})
+				.addClass('string-segment-container')
+				.appendTo($fretboard)
+				.text('00');
+			for (let i = 0, len = instrument.courses.length; i < len; i++)
+			{
+				$stringSegContainer.append($('<div>').attr({id: 'string-segment-0-' + i}).addClass('fret-0'));
+			}
+
+			// So we cover each fret
+			let fretLimit = Math.max(
+				...instrument.courses.map(course => 
+					course.frets.length + course.fretOffset))
+				 + 1;
+
+			// Draw segments
+			for (let fretOffset = 1; fretOffset < fretLimit; fretOffset++)
+			{
+				// Each segment is bound by this container
+				$stringSegContainer = $('<div>')
+					.attr({id: 'string-segment-container-' + fretOffset})
+					.addClass('string-segment-container')
+					.appendTo($fretboard)
+					.text(fretOffset < 10 ? '0' + fretOffset : fretOffset);
+
+				// Fill each container
+				for (let courseIdx = 0, len = instrument.courses.length; courseIdx < len; courseIdx++)
+				{
+					let course = instrument.courses[courseIdx];
+					// String does not exist here
+					let noString = course.fretOffset > fretOffset;
+					// Fret does not exist here (subtract for relative interval)
+					let noFret = !course.frets.includes(fretOffset - course.fretOffset);
+
+					// id: fret-course
+					$stringSegContainer.append(
+						$('<div>')
+							.attr({id: `string-segment-${(fretOffset - course.fretOffset).toString().replace('-', 'n')}-${courseIdx}`})
+							.addClass(`string-segment ${noString ? 'no-string' : ''} ${noFret ? 'no-fret' : ''}`)
+					);
+				};
+			}
+		}
+
+		function drawChordNotes(instrument, root, chord)
+		{
+			drawFretboard(instrument);
+
+			$('#status').text(`Now drawing: ${root} ${chord.chordName} for ${instrument.name}`);
+
+			$('.note-marker').removeClass('note-marker');
+
+			let $fretboard = $('#fretboard');
+
+			let courseFrets = instrument.getCourseFrets(root, chord);
+
+			// Add extra childElements to the fretboard
+			for (let courseIdx = 0, len = courseFrets.length; courseIdx < len; courseIdx++)
+			{
+				let fretList = courseFrets[courseIdx];
+
+				for (let fretIdx = 0, len = fretList.length; fretIdx < len; fretIdx++)
+				{
+					let fretNum = fretList[fretIdx];
+					$(`#string-segment-${fretNum}-${courseIdx}`).addClass('note-marker');
+				}
+			}
+		}
+
+		function redraw()
+		{
+			let instrument = Instruments.findInstrument($('#instrument-select').val());
+			let rootNote = $('#root-select').val().replace(/s-.*/, '#');
+			// let rootIndex = Scale.findIndex(enharmonic => enharmonic.includes(rootNote));
+			let chord = ChordIntervals[$('#chord-select').val()];
+
+			drawChordNotes(instrument, rootNote, chord);
+		}
+
+		$(document).ready(function ()
+		{
+			// Create Controls:
+			Instruments.forEach(function (instrument)
+			{
+				$('#instrument-select').append(
+					$('<option>').attr({value: instrument.name}).text(instrument.name)
+				);
+			});
+
+			Scale.forEach(function (note)
+			{
+				$('#root-select').append(
+					$('<option>').attr({value: note.join('').replace('#','s-')}).text(note.join('/'))
+				);
+			});
+
+			for (let chord in ChordIntervals)
+			{
+				$('#chord-select').append(
+					$('<option>').attr({value: chord}).text(chord)
+				);
+			}
+
+			// Add event listeners
+			$('#controls > select').change(function (evt)
+			{
+				redraw();
+			});
+
+			redraw();
+		});
+	</script>
+</head>
+<body>
+	<div id="diagram">
+		<div id="fretboard"></div>
+	</div>
+	<div id="status"></div>
+	<div id="controls">
+		<label for="instrument-select">
+			Select your instrument:
+		</label>
+		<select id="instrument-select"></select> 
+		<br />
+		<label for="root-select">
+			Select your root:
+		</label>
+		<select id="root-select"></select> 
+		<br />
+		<label for="chord-select">
+			Select your chord:
+		</label>
+		<select id="chord-select"></select>
+	</div>
+</body>
+</html>
