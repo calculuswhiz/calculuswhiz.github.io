@@ -1,0 +1,115 @@
+/* 
+Start-FSWatch -Target .\styles.less -Action {lessc.cmd .\styles.less > styles.css} -StayAlive -Timeout 30
+*/
+
+@segment-width: 22px;
+@segment-height: 40px;
+@string-width: 2px;
+@fret-width: 3px;
+
+@note-marker-color: lime;
+
+body
+{	
+	font-family: sans-serif;
+}
+
+#diagram
+{
+	font-family: monospace;
+	display: inline-block;
+	transform-origin: 0 0;
+}
+
+#fretboard
+{
+	padding: @fret-width;
+}
+
+.fret-0
+{
+	background-color: black;
+	width: @segment-width;
+	height: 2 * @fret-width;
+	position: relative;
+	left: @segment-width / 2;
+	display: inline-block;
+
+	&.note-marker
+	{
+		background-color: @note-marker-color;
+	}
+
+	&:hover
+	{
+ 		background-color: red;
+	}
+}
+
+.string-segment-container
+{
+	display: block;
+	line-height: 0;
+}
+
+.string-segment
+{
+	border-right: @string-width solid black;
+	border-bottom: @fret-width solid black;
+	width: @segment-width / 2 - @string-width;
+	height: @segment-height;
+	display: inline-block;
+	margin-left: @segment-width / 2;
+
+	&.note-marker
+	{
+		border-right-color: @note-marker-color;
+		border-bottom-color: @note-marker-color;
+		&:after
+		{
+			border-right-color: @note-marker-color;
+			border-bottom-color: @note-marker-color;
+		}
+	}
+
+	&:after
+	{
+		content: "";
+		position: relative;
+		width: @segment-width / 2;
+		display: block;
+		left: calc(100% + @string-width);
+		height: 100%;
+		border-bottom: @fret-width solid black;
+	}
+
+	&:hover
+	{
+		background-color: lightgray;
+		border-right-color: red;
+		border-bottom-color: red;
+
+		&:after
+		{
+			background-color: lightgray;
+			border-right-color: red;
+			border-bottom-color: red;
+		}
+	}
+
+	&.no-string
+	{
+		opacity: 0;
+	}
+
+	&.no-fret
+	{
+		border-bottom: none;
+
+		&:hover
+		{
+			border-bottom: none;
+		}
+	}
+
+}
