@@ -1,5 +1,5 @@
 /* 
-Start-FSWatch -Target .\styles.less -Action {lessc.cmd .\styles.less > styles.css} -StayAlive -Timeout 30
+Start-FSWatch -Target .\styles.less -Action {lessc.ps1 .\styles.less > styles.css} -StayAlive -Timeout 30
 */
 
 @segment-width: 22px;
@@ -7,18 +7,66 @@ Start-FSWatch -Target .\styles.less -Action {lessc.cmd .\styles.less > styles.cs
 @string-width: 2px;
 @fret-width: 3px;
 
-@note-marker-color: lime;
+@fret-color: white;
+
+@st-colors: #a00, #a50, #aa0, 
+	#5a0, #0a0, #0a5, 
+	#0aa, #05a, #00a,
+	#50a, #a0a, #555;
 
 body
-{	
+{
 	font-family: sans-serif;
+
+	#title
+	{
+		margin: 10px 0;
+	}
+
+	#subtitle
+	{
+		margin: 0 0 15px 0;
+		border-bottom: 1px dotted black;
+	}
+
+	#main-app
+	{
+		display: flex;
+
+		#left-side
+		{
+			border-right: 1px dotted black;
+			padding-right: 5px;
+		}
+
+		#right-side
+		{
+			padding-left: 5px;
+		}
+	}
 }
 
 #diagram
 {
+	@tasto-color: #555;
 	font-family: monospace;
+	color: contrast(@tasto-color);
+	font-weight: bold;
 	display: inline-block;
 	transform-origin: 0 0;
+	padding: 0 10px;
+	background-color: @tasto-color;
+}
+
+#legend
+{
+	font-size: larger;
+	.legend-item
+	{
+		display: inline-block;
+		width: 50px;
+		padding: 3px;
+	}
 }
 
 #fretboard
@@ -28,21 +76,21 @@ body
 
 .fret-0
 {
-	background-color: black;
 	width: @segment-width;
-	height: 2 * @fret-width;
+	border-color: @fret-color;
+	border-style: solid;
+	border-width: 5px 0;
 	position: relative;
 	left: @segment-width / 2;
 	display: inline-block;
-
-	&.note-marker
-	{
-		background-color: @note-marker-color;
-	}
+	color: black;
+	text-align: center;
+	cursor: pointer;
 
 	&:hover
 	{
- 		background-color: red;
+ 		border-color: black;
+ 		color: white;
 	}
 }
 
@@ -54,23 +102,12 @@ body
 
 .string-segment
 {
-	border-right: @string-width solid black;
-	border-bottom: @fret-width solid black;
+	border-right: @string-width solid @fret-color;
+	border-bottom: @fret-width solid @fret-color;
 	width: @segment-width / 2 - @string-width;
 	height: @segment-height;
 	display: inline-block;
 	margin-left: @segment-width / 2;
-
-	&.note-marker
-	{
-		border-right-color: @note-marker-color;
-		border-bottom-color: @note-marker-color;
-		&:after
-		{
-			border-right-color: @note-marker-color;
-			border-bottom-color: @note-marker-color;
-		}
-	}
 
 	&:after
 	{
@@ -80,20 +117,20 @@ body
 		display: block;
 		left: calc(100% + @string-width);
 		height: 100%;
-		border-bottom: @fret-width solid black;
+		border-bottom: @fret-width solid @fret-color;
 	}
 
 	&:hover
 	{
-		background-color: lightgray;
-		border-right-color: red;
-		border-bottom-color: red;
+		background-color: darkgray;
+		border-right-color: black;
+		border-bottom-color: black;
 
 		&:after
 		{
-			background-color: lightgray;
-			border-right-color: red;
-			border-bottom-color: red;
+			background-color: darkgray;
+			border-right-color: black;
+			border-bottom-color: black;
 		}
 	}
 
@@ -112,4 +149,59 @@ body
 		}
 	}
 
+}
+
+// Attempt to maximize contrast between 12 colors...
+@hsl-angle-max: 360;
+@num-colors: 12;
+@stretch: 1.2;
+@jump-point: 4;
+@lightness: 50%;
+.getHue(@note-index)
+{
+	@slope: if(@note-index <= @jump-point, 21, 28);
+	@offset: if(@note-index <= @jump-point, 0, 10);
+	@hue: @slope * @note-index + @offset;
+}
+
+.getSaturation(@note-index)
+{
+	@saturation: pow((@note-index - @num-colors / 2) / @num-colors, 2) + 0.75;
+}
+
+// Both used in nut and legend
+&.note-marker
+{
+	each(range(@num-colors),
+	{
+		@zero-index: @value - 1;
+		&-@{zero-index}
+		{
+			@base-color: hsl(.getHue(@zero-index)[@hue], .getSaturation(@zero-index)[@saturation], @lightness);
+			background-color: @base-color;
+			color: contrast(@base-color);
+		}
+	});
+}
+
+.note-marker-fret
+{
+	each(range(@num-colors),
+	{
+		@zero-index: @value - 1;
+		&-@{zero-index}
+		{
+			@base-color: hsl(.getHue(@zero-index)[@hue], .getSaturation(@zero-index)[@saturation], @lightness);
+
+			border-top-color: @base-color;
+			border-right-color: @base-color;
+			border-bottom-color: @base-color;
+			&:after
+			{
+				border-top-color: @base-color;
+				border-right-color: @base-color;
+				border-bottom-color: @base-color;
+			}
+		}
+	});
 }

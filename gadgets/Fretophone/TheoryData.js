@@ -9,7 +9,20 @@ const Scale =
     ['F'], ['F#', 'Gb'], 
     ['G'], ['G#', 'Ab']
 ];
-const ConcertPitch = 440;
+
+// Add reverse indexing
+let ScaleReverse = {};
+for (let i = 0, len = Scale.length; i < len; i++)
+{
+    let note = Scale[i];
+    for (let j = 0, len = note.length; j < len; j++)
+    {
+        let enharmonic = note[j];
+        ScaleReverse[enharmonic] = i;
+    }
+}
+
+let ConcertPitch = 440;
 
 const Intervals = 
 {
@@ -35,6 +48,8 @@ const Intervals =
         return Intervals[mod + int];
     }
 };
+
+const ReverseIntervals = ['Root', 'm2', 'M2', 'm3', 'M3', 'P4', 'TT', 'P5', 'm6', 'M6', 'm7', 'M7'];
 
 // Define chords by semitones. Root is implicit.
 let ChordIntervals = 
@@ -66,7 +81,7 @@ ChordIntervals['Dom11'] = ChordIntervals.Dom7
     .concat(Intervals.convertExtended('M9'), Intervals.convertExtended('P11'));
 // Omit P11
 ChordIntervals['Dom13'] = ChordIntervals.Dom7.concat(Intervals.convertExtended('M9'), Intervals.convertExtended('P13'));
-
+// Add chordName property
 for (let chordName in ChordIntervals)
 {
     ChordIntervals[chordName].chordName = chordName;

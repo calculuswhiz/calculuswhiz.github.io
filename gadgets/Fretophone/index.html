@@ -5,7 +5,7 @@
 	<title>Fret-o-phone</title>
 	<link rel="stylesheet" type="text/css" href="./styles.css">
 	<!-- Extern -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
 	<!-- User -->
 	<script src="./TheoryData.js"></script>
 	<script src="./Fretophone.js"></script>
@@ -26,7 +26,44 @@
 				.text('00');
 			for (let i = 0, len = instrument.courses.length; i < len; i++)
 			{
-				$stringSegContainer.append($('<div>').attr({id: 'string-segment-0-' + i}).addClass('fret-0'));
+				let course = instrument.courses[i];
+				let startPitch = course.startPitch;
+
+				$stringSegContainer.append(
+					$('<div>')
+						.attr(
+						{
+							id: 'string-segment-0-' + i,
+							title: 'Click to retune'
+						})
+						.addClass('fret-0')
+						.text(startPitch)
+						// Capture i
+						.click((i => function (evt)
+						{
+							if (!instrument.name.includes('retuned'))
+							{
+								instrument.name += ' (retuned)';
+							}
+
+							// Retuning
+							let retuneNote = prompt(`Input new note or +/- number of steps to retune string ${i + 1} (${startPitch}).`);
+							if (!isNaN(Number(retuneNote)))
+							{
+								course.tuneSteps(Number(retuneNote));
+							}
+							else if (ScaleReverse[retuneNote] != null)
+							{
+								course.startPitch = retuneNote;
+							}
+							else
+							{
+								return;
+							}
+
+							redraw(true);
+						})(i))
+				);
 			}
 
 			// So we cover each fret
@@ -54,10 +91,18 @@
 					// Fret does not exist here (subtract for relative interval)
 					let noFret = !course.frets.includes(fretOffset - course.fretOffset);
 
+					let title = !(noFret || noString) ? 
+						Scale[(ScaleReverse[course.startPitch] + fretOffset) % 12].join('/') : 
+						'-';
+
 					// id: fret-course
 					$stringSegContainer.append(
 						$('<div>')
-							.attr({id: `string-segment-${(fretOffset - course.fretOffset).toString().replace('-', 'n')}-${courseIdx}`})
+							.attr(
+							{
+								id: `string-segment-${(fretOffset - course.fretOffset).toString().replace('-', 'n')}-${courseIdx}`,
+								title: title
+							})
 							.addClass(`string-segment ${noString ? 'no-string' : ''} ${noFret ? 'no-fret' : ''}`)
 					);
 				};
@@ -68,7 +113,10 @@
 		{
 			drawFretboard(instrument);
 
-			$('#status').text(`Now drawing: ${root} ${chord.chordName} for ${instrument.name}`);
+			$('#status').html(`Now drawing:<br/>
+				<b>${root} ${chord.chordName}</b> for <br />
+				<b>${instrument.name}</b>`
+			);
 
 			$('.note-marker').removeClass('note-marker');
 
@@ -83,18 +131,32 @@
 
 				for (let fretIdx = 0, len = fretList.length; fretIdx < len; fretIdx++)
 				{
-					let fretNum = fretList[fretIdx];
-					$(`#string-segment-${fretNum}-${courseIdx}`).addClass('note-marker');
+					let fret = fretList[fretIdx];
+
+					let $segment = $(`#string-segment-${fret.openSTDiff}-${courseIdx}`);
+					$segment
+						.attr(
+						{
+							title: `${ReverseIntervals[fret.chordSTDiff]} (${$segment.attr('title')})`
+						})
+						.addClass('note-marker-fret-' + fret.chordSTDiff);
 				}
 			}
 		}
 
-		function redraw()
+		let lastInstrumentDrawn;
+		let lastChordDrawn;
+		function redraw(useLastInstrument)
 		{
-			let instrument = Instruments.findInstrument($('#instrument-select').val());
+			let instrument = useLastInstrument ?
+				lastInstrumentDrawn : 
+				Instruments.findInstrument($('#instrument-select').val()).copy();
 			let rootNote = $('#root-select').val().replace(/s-.*/, '#');
 			// let rootIndex = Scale.findIndex(enharmonic => enharmonic.includes(rootNote));
 			let chord = ChordIntervals[$('#chord-select').val()];
+
+			lastInstrumentDrawn = instrument;
+			lastChordDrawn = chord;
 
 			drawChordNotes(instrument, rootNote, chord);
 		}
@@ -105,14 +167,18 @@
 			Instruments.forEach(function (instrument)
 			{
 				$('#instrument-select').append(
-					$('<option>').attr({value: instrument.name}).text(instrument.name)
+					$('<option>')
+						.attr({value: instrument.name})
+						.text(`${instrument.name} (${instrument.courses.length} courses)`)
 				);
 			});
 
 			Scale.forEach(function (note)
 			{
 				$('#root-select').append(
-					$('<option>').attr({value: note.join('').replace('#','s-')}).text(note.join('/'))
+					$('<option>')
+						.attr({value: note.join('').replace('#','s-')})
+						.text(note.join('/'))
 				);
 			});
 
@@ -124,35 +190,72 @@
 			}
 
 			// Add event listeners
-			$('#controls > select').change(function (evt)
+			$('#instrument-select').change(function (evt)
 			{
-				redraw();
+				redraw(false);
 			});
+
+			$('#root-select, #chord-select').change(function (evt)
+			{
+				redraw(true);
+			});
+
+			// Draw legend
+			for (let i = 0, len = Scale.length; i < len; i++)
+			{
+				$('#legend').append(
+					$('<div>')
+						.addClass('note-marker-' + i)
+						.addClass('legend-item')
+						.text(`${i} (${ReverseIntervals[i]})`)
+				);
+				if ((i + 1) % 3 === 0)
+				{
+					$('#legend').append($('<br>'));
+				}
+			}
 
 			redraw();
 		});
 	</script>
 </head>
 <body>
-	<div id="diagram">
-		<div id="fretboard"></div>
-	</div>
-	<div id="status"></div>
-	<div id="controls">
-		<label for="instrument-select">
-			Select your instrument:
-		</label>
-		<select id="instrument-select"></select> 
-		<br />
-		<label for="root-select">
-			Select your root:
-		</label>
-		<select id="root-select"></select> 
-		<br />
-		<label for="chord-select">
-			Select your chord:
-		</label>
-		<select id="chord-select"></select>
+	<h2 id="title">Fret-o-Phone</h2>
+	<h4 id="subtitle">A chord assistant for fretted musical instruments</h4>
+	<div id="main-app">
+		<div id="left-side">
+			<div id="status"></div>
+			<div id="diagram">
+				<div id="fretboard"></div>
+			</div>
+		</div>
+		<div id="right-side">
+			<div id="legend">
+				<h3>Legend: (# semitones above root)</h3>
+			</div>
+			<div id="controls">
+				<h2>Controls:</h2>
+				<label for="instrument-select">
+					Select your instrument:
+				</label>
+				<select id="instrument-select"></select> 
+				<br />
+				<label for="root-select">
+					Select your root:
+				</label>
+				<select id="root-select"></select> 
+				<br />
+				<label for="chord-select">
+					Select your chord:
+				</label>
+				<select id="chord-select"></select>
+				<!-- <div id="course-control">
+					<button id="add-course-btn">Add Course</button>
+					<button id="remove-course-btn">Remove Course</button>
+					(Changes made to rightmost course)
+				</div> -->
+			</div>
+		</div>
 	</div>
 </body>
 </html>

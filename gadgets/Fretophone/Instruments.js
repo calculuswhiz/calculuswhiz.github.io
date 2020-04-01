@@ -34,8 +34,40 @@ let Instruments = [
 		]
 	}),
 	new Fretophone({
+		name: 'Rennaissance Lute (G)',
+		courses : [
+			new Course({startPitch: 'G'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true}),
+			new Course({startPitch: 'A'}, {isChromatic : true}),
+			new Course({startPitch: 'F'}, {isChromatic : true}),
+			new Course({startPitch: 'C'}, {isChromatic : true}),
+			new Course({startPitch: 'G'}, {isChromatic : true}),
+			new Course({startPitch: 'F'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true})
+		]
+	}),
+	new Fretophone({
 		name: 'Standard Mandolin',
 		courses : [
+			new Course({startPitch: 'G'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true}),
+			new Course({startPitch: 'A'}, {isChromatic : true}),
+			new Course({startPitch: 'E'}, {isChromatic : true})
+		]
+	}),
+	new Fretophone({
+		name: 'Mandola/M.Cello',
+		courses : [
+			new Course({startPitch: 'C'}, {isChromatic : true}),
+			new Course({startPitch: 'G'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true}),
+			new Course({startPitch: 'A'}, {isChromatic : true})
+		]
+	}),
+	new Fretophone({
+		name: 'Liuto Cantabile',
+		courses : [
+			new Course({startPitch: 'C'}, {isChromatic : true}),
 			new Course({startPitch: 'G'}, {isChromatic : true}),
 			new Course({startPitch: 'D'}, {isChromatic : true}),
 			new Course({startPitch: 'A'}, {isChromatic : true}),

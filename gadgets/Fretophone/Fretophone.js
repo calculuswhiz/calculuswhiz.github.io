@@ -8,6 +8,15 @@ class Fretophone
         this.courses = props.courses || [];
     }
 
+    copy()
+    {
+        return new Fretophone(
+        {
+            name : this.name,
+            courses : this.courses.map(course => course.copy())
+        });
+    }
+
     getCourseFrets(root, chord) 
     {
         let stringFrets = [];
@@ -28,11 +37,27 @@ class Course
         this.startPitch = props.startPitch == null ? 'A' : props.startPitch;
         // Use the nut as the 0 and count up
         this.fretOffset = props.fretOffset == null ? 0 : props.fretOffset;
-        // An array of the semitones used (relative)
+        // An array of the semitones used (relative) contains numbers
         this.frets = props.frets == null ? [] : props.frets;
 
-        if (options.isChromatic)
+        if ((options || {}).isChromatic)
             this.populateChromaticFretboard(this.numFrets);
+    }
+
+    copy()
+    {
+        return new Course(
+        {
+            startPitch : this.startPitch,
+            fretOffset : this.fretOffset,
+            frets : [...this.frets]
+        });
+    }
+
+    tuneSteps(vector)
+    {
+        let startIndex = Scale.findIndex(enharmonic => enharmonic.includes(this.startPitch));
+        this.startPitch = Scale[((startIndex + vector) % 12 + 12) % 12][0];
     }
 
     populateChromaticFretboard(limit)
@@ -56,7 +81,9 @@ class Course
         let rootIndex = Scale.findIndex(enharmonic => enharmonic.includes(root));
         
         if (rootIndex === -1)
+        {
             throw new Exception('Bad note: ' + root);
+        }
 
         chordNotes.add(rootIndex);
         chord.forEach(function (semitones)
@@ -65,14 +92,31 @@ class Course
         });
 
         let startPitchIndex = Scale.findIndex(enharmonic => enharmonic.includes(this.startPitch));
+        
+        // Start with nut
+        if (chordNotes.has(startPitchIndex))
+        {
+            fretsInChord.push(
+            {
+                openSTDiff: 0,
+                chordSTDiff: Math.abs(rootIndex - startPitchIndex)
+            });
+        }
+
         // Add fret if its pitch is in the chord
         for (let i = 0, len = this.frets.length; i < len; i++)
         {
-            let note = (startPitchIndex + i) % 12;
-            let isInChord = chordNotes.has(note);
+            let fret = this.frets[i];
+            let noteIndex = (startPitchIndex + fret) % 12;
+            let isInChord = chordNotes.has(noteIndex);
+
             if (isInChord)
             {
-                fretsInChord.push(i);
+                fretsInChord.push(
+                {
+                    openSTDiff: fret,
+                    chordSTDiff: (noteIndex - rootIndex + 12) % 12
+                });
             }
         }
 
