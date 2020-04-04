@@ -85,7 +85,6 @@ class Course
             throw new Exception('Bad note: ' + root);
         }
 
-        chordNotes.add(rootIndex);
         chord.forEach(function (semitones)
         {
             chordNotes.add((rootIndex + semitones) % 12);
