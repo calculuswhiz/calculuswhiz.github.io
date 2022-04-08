@@ -1,0 +1,43 @@
+body {
+    font-family: sans-serif;
+}
+
+#tension-boxes {
+    margin: 5px;
+    border: 1px solid black;
+    max-width: 50%;
+    background-color: beige;
+}
+
+.string-fields {
+    margin: 3px;
+    display: flex;
+    border: 1px solid gray;
+}
+
+    .string-fields > .input-fields {
+        display: table;
+        width: 100%;
+    }
+
+        .string-fields > .input-fields > div {
+            display: table-row;
+        }
+
+            .string-fields > .input-fields > div > * {
+                display: table-cell;
+            }
+
+            .string-fields > .input-fields > div > input,
+            .string-fields > .input-fields > div > select {
+                float: right;
+            }
+
+.tension-output-field {
+    padding: 0 5px;
+}
+
+.warning {
+    background-color: red;
+    content: 'Please check input parameters!';
+}

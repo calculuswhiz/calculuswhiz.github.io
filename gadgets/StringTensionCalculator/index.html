@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>String Tension Calculator</title>
+	<link href="styles.css" rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+	<script src="./tensions.js" type="module"></script>
+	<script src="./app.js" type="module"></script>
+</head>
+<body>
+	<h1>String Tension Calculator</h1>
+	<div id="app-root">
+		<div>
+			Default scale length: <input type="number" id="default-scale" />
+		</div>
+		<div>
+			Total Tension: <span id="total-tension">...</span>
+		</div>
+		<input type="button" id="add-string" value="Add String" />
+		Presets: 
+		<select id="preset-menu">
+			<option value="">Make a selection</option>
+			<option value="mandolin">Mandolin</option>
+		</select>
+		<div id="tension-boxes"></div>
+	</div>
+</body>
+</html>
