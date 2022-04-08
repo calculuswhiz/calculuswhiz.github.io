@@ -49,9 +49,9 @@ const Intervals =
     }
 };
 
-const ReverseIntervals = ['Root', 'm2', 'M2', 'm3', 'M3', 'P4', 'TT', 'P5', 'm6', 'M6', 'm7', 'M7'];
+const ReverseIntervals = ['Root/Oct', 'm2/9', 'M2/9', 'm3/10', 'M3/10', 'P4/11', 'TT', 'P5/12', 'm6/13', 'M6/13', 'm7/14', 'M7/14'];
 
-// Define chords by semitones. Root is implicit.
+// Define chords by semitones.
 let ChordIntervals = 
 {
     Root : [],
@@ -81,8 +81,12 @@ ChordIntervals['Dom11'] = ChordIntervals.Dom7
     .concat(Intervals.convertExtended('M9'), Intervals.convertExtended('P11'));
 // Omit P11
 ChordIntervals['Dom13'] = ChordIntervals.Dom7.concat(Intervals.convertExtended('M9'), Intervals.convertExtended('P13'));
-// Add chordName property
+
+// Transformation items
 for (let chordName in ChordIntervals)
 {
+    // Add roots
+    ChordIntervals[chordName] = [Intervals.P1].concat(ChordIntervals[chordName]);
+    // Add chordName property and roots
     ChordIntervals[chordName].chordName = chordName;
 }

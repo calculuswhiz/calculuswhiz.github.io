@@ -47,21 +47,24 @@
 							}
 
 							// Retuning
-							let retuneNote = prompt(`Input new note or +/- number of steps to retune string ${i + 1} (${startPitch}).`);
+							let retuneNote = prompt(`Input new note or +/- number of steps to retune string ${i + 1} (${startPitch}).`) || 
+								'';
+							retuneNote = retuneNote.toUpperCase();
+
 							if (!isNaN(Number(retuneNote)))
 							{
 								course.tuneSteps(Number(retuneNote));
 							}
 							else if (ScaleReverse[retuneNote] != null)
 							{
-								course.startPitch = retuneNote;
+								course.startPitch = retuneNote.toUpperCase();
 							}
 							else
 							{
 								return;
 							}
 
-							redraw(true);
+							redrawAll({useExistingInstrument: true});
 						})(i))
 				);
 			}
@@ -111,12 +114,7 @@
 
 		function drawChordNotes(instrument, root, chord)
 		{
-			drawFretboard(instrument);
-
-			$('#status').html(`Now drawing:<br/>
-				<b>${root} ${chord.chordName}</b> for <br />
-				<b>${instrument.name}</b>`
-			);
+			updateStatus(`Drew: <${root} ${chord.chordName}> for <${instrument.name}>`);
 
 			$('.note-marker').removeClass('note-marker');
 
@@ -144,21 +142,60 @@
 			}
 		}
 
-		let lastInstrumentDrawn;
-		let lastChordDrawn;
-		function redraw(useLastInstrument)
+		function decorateIntervalControl(chord)
 		{
-			let instrument = useLastInstrument ?
+			for (let i = 0, len = ReverseIntervals.length; i < len; i++)
+			{
+				if (chord.has(i))
+				{
+					$(`#interval-ctl-btn-${i}`).addClass('added-interval');
+				}
+				else
+				{
+					$(`#interval-ctl-btn-${i}`).removeClass('added-interval');
+				}
+			}
+		}
+
+		function updateStatus(message)
+		{
+			$('#status').prepend(document.createTextNode(message + '\n'));
+		}
+
+		let lastInstrumentDrawn;
+		let lastRootDrawn;
+		let lastChordDrawn;
+		function redrawAll(props)
+		{
+			props = props || {};
+			let useExistingInstrument = props.useExistingInstrument;
+			let useExistingChord = props.useExistingChord;
+
+			let instrument = useExistingInstrument ?
 				lastInstrumentDrawn : 
 				Instruments.findInstrument($('#instrument-select').val()).copy();
 			let rootNote = $('#root-select').val().replace(/s-.*/, '#');
-			// let rootIndex = Scale.findIndex(enharmonic => enharmonic.includes(rootNote));
-			let chord = ChordIntervals[$('#chord-select').val()];
+			let chord = useExistingChord ? 
+				lastChordDrawn : 
+				ChordIntervals[$('#chord-select').val()];
 
-			lastInstrumentDrawn = instrument;
-			lastChordDrawn = chord;
+			if (!useExistingInstrument)
+			{
+				// Update Instrument
+				lastInstrumentDrawn = instrument;
+			}
 
+			if (!useExistingChord)
+			{
+				// Update Chord
+				lastRootDrawn = rootNote;
+				lastChordDrawn = new Set(chord);
+				lastChordDrawn.chordName = chord.chordName;
+			}
+
+			drawFretboard(instrument);
 			drawChordNotes(instrument, rootNote, chord);
+			decorateIntervalControl(new Set(chord));
 		}
 
 		$(document).ready(function ()
@@ -189,15 +226,49 @@
 				);
 			}
 
+			for (let i = 0, len = ReverseIntervals.length; i < len; i++)
+			{
+				let interval = ReverseIntervals[i];
+
+				$('#interval-control').append(
+					$('<button>')
+						.text(interval)
+						.attr(
+						{
+							id: `interval-ctl-btn-${i}`
+						})
+						.addClass('interval-ctl-btn')
+						.click(((i) => function (evt)
+						{
+							if (!lastChordDrawn.has(i))
+							{
+								lastChordDrawn.add(i);
+								updateStatus('Added: ' + ReverseIntervals[i]);
+							}
+							else
+							{
+								lastChordDrawn.delete(i);
+								updateStatus('Removed: ' + ReverseIntervals[i]);
+							}
+
+							redrawAll(
+							{
+								useExistingInstrument: true,
+								useExistingChord: true
+							});
+						})(i))
+				);
+			}
+
 			// Add event listeners
 			$('#instrument-select').change(function (evt)
 			{
-				redraw(false);
+				redrawAll();
 			});
 
 			$('#root-select, #chord-select').change(function (evt)
 			{
-				redraw(true);
+				redrawAll({useExistingInstrument: true});
 			});
 
 			// Draw legend
@@ -215,7 +286,7 @@
 				}
 			}
 
-			redraw();
+			redrawAll();
 		});
 	</script>
 </head>
@@ -224,7 +295,6 @@
 	<h4 id="subtitle">A chord assistant for fretted musical instruments</h4>
 	<div id="main-app">
 		<div id="left-side">
-			<div id="status"></div>
 			<div id="diagram">
 				<div id="fretboard"></div>
 			</div>
@@ -249,6 +319,10 @@
 					Select your chord:
 				</label>
 				<select id="chord-select"></select>
+				<br />
+				Add/remove: 
+				<div id="interval-control"></div>
+				<pre id="status"></pre>
 				<!-- <div id="course-control">
 					<button id="add-course-btn">Add Course</button>
 					<button id="remove-course-btn">Remove Course</button>
