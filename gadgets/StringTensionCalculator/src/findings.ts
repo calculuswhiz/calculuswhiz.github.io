@@ -24,7 +24,7 @@ $(async () => {
 		tablesHeaderId: true
 	});
 	converter.setFlavor('github');
-	const markdown: string = await $.get('/src/findings.md');
+	const markdown: string = await $.get('../src/findings.md');
 	const html = converter.makeHtml(markdown);
 
 	$('#root').html(html);
