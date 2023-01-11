@@ -16808,7 +16808,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(() => __awaiter(void 0, void 0, vo
         tablesHeaderId: true
     });
     converter.setFlavor('github');
-    const markdown = yield jquery__WEBPACK_IMPORTED_MODULE_0___default().get('../src/findings.md');
+    const markdown = yield jquery__WEBPACK_IMPORTED_MODULE_0___default().get('./src/findings.md');
     const html = converter.makeHtml(markdown);
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#root').html(html);
     const materialEntries = Object.values(_materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_3__);
