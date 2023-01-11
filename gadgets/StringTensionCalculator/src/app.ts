@@ -54,20 +54,15 @@ function makePitchField(pitch: string) {
 
 function makeMaterialField(material: string) {
     const materials: {[key: string]: Tensions.MaterialRegressionEntry} = materialData;
-    const materialKeys = Object.keys(materials);
+    const materialEntries = Object.entries(materials);
+    // const materialKeys = Object.keys(materials);
     return $('<div>').addClass('material-field').append(
-        $('<label>')
-            .prop('title',
-                Object.entries(materials).map(mtl =>
-                    `${mtl[0]}: ${mtl[1].description}`
-                ).join('\n')
-            )
-            .text('Material'),
+        $('<label>').text('Material'),
         $('<select>').append(
-            materialKeys.map(mtl =>
+            materialEntries.map(mtl =>
                 $('<option>')
-                    .prop({ value: mtl, selected: mtl === material })
-                    .text(mtl)
+                    .prop({ value: mtl[0], selected: mtl[0] === material })
+                    .text(`${mtl[0]}: ${mtl[1].description}`)
             )
         )
     );

@@ -26,10 +26,14 @@ body {
 
             > * {
                 display: table-cell;
+            }
 
-                > input, > select {
-                    float: right;
-                }
+            > input, > select {
+                float: right;
+            }
+
+            > select {
+                width: 200px;
             }
 
         }
