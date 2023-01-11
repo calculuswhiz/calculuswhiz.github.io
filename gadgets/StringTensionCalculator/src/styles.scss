@@ -5,7 +5,10 @@ body {
 #tension-boxes {
     margin: 5px;
     border: 1px solid black;
-    max-width: 50%;
+    min-width: 540px;
+    width: calc(100% - 10px);
+    max-width: 600px;
+    // max-width: 50%;
     background-color: beige;
 }
 
@@ -13,25 +16,26 @@ body {
     margin: 3px;
     display: flex;
     border: 1px solid gray;
-}
 
-    .string-fields > .input-fields {
+    > .input-fields {
         display: table;
         width: 100%;
-    }
 
-        .string-fields > .input-fields > div {
+        > div {
             display: table-row;
-        }
 
-            .string-fields > .input-fields > div > * {
+            > * {
                 display: table-cell;
+
+                > input, > select {
+                    float: right;
+                }
             }
 
-            .string-fields > .input-fields > div > input,
-            .string-fields > .input-fields > div > select {
-                float: right;
-            }
+        }
+    }
+}
+
 
 .tension-output-field {
     padding: 0 5px;
@@ -40,4 +44,22 @@ body {
 .warning {
     background-color: red;
     content: 'Please check input parameters!';
+}
+
+table {
+    border: 1px solid black;
+
+    td {
+        padding: 3px;
+        border: 1px solid black;
+    }
+
+    thead {
+        font-weight: bold;
+    }
+}
+
+article
+{
+    width: 8.5in;
 }

@@ -1,6 +1,11 @@
-import * as Tensions from './tensions.js';
+import $ from 'jquery';
 
-var counter = 0;
+import * as Tensions from './tensions';
+
+import materialData from './materialQuadraticParams.json';
+import './styles.scss';
+
+let counter = 0;
 
 function addString(stat: StringStat = null) {
     const $listArea = $('#tension-boxes');
@@ -19,20 +24,20 @@ interface StringStat {
 
 const presets = {
     mandolin: [
-        { pitch: 'E5', gauge: 11, material: 'Steel', scaleLength: 14 },
-        { pitch: 'E5', gauge: 11, material: 'Steel', scaleLength: 14 },
-        { pitch: 'A4', gauge: 16, material: 'Steel', scaleLength: 14 },
-        { pitch: 'A4', gauge: 16, material: 'Steel', scaleLength: 14 },
-        { pitch: 'D4', gauge: 22, material: 'PhosphorBronze', scaleLength: 14 },
-        { pitch: 'D4', gauge: 22, material: 'PhosphorBronze', scaleLength: 14 },
-        { pitch: 'G3', gauge: 35, material: 'PhosphorBronze', scaleLength: 14 },
-        { pitch: 'G3', gauge: 35, material: 'PhosphorBronze', scaleLength: 14 },
+        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 14 },
+        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 14 },
+        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 14 },
+        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 14 },
+        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 14 },
+        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 14 },
+        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 14 },
+        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 14 },
     ] as StringStat[]
 };
 
 function loadPreset(preset: string) {
     $('#tension-boxes').empty();
-    const stats = presets[preset] as StringStat[];
+    const stats = presets[preset] as StringStat[] ?? [];
     for (const stat of stats) {
         addString(stat);
     }
@@ -40,7 +45,8 @@ function loadPreset(preset: string) {
 }
 
 function makeStringInput(id: string, stat: StringStat) {
-    const materials = ['Steel', 'FlatwoundSteel', 'PhosphorBronze'];
+    const materials: {[key: string]: Tensions.MaterialRegressionEntry} = materialData;
+    const materialKeys = Object.keys(materials);
     const $el = $('<div>')
         .prop('id', id)
         .addClass('string-fields')
@@ -52,9 +58,15 @@ function makeStringInput(id: string, stat: StringStat) {
                         $('<input>').prop({ type: 'text' }).val(stat?.pitch ?? '')
                     ),
                 $('<div>').addClass('material-field').append(
-                    $('<label>').text('Material'),
+                    $('<label>')
+                        .prop('title',
+                            Object.entries(materials).map(mtl =>
+                                `${mtl[0]}: ${mtl[1].description}`
+                            ).join('\n')
+                        )
+                        .text('Material'),
                     $('<select>').append(
-                        materials.map(mtl =>
+                        materialKeys.map(mtl =>
                             $('<option>')
                                 .prop({ value: mtl, selected: mtl === stat?.material })
                                 .text(mtl)
@@ -100,7 +112,7 @@ function updateTension($el: JQuery) {
     const tension = Tensions.calcTension(pitch, material, gauge, length);
     const pressure = Tensions.calcPressure(gauge, tension);
     console.log(pressure);
-    const shouldWarn = material === 'Steel'
+    const shouldWarn = material === 'PL'
         && pressure > Tensions.StainlessYieldStrength;
 
     $el.find('.tension-output-field input').val(tension);

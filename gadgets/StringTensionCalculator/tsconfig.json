@@ -1,10 +1,14 @@
 {
     "compilerOptions": {
         "module": "ES2015",
-        "target": "ES2015"
+        "target": "ES2015",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "esModuleInterop": true
     },
     "compileOnSave": true,
-  "files": [
-    "app.ts"
-  ]
+    "files": [
+        "./src/app.ts",
+        "./src/findings.ts"
+    ]
 }

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>D'Addario String Data Analysis</title>
+	<script src="./dist/findings.bundle.js"></script>
+</head>
+<body>
+	<article>
+		<header>
+			<h1>
+				<strong>D'Addario String Data Analysis</strong><br />
+				Or: How to find the strings you want for that custom instrument
+			</h1>
+		</header>
+		<h1>Introduction</h1>
+		<p>
+			When I started delving into lutherie for unusual lute-type instruments, I ran into a major issue: "How do I even get strings for this?" For example, my custom-built octave mandolin has a low-C. I wondered about things like:
+		</p>
+		<ul>
+			<li>Is it OK to take it from a mandocello set and use it?</li>
+			<li>How much tension is going through it?</li>
+			<li>Will the neck sustain the tension?</li>
+			<li>Should I try to find a 070? 072? 074?</li>
+			<li>Phosphor bronze or Nickel-plated steel?</li>
+		</ul>
+		<p>
+			This article will hopefully explain some of that for others with the same issue.
+		</p>
+		<h1>String Tension Physics</h1>
+		<p>
+			I was fortunately able to find some key information and solid empirical data from this <a href="https://www.daddario.com/globalassets/pdfs/accessories/tension_chart_13934.pdf">pdf</a> that D'Addario had on their website.
+		</p>
+		<h2>String Tension Formulas</h2>
+		<p>
+			String Tension is the force that acts along the central axis of the string. In practical terms, the more tension that is applied, the higher the pitch and the harder it will be to deflect. According to the brochure, there are three factors contributing to string tension:
+		</p>
+		<ol>
+			<li>Unit Weight - How much the string weighs per unit length</li>
+			<li>Scale Length - The vibrating length of the string, from a nut/zero-fret to the bridge.</li>
+			<li>Desired pitch/frequency - The note that the string will be tuned to.</li>
+		</ol>
+		<h3>Tension Formula</h3>
+		<p>For non-metric, the formula is</p>
+		<p>T = (UW * (2 * L * F)<sup>2</sup>) / 386.4</p>
+		<p>Where:</p>
+		<ul>
+			<li>T is Tension in pounds-force</li>
+			<li>UW is Unit Weight in lb/in</li>
+			<li>L is Scale Length in inches</li>
+			<li>F is Frequency in Hz (inverse seconds)</li>
+			<li>Not explained in the pdf: 386.4 is acceleration due to gravity in in/sec<sup>2</sup></li>
+		</ul>
+		<p>For the more scientifically geared folks, in metric, it's:</p>
+		<p>T = (UW * (2 * L * F)<sup>2</sup>) / 9.806e6</p>
+		<p>Where:</p>
+		<ul>
+			<li>T is Tension in kgf</li>
+			<li>UW is Unit Weight in kgf/10cm</li>
+			<li>L is Scale Length in cm</li>
+			<li>F is Frequency in Hz (inverse seconds)</li>
+			<li>9.806e6 is acceleration due to gravity in m/sec<sup>2</sup> times 1000000 to compensate for the conversion of cm/10cm to standard meters.</li>
+		</ul>
+		<h2>Analyzing the Tables</h2>
+		<p>
+			Taking some samples from the tables, we can tabulate gauge w.r.t. unit weight. For some reason, the pdfs don't list gauge, so we had to look these up or infer them from the item code. (Sometimes they're listed as xxyyy, where xx is the material and yyy is the gauge.) I did this in a Google Sheet:
+		</p>
+		<div id="regression-pictures"><img src="./src/RegressionCurves.png" /></div>
+		<p>
+			To get the regression curves, I ended up playing with a few of the trend-line regression types, but really, quadratic (x<sup>2</sup>) makes the most sense here. This is because the string can be modeled as a cylinder, cylinder volumes vary as radius squared, and mass is tied to volume. The R-squared values are all reasonably close to 1 (&gt; 0.990), so I feel the result is satisfactory.
+		</p>
+		<h3>Regression formulas <noscript>(JS is required)</noscript></h3>
+		<table id="regressions">
+			<thead>
+				<tr>
+					<td>Material Type</td>
+					<td>Quadratic Regression Parameters</td>
+					<td>R-squared</td>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</article>
+</body>
+</html>
