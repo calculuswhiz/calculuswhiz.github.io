@@ -11709,14 +11709,14 @@ function addString(stat = null) {
 ;
 const presets = {
     mandolin: [
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 14 },
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 14 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 14 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 14 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 14 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 14 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 14 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 14 },
+        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.75 },
+        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.75 },
+        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.75 },
+        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.75 },
+        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.75 },
+        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.75 },
+        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.75 },
+        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.75 },
     ]
 };
 function loadPreset(preset) {
@@ -11728,25 +11728,41 @@ function loadPreset(preset) {
     }
     updateTotal();
 }
-function makeStringInput(id, stat) {
-    var _a, _b, _c;
+function makePitchField(pitch) {
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('pitch-field')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Pitch (E.g. C3)'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'text' }).val(pitch !== null && pitch !== void 0 ? pitch : ''));
+}
+function makeMaterialField(material) {
     const materials = _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_2__;
     const materialKeys = Object.keys(materials);
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('material-field').append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>')
+        .prop('title', Object.entries(materials).map(mtl => `${mtl[0]}: ${mtl[1].description}`).join('\n'))
+        .text('Material'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<select>').append(materialKeys.map(mtl => jquery__WEBPACK_IMPORTED_MODULE_0___default()('<option>')
+        .prop({ value: mtl, selected: mtl === material })
+        .text(mtl))));
+}
+function makeGaugeField(gauge) {
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('gauge-field')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Gauge (E.g. 050)'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'text' }).val(gauge !== null && gauge !== void 0 ? gauge : ''));
+}
+function makeLengthField(scaleLength) {
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('length-field')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Scale Length (in.)'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({
+        type: 'text',
+        value: scaleLength !== null && scaleLength !== void 0 ? scaleLength : jquery__WEBPACK_IMPORTED_MODULE_0___default()('input#default-scale').val()
+    }));
+}
+function makeStringInput(id, stat) {
     const $el = jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>')
         .prop('id', id)
         .addClass('string-fields')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('input-fields').append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('pitch-field')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Pitch'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'text' }).val((_a = stat === null || stat === void 0 ? void 0 : stat.pitch) !== null && _a !== void 0 ? _a : '')), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('material-field').append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>')
-        .prop('title', Object.entries(materials).map(mtl => `${mtl[0]}: ${mtl[1].description}`).join('\n'))
-        .text('Material'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<select>').append(materialKeys.map(mtl => jquery__WEBPACK_IMPORTED_MODULE_0___default()('<option>')
-        .prop({ value: mtl, selected: mtl === (stat === null || stat === void 0 ? void 0 : stat.material) })
-        .text(mtl)))), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('gauge-field')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Gauge'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'text' }).val((_b = stat === null || stat === void 0 ? void 0 : stat.gauge) !== null && _b !== void 0 ? _b : '')), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('length-field')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Scale Length'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({
-        type: 'text',
-        value: (_c = stat === null || stat === void 0 ? void 0 : stat.scaleLength) !== null && _c !== void 0 ? _c : jquery__WEBPACK_IMPORTED_MODULE_0___default()('input#default-scale').val()
-    }))), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('tension-output-field').text('Tension')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ readonly: true })), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'button', value: 'Remove' }).click(_ => $el.remove()));
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('input-fields').append(makePitchField(stat === null || stat === void 0 ? void 0 : stat.pitch), makeMaterialField(stat === null || stat === void 0 ? void 0 : stat.material), makeGaugeField(stat === null || stat === void 0 ? void 0 : stat.gauge), makeLengthField(stat === null || stat === void 0 ? void 0 : stat.scaleLength)), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('tension-output-field').text('Tension')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ readonly: true })), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>')
+        .prop({ type: 'button', value: 'Remove' })
+        .on('click', _ => {
+        $el.remove();
+        updateTotal();
+    }));
     $el.find('.input-fields').find('input,select').change(_ => {
         updateTension($el);
         updateTotal();
@@ -11757,9 +11773,10 @@ function updateTension($el) {
     const id = $el.prop('id');
     const pitch = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .pitch-field input`).val();
     const material = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .material-field select`).val();
-    const gauge = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .gauge-field input`).val();
-    const length = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .length-field input`).val();
-    console.log(pitch, material, gauge, length);
+    const gauge = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .gauge-field input`).val();
+    const lengthFromField = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .length-field input`).val();
+    const length = (lengthFromField > 0) ? lengthFromField : +jquery__WEBPACK_IMPORTED_MODULE_0___default()('#default-scale').val();
+    console.log(pitch, material, gauge, lengthFromField);
     const tension = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcTension(pitch, material, gauge, length);
     const pressure = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcPressure(gauge, tension);
     console.log(pressure);
@@ -11777,9 +11794,10 @@ function updateTotal() {
         .reduce((a, b) => a + b);
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#total-tension').text(total);
 }
-jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(() => {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#add-string').click(_ => addString());
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').change(evt => loadPreset(evt.target.value));
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(() => {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').val('');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#add-string').on('click', _ => addString());
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').on('change', evt => loadPreset(evt.target.value));
 });
 
 })();

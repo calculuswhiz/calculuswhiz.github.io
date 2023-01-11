@@ -5,7 +5,7 @@ import { MaterialRegressionEntry } from './tensions';
 import './styles.scss';
 import materialData from './materialQuadraticParams.json';
 
-$(function () {
+$(() => {
 	function valueToTableData(value: MaterialRegressionEntry) {
 		const {a, b, c, rSq, description} = value;
 
