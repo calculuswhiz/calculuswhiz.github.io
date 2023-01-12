@@ -34,6 +34,11 @@ function loadPreset(preset: string) {
     updateTotal();
 }
 
+function closePitchDialog(){
+    $('#pitch-dialog').remove();
+    $('#app-root').css('opacity', '');
+}
+
 function openPitchDialog($requestingElement: JQuery) {
     $('#app-root').css('opacity', '50%');
     const pitches = Object.keys(frequencyData);
@@ -42,9 +47,9 @@ function openPitchDialog($requestingElement: JQuery) {
     let confirmedOctave: number = null;
 
     function completeDialog() {
-        $requestingElement.find('input').val(confirmedPitch + confirmedOctave);
-        $('#pitch-dialog').remove();
-        $('#app-root').css('opacity', '');
+        $requestingElement.find('input').val(confirmedPitch + confirmedOctave)
+            .trigger('change');
+        closePitchDialog();
     }
 
     const requestingPos = $requestingElement.position();
@@ -105,7 +110,13 @@ function makePitchField(pitch: string) {
         .append(
             $('<label>').text('Pitch (E.g. C3)'),
             $('<input>').prop({ type: 'text' }).val(pitch ?? '')
-                .on('click', () => {openPitchDialog($component)})
+                .on('click', () => {
+                    if ($('#pitch-dialog').length === 0)
+                        openPitchDialog($component);
+                    else {
+                        closePitchDialog();
+                    }
+                })
         );
 
     return $component;
@@ -158,7 +169,8 @@ function makeCourseField(courses: number) {
         );
 }
 
-const audioCtx = new AudioContext();
+const audioCtx: AudioContext
+    = new (AudioContext ?? (window as any).webkitAudioContext)();
 const oscillator = audioCtx.createOscillator();
 oscillator.connect(audioCtx.destination);
 let oscillatorIsGoing = false;

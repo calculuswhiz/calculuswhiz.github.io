@@ -11730,15 +11730,19 @@ function loadPreset(preset) {
         addString(stat);
     updateTotal();
 }
+function closePitchDialog() {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pitch-dialog').remove();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#app-root').css('opacity', '');
+}
 function openPitchDialog($requestingElement) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#app-root').css('opacity', '50%');
     const pitches = Object.keys(_frequencyBases_json__WEBPACK_IMPORTED_MODULE_2__);
     let confirmedPitch = null;
     let confirmedOctave = null;
     function completeDialog() {
-        $requestingElement.find('input').val(confirmedPitch + confirmedOctave);
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pitch-dialog').remove();
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#app-root').css('opacity', '');
+        $requestingElement.find('input').val(confirmedPitch + confirmedOctave)
+            .trigger('change');
+        closePitchDialog();
     }
     const requestingPos = $requestingElement.position();
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').prop('id', 'pitch-dialog')
@@ -11777,7 +11781,13 @@ function openPitchDialog($requestingElement) {
 function makePitchField(pitch) {
     const $component = jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('pitch-field')
         .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Pitch (E.g. C3)'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'text' }).val(pitch !== null && pitch !== void 0 ? pitch : '')
-        .on('click', () => { openPitchDialog($component); }));
+        .on('click', () => {
+        if (jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pitch-dialog').length === 0)
+            openPitchDialog($component);
+        else {
+            closePitchDialog();
+        }
+    }));
     return $component;
 }
 function makeMaterialField(material) {
@@ -11806,7 +11816,7 @@ function makeCourseField(courses) {
         min: 1
     }));
 }
-const audioCtx = new AudioContext();
+const audioCtx = new (AudioContext !== null && AudioContext !== void 0 ? AudioContext : window.webkitAudioContext)();
 const oscillator = audioCtx.createOscillator();
 oscillator.connect(audioCtx.destination);
 let oscillatorIsGoing = false;
