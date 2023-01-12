@@ -21,7 +21,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\n\n#tension-boxes {\n  margin: 5px;\n  border: 1px solid black;\n  min-width: 540px;\n  width: calc(100% - 10px);\n  max-width: 600px;\n  background-color: beige;\n}\n\n.string-fields {\n  margin: 3px;\n  display: flex;\n  border: 1px solid gray;\n}\n.string-fields > .input-fields {\n  display: table;\n  width: 100%;\n}\n.string-fields > .input-fields > div {\n  display: table-row;\n}\n.string-fields > .input-fields > div > * {\n  display: table-cell;\n}\n.string-fields > .input-fields > div > input, .string-fields > .input-fields > div > select {\n  float: right;\n}\n.string-fields > .input-fields > div > select {\n  width: 200px;\n}\n\n.tension-output-field {\n  padding: 0 5px;\n}\n\n.warning {\n  background-color: red;\n  content: \"Please check input parameters!\";\n}\n\ntable {\n  border: 1px solid black;\n}\ntable td {\n  padding: 3px;\n  border: 1px solid black;\n}\ntable thead {\n  font-weight: bold;\n}\n\narticle {\n  max-width: 8.5in;\n  width: 100%;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACI,uBAAA;AACJ;;AAEA;EACI,WAAA;EACA,uBAAA;EACA,gBAAA;EACA,wBAAA;EACA,gBAAA;EAEA,uBAAA;AAAJ;;AAGA;EACI,WAAA;EACA,aAAA;EACA,sBAAA;AAAJ;AAEI;EACI,cAAA;EACA,WAAA;AAAR;AAEQ;EACI,kBAAA;AAAZ;AAEY;EACI,mBAAA;AAAhB;AAGY;EACI,YAAA;AADhB;AAIY;EACI,YAAA;AAFhB;;AAUA;EACI,cAAA;AAPJ;;AAUA;EACI,qBAAA;EACA,yCAAA;AAPJ;;AAUA;EACI,uBAAA;AAPJ;AASI;EACI,YAAA;EACA,uBAAA;AAPR;AAUI;EACI,iBAAA;AARR;;AAYA;EAEI,gBAAA;EACA,WAAA;AAVJ","sourcesContent":["body {\r\n    font-family: sans-serif;\r\n}\r\n\r\n#tension-boxes {\r\n    margin: 5px;\r\n    border: 1px solid black;\r\n    min-width: 540px;\r\n    width: calc(100% - 10px);\r\n    max-width: 600px;\r\n    // max-width: 50%;\r\n    background-color: beige;\r\n}\r\n\r\n.string-fields {\r\n    margin: 3px;\r\n    display: flex;\r\n    border: 1px solid gray;\r\n\r\n    > .input-fields {\r\n        display: table;\r\n        width: 100%;\r\n\r\n        > div {\r\n            display: table-row;\r\n\r\n            > * {\r\n                display: table-cell;\r\n            }\r\n\r\n            > input, > select {\r\n                float: right;\r\n            }\r\n\r\n            > select {\r\n                width: 200px;\r\n            }\r\n\r\n        }\r\n    }\r\n}\r\n\r\n\r\n.tension-output-field {\r\n    padding: 0 5px;\r\n}\r\n\r\n.warning {\r\n    background-color: red;\r\n    content: 'Please check input parameters!';\r\n}\r\n\r\ntable {\r\n    border: 1px solid black;\r\n\r\n    td {\r\n        padding: 3px;\r\n        border: 1px solid black;\r\n    }\r\n\r\n    thead {\r\n        font-weight: bold;\r\n    }\r\n}\r\n\r\narticle\r\n{\r\n    max-width: 8.5in;\r\n    width: 100%;\r\n}\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\n\n#pitch-dialog {\n  position: absolute;\n  width: 300px;\n  height: 150px;\n  display: flex;\n  border: 1px solid black;\n  background-color: white;\n}\n#pitch-dialog #note-buttons, #pitch-dialog #octave-buttons {\n  width: 50%;\n  padding: 5px;\n}\n#pitch-dialog #note-buttons .note-button, #pitch-dialog #octave-buttons .note-button {\n  width: 30px;\n}\n#pitch-dialog #note-buttons .octave-button, #pitch-dialog #octave-buttons .octave-button {\n  width: 50%;\n}\n#pitch-dialog #note-buttons .selected-note, #pitch-dialog #note-buttons .selected-octave, #pitch-dialog #octave-buttons .selected-note, #pitch-dialog #octave-buttons .selected-octave {\n  color: red;\n  font-weight: bold;\n}\n\n#tension-boxes {\n  margin: 5px;\n  border: 1px solid black;\n  min-width: 540px;\n  width: calc(100% - 10px);\n  max-width: 600px;\n  background-color: beige;\n}\n\n.string-fields {\n  margin: 3px;\n  display: flex;\n  border: 1px solid gray;\n}\n.string-fields > .input-fields {\n  display: table;\n  width: 100%;\n}\n.string-fields > .input-fields > div {\n  display: table-row;\n}\n.string-fields > .input-fields > div > * {\n  display: table-cell;\n}\n.string-fields > .input-fields > div > input, .string-fields > .input-fields > div > select {\n  float: right;\n}\n.string-fields > .input-fields > div > select {\n  width: 200px;\n}\n.string-fields .string-buttons input[type=button] {\n  width: 100%;\n}\n\n.tension-output-field {\n  padding: 0 5px;\n}\n\n.warning {\n  background-color: red;\n  content: \"Please check input parameters!\";\n}\n\ntable {\n  border: 1px solid black;\n}\ntable td {\n  padding: 3px;\n  border: 1px solid black;\n}\ntable thead {\n  font-weight: bold;\n}\n\narticle {\n  max-width: 8.5in;\n  width: 100%;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACI,uBAAA;AACJ;;AAEA;EACI,kBAAA;EACA,YAAA;EACA,aAAA;EACA,aAAA;EACA,uBAAA;EACA,uBAAA;AACJ;AACI;EACI,UAAA;EACA,YAAA;AACR;AACQ;EACI,WAAA;AACZ;AAEQ;EACI,UAAA;AAAZ;AAGQ;EACI,UAAA;EACA,iBAAA;AADZ;;AAMA;EACI,WAAA;EACA,uBAAA;EACA,gBAAA;EACA,wBAAA;EACA,gBAAA;EAEA,uBAAA;AAJJ;;AAOA;EACI,WAAA;EACA,aAAA;EACA,sBAAA;AAJJ;AAMI;EACI,cAAA;EACA,WAAA;AAJR;AAMQ;EACI,kBAAA;AAJZ;AAMY;EACI,mBAAA;AAJhB;AAOY;EACI,YAAA;AALhB;AAQY;EACI,YAAA;AANhB;AAYQ;EACI,WAAA;AAVZ;;AAgBA;EACI,cAAA;AAbJ;;AAgBA;EACI,qBAAA;EACA,yCAAA;AAbJ;;AAgBA;EACI,uBAAA;AAbJ;AAeI;EACI,YAAA;EACA,uBAAA;AAbR;AAgBI;EACI,iBAAA;AAdR;;AAkBA;EAEI,gBAAA;EACA,WAAA;AAhBJ","sourcesContent":["body {\r\n    font-family: sans-serif;\r\n}\r\n\r\n#pitch-dialog {\r\n    position: absolute;\r\n    width: 300px;\r\n    height: 150px;\r\n    display: flex;\r\n    border: 1px solid black;\r\n    background-color: white;\r\n\r\n    #note-buttons, #octave-buttons {\r\n        width: 50%;\r\n        padding: 5px;\r\n\r\n        .note-button {\r\n            width: 30px;\r\n        }\r\n\r\n        .octave-button {\r\n            width: 50%;\r\n        }\r\n\r\n        .selected-note, .selected-octave {\r\n            color: red;\r\n            font-weight: bold;\r\n        }\r\n    }\r\n}\r\n\r\n#tension-boxes {\r\n    margin: 5px;\r\n    border: 1px solid black;\r\n    min-width: 540px;\r\n    width: calc(100% - 10px);\r\n    max-width: 600px;\r\n    // max-width: 50%;\r\n    background-color: beige;\r\n}\r\n\r\n.string-fields {\r\n    margin: 3px;\r\n    display: flex;\r\n    border: 1px solid gray;\r\n\r\n    > .input-fields {\r\n        display: table;\r\n        width: 100%;\r\n\r\n        > div {\r\n            display: table-row;\r\n\r\n            > * {\r\n                display: table-cell;\r\n            }\r\n\r\n            > input, > select {\r\n                float: right;\r\n            }\r\n\r\n            > select {\r\n                width: 200px;\r\n            }\r\n        }\r\n    }\r\n\r\n    .string-buttons {\r\n        input[type=\"button\"] {\r\n            width: 100%;\r\n        }\r\n    }\r\n}\r\n\r\n\r\n.tension-output-field {\r\n    padding: 0 5px;\r\n}\r\n\r\n.warning {\r\n    background-color: red;\r\n    content: 'Please check input parameters!';\r\n}\r\n\r\ntable {\r\n    border: 1px solid black;\r\n\r\n    td {\r\n        padding: 3px;\r\n        border: 1px solid black;\r\n    }\r\n\r\n    thead {\r\n        font-weight: bold;\r\n    }\r\n}\r\n\r\narticle\r\n{\r\n    max-width: 8.5in;\r\n    width: 100%;\r\n}\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11531,7 +11531,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "StainlessYieldStrength": () => (/* binding */ StainlessYieldStrength),
 /* harmony export */   "calcPressure": () => (/* binding */ calcPressure),
-/* harmony export */   "calcTension": () => (/* binding */ calcTension)
+/* harmony export */   "calcTension": () => (/* binding */ calcTension),
+/* harmony export */   "pitchToFreq": () => (/* binding */ pitchToFreq)
 /* harmony export */ });
 /* harmony import */ var _frequencyBases_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frequencyBases.json */ "./src/frequencyBases.json");
 /* harmony import */ var _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./materialQuadraticParams.json */ "./src/materialQuadraticParams.json");
@@ -11546,8 +11547,8 @@ const g = 9.80621;
  * @param gauge Gauge given in 1000ths of an inch
  * */
 function estimateUnitMass(material, gauge) {
-    const { a, b, c } = _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_1__[material];
-    return a * Math.pow(gauge, 2) + b * gauge + c;
+    const { a, b } = _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_1__[material];
+    return a * Math.pow(gauge, 2) + b * gauge;
 }
 /**
  * Turns Pitch notation into a frequency
@@ -11581,7 +11582,6 @@ function calcPressure(gauge, tension) {
     return tension * g / Math.pow((Math.PI * radius), 2) / 1e6;
 }
 const StainlessYieldStrength = 520;
-
 
 
 /***/ }),
@@ -11692,8 +11692,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _tensions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tensions */ "./src/tensions.ts");
-/* harmony import */ var _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./materialQuadraticParams.json */ "./src/materialQuadraticParams.json");
-/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+/* harmony import */ var _frequencyBases_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frequencyBases.json */ "./src/frequencyBases.json");
+/* harmony import */ var _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./materialQuadraticParams.json */ "./src/materialQuadraticParams.json");
+/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+
 
 
 
@@ -11709,14 +11711,10 @@ function addString(stat = null) {
 ;
 const presets = {
     mandolin: [
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.75 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.75 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.75 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.75 },
+        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.88, courseCount: 2 },
+        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.88, courseCount: 2 },
+        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.88, courseCount: 2 },
+        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.88, courseCount: 2 }
     ]
 };
 function loadPreset(preset) {
@@ -11728,14 +11726,59 @@ function loadPreset(preset) {
     }
     updateTotal();
 }
+function openPitchDialog($requestingElement) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#app-root').css('opacity', '50%');
+    const pitches = Object.keys(_frequencyBases_json__WEBPACK_IMPORTED_MODULE_2__);
+    let confirmedPitch = null;
+    let confirmedOctave = null;
+    function completeDialog() {
+        $requestingElement.find('input').val(confirmedPitch + confirmedOctave);
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pitch-dialog').remove();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#app-root').css('opacity', '');
+    }
+    const requestingPos = $requestingElement.position();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').prop('id', 'pitch-dialog')
+        .css({
+        left: requestingPos.left + $requestingElement.width(),
+        top: requestingPos.top
+    })
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').prop('id', 'note-buttons')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').text('Select Note'), pitches.map(pitch => jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>')
+        .prop('type', 'button')
+        .addClass(`note-button`)
+        .val(pitch)
+        .on('click', evt => {
+        const $target = jquery__WEBPACK_IMPORTED_MODULE_0___default()(evt.target);
+        const selectedClass = 'selected-note';
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()(`.${selectedClass}`).removeClass(selectedClass);
+        $target.addClass(selectedClass);
+        confirmedPitch = $target.val();
+        if (confirmedPitch != null && confirmedOctave != null)
+            completeDialog();
+    }))), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').prop('id', 'octave-buttons')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').text('Select Octave'), new Array(8).fill(0).map((_, i) => jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>')
+        .prop('type', 'button')
+        .addClass('octave-button')
+        .val(i)
+        .on('click', evt => {
+        const $target = jquery__WEBPACK_IMPORTED_MODULE_0___default()(evt.target);
+        const selectedClass = 'selected-octave';
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()(`.${selectedClass}`).removeClass(selectedClass);
+        $target.addClass(selectedClass);
+        confirmedOctave = +$target.val();
+        if (confirmedPitch != null && confirmedOctave != null)
+            completeDialog();
+    })))).appendTo(document.body);
+}
 function makePitchField(pitch) {
-    return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('pitch-field')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Pitch (E.g. C3)'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'text' }).val(pitch !== null && pitch !== void 0 ? pitch : ''));
+    const $component = jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('pitch-field')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Pitch (E.g. C3)'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ type: 'text' }).val(pitch !== null && pitch !== void 0 ? pitch : '')
+        .on('click', () => { openPitchDialog($component); }));
+    return $component;
 }
 function makeMaterialField(material) {
-    const materials = _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_2__;
+    const materials = _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_3__;
     const materialEntries = Object.entries(materials);
-    // const materialKeys = Object.keys(materials);
     return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('material-field').append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Material'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<select>').append(materialEntries.map(mtl => jquery__WEBPACK_IMPORTED_MODULE_0___default()('<option>')
         .prop({ value: mtl[0], selected: mtl[0] === material })
         .text(`${mtl[0]}: ${mtl[1].description}`))));
@@ -11751,18 +11794,49 @@ function makeLengthField(scaleLength) {
         value: scaleLength !== null && scaleLength !== void 0 ? scaleLength : jquery__WEBPACK_IMPORTED_MODULE_0___default()('input#default-scale').val()
     }));
 }
+function makeCourseField(courses) {
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('course-field')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<label>').text('Course multiplier'), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({
+        type: 'number',
+        value: courses !== null && courses !== void 0 ? courses : 1,
+        min: 1
+    }));
+}
+const audioCtx = new AudioContext();
+const oscillator = audioCtx.createOscillator();
+oscillator.connect(audioCtx.destination);
+let oscillatorIsGoing = false;
+let contextIsRunning = false;
+function makeButtons(id) {
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('string-buttons').append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>')
+        .prop({ type: 'button', value: 'Remove' })
+        .on('click', _ => {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#' + id).remove();
+        updateTotal();
+    }), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>')
+        .prop({ type: 'button', value: 'Play/Stop' })
+        .on('click', _ => {
+        if (!oscillatorIsGoing) {
+            oscillator.start();
+            oscillatorIsGoing = true;
+        }
+        if (contextIsRunning)
+            audioCtx.suspend();
+        else
+            audioCtx.resume();
+        contextIsRunning = !contextIsRunning;
+        const pitch = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#' + id).find('.pitch-field input').val();
+        const freq = _tensions__WEBPACK_IMPORTED_MODULE_1__.pitchToFreq(pitch);
+        oscillator.frequency.setValueAtTime(freq, 0);
+    }));
+}
 function makeStringInput(id, stat) {
     const $el = jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>')
         .prop('id', id)
         .addClass('string-fields')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('input-fields').append(makePitchField(stat === null || stat === void 0 ? void 0 : stat.pitch), makeMaterialField(stat === null || stat === void 0 ? void 0 : stat.material), makeGaugeField(stat === null || stat === void 0 ? void 0 : stat.gauge), makeLengthField(stat === null || stat === void 0 ? void 0 : stat.scaleLength)), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('tension-output-field').text('Tension')
-        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ readonly: true })), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>')
-        .prop({ type: 'button', value: 'Remove' })
-        .on('click', _ => {
-        $el.remove();
-        updateTotal();
-    }));
-    $el.find('.input-fields').find('input,select').change(_ => {
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('input-fields').append(makePitchField(stat === null || stat === void 0 ? void 0 : stat.pitch), makeMaterialField(stat === null || stat === void 0 ? void 0 : stat.material), makeGaugeField(stat === null || stat === void 0 ? void 0 : stat.gauge), makeLengthField(stat === null || stat === void 0 ? void 0 : stat.scaleLength), makeCourseField(stat === null || stat === void 0 ? void 0 : stat.courseCount)), jquery__WEBPACK_IMPORTED_MODULE_0___default()('<div>').addClass('tension-output-field').text('Tension')
+        .append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<input>').prop({ readonly: true })), makeButtons(id));
+    $el.find('.input-fields').find('input,select').on('change', _ => {
         updateTension($el);
         updateTotal();
     });
@@ -11775,12 +11849,11 @@ function updateTension($el) {
     const gauge = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .gauge-field input`).val();
     const lengthFromField = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .length-field input`).val();
     const length = (lengthFromField > 0) ? lengthFromField : +jquery__WEBPACK_IMPORTED_MODULE_0___default()('#default-scale').val();
-    console.log(pitch, material, gauge, lengthFromField);
-    const tension = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcTension(pitch, material, gauge, length);
+    const courseMultiplier = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .course-field input`).val();
+    const tension = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcTension(pitch, material, gauge, length) * courseMultiplier;
     const pressure = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcPressure(gauge, tension);
-    console.log(pressure);
     const shouldWarn = material === 'PL'
-        && pressure > _tensions__WEBPACK_IMPORTED_MODULE_1__.StainlessYieldStrength;
+        && pressure > _tensions__WEBPACK_IMPORTED_MODULE_1__.StainlessYieldStrength * courseMultiplier;
     $el.find('.tension-output-field input').val(tension);
     if (shouldWarn)
         $el.addClass('warning');

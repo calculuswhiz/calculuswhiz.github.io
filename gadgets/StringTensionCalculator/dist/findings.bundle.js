@@ -21,7 +21,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\n\n#tension-boxes {\n  margin: 5px;\n  border: 1px solid black;\n  min-width: 540px;\n  width: calc(100% - 10px);\n  max-width: 600px;\n  background-color: beige;\n}\n\n.string-fields {\n  margin: 3px;\n  display: flex;\n  border: 1px solid gray;\n}\n.string-fields > .input-fields {\n  display: table;\n  width: 100%;\n}\n.string-fields > .input-fields > div {\n  display: table-row;\n}\n.string-fields > .input-fields > div > * {\n  display: table-cell;\n}\n.string-fields > .input-fields > div > input, .string-fields > .input-fields > div > select {\n  float: right;\n}\n.string-fields > .input-fields > div > select {\n  width: 200px;\n}\n\n.tension-output-field {\n  padding: 0 5px;\n}\n\n.warning {\n  background-color: red;\n  content: \"Please check input parameters!\";\n}\n\ntable {\n  border: 1px solid black;\n}\ntable td {\n  padding: 3px;\n  border: 1px solid black;\n}\ntable thead {\n  font-weight: bold;\n}\n\narticle {\n  max-width: 8.5in;\n  width: 100%;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACI,uBAAA;AACJ;;AAEA;EACI,WAAA;EACA,uBAAA;EACA,gBAAA;EACA,wBAAA;EACA,gBAAA;EAEA,uBAAA;AAAJ;;AAGA;EACI,WAAA;EACA,aAAA;EACA,sBAAA;AAAJ;AAEI;EACI,cAAA;EACA,WAAA;AAAR;AAEQ;EACI,kBAAA;AAAZ;AAEY;EACI,mBAAA;AAAhB;AAGY;EACI,YAAA;AADhB;AAIY;EACI,YAAA;AAFhB;;AAUA;EACI,cAAA;AAPJ;;AAUA;EACI,qBAAA;EACA,yCAAA;AAPJ;;AAUA;EACI,uBAAA;AAPJ;AASI;EACI,YAAA;EACA,uBAAA;AAPR;AAUI;EACI,iBAAA;AARR;;AAYA;EAEI,gBAAA;EACA,WAAA;AAVJ","sourcesContent":["body {\r\n    font-family: sans-serif;\r\n}\r\n\r\n#tension-boxes {\r\n    margin: 5px;\r\n    border: 1px solid black;\r\n    min-width: 540px;\r\n    width: calc(100% - 10px);\r\n    max-width: 600px;\r\n    // max-width: 50%;\r\n    background-color: beige;\r\n}\r\n\r\n.string-fields {\r\n    margin: 3px;\r\n    display: flex;\r\n    border: 1px solid gray;\r\n\r\n    > .input-fields {\r\n        display: table;\r\n        width: 100%;\r\n\r\n        > div {\r\n            display: table-row;\r\n\r\n            > * {\r\n                display: table-cell;\r\n            }\r\n\r\n            > input, > select {\r\n                float: right;\r\n            }\r\n\r\n            > select {\r\n                width: 200px;\r\n            }\r\n\r\n        }\r\n    }\r\n}\r\n\r\n\r\n.tension-output-field {\r\n    padding: 0 5px;\r\n}\r\n\r\n.warning {\r\n    background-color: red;\r\n    content: 'Please check input parameters!';\r\n}\r\n\r\ntable {\r\n    border: 1px solid black;\r\n\r\n    td {\r\n        padding: 3px;\r\n        border: 1px solid black;\r\n    }\r\n\r\n    thead {\r\n        font-weight: bold;\r\n    }\r\n}\r\n\r\narticle\r\n{\r\n    max-width: 8.5in;\r\n    width: 100%;\r\n}\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\n\n#pitch-dialog {\n  position: absolute;\n  width: 300px;\n  height: 150px;\n  display: flex;\n  border: 1px solid black;\n  background-color: white;\n}\n#pitch-dialog #note-buttons, #pitch-dialog #octave-buttons {\n  width: 50%;\n  padding: 5px;\n}\n#pitch-dialog #note-buttons .note-button, #pitch-dialog #octave-buttons .note-button {\n  width: 30px;\n}\n#pitch-dialog #note-buttons .octave-button, #pitch-dialog #octave-buttons .octave-button {\n  width: 50%;\n}\n#pitch-dialog #note-buttons .selected-note, #pitch-dialog #note-buttons .selected-octave, #pitch-dialog #octave-buttons .selected-note, #pitch-dialog #octave-buttons .selected-octave {\n  color: red;\n  font-weight: bold;\n}\n\n#tension-boxes {\n  margin: 5px;\n  border: 1px solid black;\n  min-width: 540px;\n  width: calc(100% - 10px);\n  max-width: 600px;\n  background-color: beige;\n}\n\n.string-fields {\n  margin: 3px;\n  display: flex;\n  border: 1px solid gray;\n}\n.string-fields > .input-fields {\n  display: table;\n  width: 100%;\n}\n.string-fields > .input-fields > div {\n  display: table-row;\n}\n.string-fields > .input-fields > div > * {\n  display: table-cell;\n}\n.string-fields > .input-fields > div > input, .string-fields > .input-fields > div > select {\n  float: right;\n}\n.string-fields > .input-fields > div > select {\n  width: 200px;\n}\n.string-fields .string-buttons input[type=button] {\n  width: 100%;\n}\n\n.tension-output-field {\n  padding: 0 5px;\n}\n\n.warning {\n  background-color: red;\n  content: \"Please check input parameters!\";\n}\n\ntable {\n  border: 1px solid black;\n}\ntable td {\n  padding: 3px;\n  border: 1px solid black;\n}\ntable thead {\n  font-weight: bold;\n}\n\narticle {\n  max-width: 8.5in;\n  width: 100%;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACI,uBAAA;AACJ;;AAEA;EACI,kBAAA;EACA,YAAA;EACA,aAAA;EACA,aAAA;EACA,uBAAA;EACA,uBAAA;AACJ;AACI;EACI,UAAA;EACA,YAAA;AACR;AACQ;EACI,WAAA;AACZ;AAEQ;EACI,UAAA;AAAZ;AAGQ;EACI,UAAA;EACA,iBAAA;AADZ;;AAMA;EACI,WAAA;EACA,uBAAA;EACA,gBAAA;EACA,wBAAA;EACA,gBAAA;EAEA,uBAAA;AAJJ;;AAOA;EACI,WAAA;EACA,aAAA;EACA,sBAAA;AAJJ;AAMI;EACI,cAAA;EACA,WAAA;AAJR;AAMQ;EACI,kBAAA;AAJZ;AAMY;EACI,mBAAA;AAJhB;AAOY;EACI,YAAA;AALhB;AAQY;EACI,YAAA;AANhB;AAYQ;EACI,WAAA;AAVZ;;AAgBA;EACI,cAAA;AAbJ;;AAgBA;EACI,qBAAA;EACA,yCAAA;AAbJ;;AAgBA;EACI,uBAAA;AAbJ;AAeI;EACI,YAAA;EACA,uBAAA;AAbR;AAgBI;EACI,iBAAA;AAdR;;AAkBA;EAEI,gBAAA;EACA,WAAA;AAhBJ","sourcesContent":["body {\r\n    font-family: sans-serif;\r\n}\r\n\r\n#pitch-dialog {\r\n    position: absolute;\r\n    width: 300px;\r\n    height: 150px;\r\n    display: flex;\r\n    border: 1px solid black;\r\n    background-color: white;\r\n\r\n    #note-buttons, #octave-buttons {\r\n        width: 50%;\r\n        padding: 5px;\r\n\r\n        .note-button {\r\n            width: 30px;\r\n        }\r\n\r\n        .octave-button {\r\n            width: 50%;\r\n        }\r\n\r\n        .selected-note, .selected-octave {\r\n            color: red;\r\n            font-weight: bold;\r\n        }\r\n    }\r\n}\r\n\r\n#tension-boxes {\r\n    margin: 5px;\r\n    border: 1px solid black;\r\n    min-width: 540px;\r\n    width: calc(100% - 10px);\r\n    max-width: 600px;\r\n    // max-width: 50%;\r\n    background-color: beige;\r\n}\r\n\r\n.string-fields {\r\n    margin: 3px;\r\n    display: flex;\r\n    border: 1px solid gray;\r\n\r\n    > .input-fields {\r\n        display: table;\r\n        width: 100%;\r\n\r\n        > div {\r\n            display: table-row;\r\n\r\n            > * {\r\n                display: table-cell;\r\n            }\r\n\r\n            > input, > select {\r\n                float: right;\r\n            }\r\n\r\n            > select {\r\n                width: 200px;\r\n            }\r\n        }\r\n    }\r\n\r\n    .string-buttons {\r\n        input[type=\"button\"] {\r\n            width: 100%;\r\n        }\r\n    }\r\n}\r\n\r\n\r\n.tension-output-field {\r\n    padding: 0 5px;\r\n}\r\n\r\n.warning {\r\n    background-color: red;\r\n    content: 'Please check input parameters!';\r\n}\r\n\r\ntable {\r\n    border: 1px solid black;\r\n\r\n    td {\r\n        padding: 3px;\r\n        border: 1px solid black;\r\n    }\r\n\r\n    thead {\r\n        font-weight: bold;\r\n    }\r\n}\r\n\r\narticle\r\n{\r\n    max-width: 8.5in;\r\n    width: 100%;\r\n}\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -16682,6 +16682,17 @@ module.exports = styleTagTransform;
 
 /***/ }),
 
+/***/ "./src/findings.md":
+/*!*************************!*\
+  !*** ./src/findings.md ***!
+  \*************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+module.exports = __webpack_require__.p + "20ef23b4b3f038e60595.md";
+
+/***/ }),
+
 /***/ "./src/materialQuadraticParams.json":
 /*!******************************************!*\
   !*** ./src/materialQuadraticParams.json ***!
@@ -16744,6 +16755,18 @@ module.exports = JSON.parse('{"PL":{"a":0.0003956109244,"b":-2.646193476e-7,"c":
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -16758,6 +16781,26 @@ module.exports = JSON.parse('{"PL":{"a":0.0003956109244,"b":-2.646193476e-7,"c":
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		var scriptUrl;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (!scriptUrl && document) {
+/******/ 			if (document.currentScript)
+/******/ 				scriptUrl = document.currentScript.src
+/******/ 			if (!scriptUrl) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
+/******/ 			}
+/******/ 		}
+/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
+/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
+/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
+/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		__webpack_require__.p = scriptUrl;
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/nonce */
@@ -16780,6 +16823,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var showdown__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(showdown__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
 /* harmony import */ var _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./materialQuadraticParams.json */ "./src/materialQuadraticParams.json");
+/* harmony import */ var _findings_md__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./findings.md */ "./src/findings.md");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16793,8 +16837,9 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+
 function valueToTableData(value) {
-    const { a, b, c, rSq, description } = value;
+    const { a, b, rSq, description } = value;
     return [
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('<td>').text(description),
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('<td>').text(a.toPrecision(4)),
@@ -16808,7 +16853,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(() => __awaiter(void 0, void 0, vo
         tablesHeaderId: true
     });
     converter.setFlavor('github');
-    const markdown = yield jquery__WEBPACK_IMPORTED_MODULE_0___default().get('./src/findings.md');
+    const markdown = yield jquery__WEBPACK_IMPORTED_MODULE_0___default().get(_findings_md__WEBPACK_IMPORTED_MODULE_4__);
     const html = converter.makeHtml(markdown);
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#root').html(html);
     const materialEntries = Object.values(_materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_3__);

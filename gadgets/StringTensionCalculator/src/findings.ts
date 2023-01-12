@@ -1,13 +1,12 @@
 import $ from 'jquery';
 import Showdown from 'showdown';
 
-import { MaterialRegressionEntry } from './tensions';
-
 import './styles.scss';
 import materialData from './materialQuadraticParams.json';
+import findingsSource from './findings.md';
 
 function valueToTableData(value: MaterialRegressionEntry) {
-	const {a, b, c, rSq, description} = value;
+	const {a, b, rSq, description} = value;
 
 	return [
 		$('<td>').text(description),
@@ -24,7 +23,7 @@ $(async () => {
 		tablesHeaderId: true
 	});
 	converter.setFlavor('github');
-	const markdown: string = await $.get('./src/findings.md');
+	const markdown: string = await $.get(findingsSource);
 	const html = converter.makeHtml(markdown);
 
 	$('#root').html(html);

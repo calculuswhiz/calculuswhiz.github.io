@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import * as Tensions from './tensions';
 
+import frequencyData from './frequencyBases.json';
 import materialData from './materialQuadraticParams.json';
 import './styles.scss';
 
@@ -20,18 +21,15 @@ interface StringStat {
     material: Tensions.StringMaterial;
     gauge: number;
     scaleLength: number;
+    courseCount: number;
 };
 
 const presets = {
     mandolin: [
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.75 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.75 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.75 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.75 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.75 },
+        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.88, courseCount: 2 },
+        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.88, courseCount: 2 },
+        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.88, courseCount: 2 },
+        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.88, courseCount: 2 }
     ] as StringStat[]
 };
 
@@ -44,18 +42,87 @@ function loadPreset(preset: string) {
     updateTotal();
 }
 
+function openPitchDialog($requestingElement: JQuery) {
+    $('#app-root').css('opacity', '50%');
+    const pitches = Object.keys(frequencyData);
+
+    let confirmedPitch: string = null;
+    let confirmedOctave: number = null;
+
+    function completeDialog() {
+        $requestingElement.find('input').val(confirmedPitch + confirmedOctave);
+        $('#pitch-dialog').remove();
+        $('#app-root').css('opacity', '');
+    }
+
+    const requestingPos = $requestingElement.position();
+
+    $('<div>').prop('id', 'pitch-dialog')
+        .css({
+            left: requestingPos.left + $requestingElement.width(),
+            top: requestingPos.top
+        })
+        .append(
+            $('<div>').prop('id', 'note-buttons')
+                .append(
+                    $('<div>').text('Select Note'),
+                    pitches.map(pitch =>
+                        $('<input>')
+                            .prop('type', 'button')
+                            .addClass(`note-button`)
+                            .val(pitch)
+                            .on('click', evt =>
+                            {
+                                const $target = $(evt.target);
+                                const selectedClass = 'selected-note';
+                                $(`.${selectedClass}`).removeClass(selectedClass);
+                                $target.addClass(selectedClass);
+
+                                confirmedPitch = $target.val() as string;
+                                if (confirmedPitch != null && confirmedOctave != null)
+                                    completeDialog();
+                            })
+                    )
+                ),
+            $('<div>').prop('id', 'octave-buttons')
+                .append(
+                    $('<div>').text('Select Octave'),
+                    new Array(8).fill(0).map((_, i) =>
+                        $('<input>')
+                            .prop('type', 'button')
+                            .addClass('octave-button')
+                            .val(i)
+                            .on('click', evt =>
+                            {
+                                const $target = $(evt.target);
+                                const selectedClass = 'selected-octave';
+                                $(`.${selectedClass}`).removeClass(selectedClass);
+                                $target.addClass(selectedClass);
+
+                                confirmedOctave = +$target.val();
+                                if (confirmedPitch != null && confirmedOctave != null)
+                                    completeDialog();
+                            })
+                    )
+                )
+        ).appendTo(document.body);
+}
+
 function makePitchField(pitch: string) {
-    return $('<div>').addClass('pitch-field')
+    const $component = $('<div>').addClass('pitch-field')
         .append(
             $('<label>').text('Pitch (E.g. C3)'),
             $('<input>').prop({ type: 'text' }).val(pitch ?? '')
+                .on('click', () => {openPitchDialog($component)})
         );
+
+    return $component;
 }
 
 function makeMaterialField(material: string) {
-    const materials: {[key: string]: Tensions.MaterialRegressionEntry} = materialData;
+    const materials: {[key: string]: MaterialRegressionEntry} = materialData;
     const materialEntries = Object.entries(materials);
-    // const materialKeys = Object.keys(materials);
+
     return $('<div>').addClass('material-field').append(
         $('<label>').text('Material'),
         $('<select>').append(
@@ -87,6 +154,54 @@ function makeLengthField(scaleLength: number) {
         );
 }
 
+function makeCourseField(courses: number) {
+    return $('<div>').addClass('course-field')
+        .append(
+            $('<label>').text('Course multiplier'),
+            $('<input>').prop({
+                type: 'number',
+                value: courses ?? 1,
+                min: 1
+            })
+        );
+}
+
+const audioCtx = new AudioContext();
+const oscillator = audioCtx.createOscillator();
+oscillator.connect(audioCtx.destination);
+let oscillatorIsGoing = false;
+let contextIsRunning = false;
+
+function makeButtons(id: string) {
+    return $('<div>').addClass('string-buttons').append(
+        $('<input>')
+            .prop({type: 'button', value: 'Remove'})
+            .on('click', _ => {
+                $('#' + id).remove();
+                updateTotal();
+            }),
+        $('<input>')
+            .prop({type: 'button', value: 'Play/Stop'})
+            .on('click', _ => {
+                if (!oscillatorIsGoing)
+                {
+                    oscillator.start();
+                    oscillatorIsGoing = true;
+                }
+
+                if (contextIsRunning)
+                    audioCtx.suspend();
+                else
+                    audioCtx.resume();
+                contextIsRunning = !contextIsRunning;
+
+                const pitch = $('#' + id).find('.pitch-field input').val() as string;
+                const freq = Tensions.pitchToFreq(pitch);
+                oscillator.frequency.setValueAtTime(freq, 0);
+            })
+    );
+}
+
 function makeStringInput(id: string, stat: StringStat) {
     const $el = $('<div>')
         .prop('id', id)
@@ -96,19 +211,15 @@ function makeStringInput(id: string, stat: StringStat) {
                 makePitchField(stat?.pitch),
                 makeMaterialField(stat?.material),
                 makeGaugeField(stat?.gauge),
-                makeLengthField(stat?.scaleLength)
+                makeLengthField(stat?.scaleLength),
+                makeCourseField(stat?.courseCount)
             ),
             $('<div>').addClass('tension-output-field').text('Tension')
                 .append($('<input>').prop({ readonly: true })),
-            $('<input>')
-                .prop({type: 'button', value: 'Remove'})
-                .on('click', _ => {
-                    $el.remove();
-                    updateTotal();
-                })
+           makeButtons(id)
     );
 
-    $el.find('.input-fields').find('input,select').change(_ => {
+    $el.find('.input-fields').find('input,select').on('change', _ => {
         updateTension($el);
         updateTotal();
     });
@@ -125,13 +236,13 @@ function updateTension($el: JQuery) {
 
     const length = (lengthFromField > 0) ? lengthFromField : +$('#default-scale').val();
 
-    console.log(pitch, material, gauge, lengthFromField);
+    const courseMultiplier = +$(`#${id} .course-field input`).val();
 
-    const tension = Tensions.calcTension(pitch, material, gauge, length);
+    const tension = Tensions.calcTension(pitch, material, gauge, length) * courseMultiplier;
     const pressure = Tensions.calcPressure(gauge, tension);
-    console.log(pressure);
+
     const shouldWarn = material === 'PL'
-        && pressure > Tensions.StainlessYieldStrength;
+        && pressure > Tensions.StainlessYieldStrength * courseMultiplier;
 
     $el.find('.tension-output-field input').val(tension);
     if (shouldWarn)

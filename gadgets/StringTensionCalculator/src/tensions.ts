@@ -5,21 +5,7 @@ import materialData from './materialQuadraticParams.json';
 /** Acceleration due to gravity (m/s^2) */
 const g = 9.80621;
 
-type StringMaterial = keyof typeof materialData;
-
-interface MaterialRegressionEntry
-{
-    /** The quadratic term */
-    a: number;
-    /** The linear term */
-    b: number;
-    /** The constant term */
-    c: number;
-    /** R^2 value */
-    rSq: number;
-    /** Material description*/
-    description: string;
-}
+export type StringMaterial = keyof typeof materialData;
 
 /**
  * Estimate unit mass (mass per unit length in kg/m) using a quadratic regression
@@ -27,14 +13,14 @@ interface MaterialRegressionEntry
  * @param gauge Gauge given in 1000ths of an inch
  * */
 function estimateUnitMass(material: StringMaterial, gauge: number) {
-    const {a, b, c} = materialData[material] as MaterialRegressionEntry;
-    return a * gauge ** 2 + b * gauge + c;
+    const {a, b} = materialData[material] as MaterialRegressionEntry;
+    return a * gauge ** 2 + b * gauge;
 }
 
 /**
  * Turns Pitch notation into a frequency
  * */
-function pitchToFreq(pitch: string) {
+export function pitchToFreq(pitch: string) {
   const [_, base, octave] = pitch.match(/(.+)(\d+)/) ?? [];
   if (base == null)
     return null;
@@ -48,7 +34,7 @@ function pitchToFreq(pitch: string) {
  * @param gauge
  * @param length
  */
-function calcTension(
+export function calcTension(
     pitch: string,
     material: StringMaterial,
     gauge: number,
@@ -64,11 +50,9 @@ function calcTension(
  * @param tension given in kg
  * @param gauge given in 1000ths of inch
  * */
-function calcPressure(gauge: number, tension: number) {
+export function calcPressure(gauge: number, tension: number) {
     const radius = gauge / 1000 * 2.54 / 100;
     return tension * g / (Math.PI * radius) ** 2 / 1e6;
 }
 
-const StainlessYieldStrength = 520;
-
-export { calcTension, calcPressure, StringMaterial, StainlessYieldStrength, MaterialRegressionEntry };
+export const StainlessYieldStrength = 520;
