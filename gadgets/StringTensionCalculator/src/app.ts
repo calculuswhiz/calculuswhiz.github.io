@@ -9,19 +9,58 @@ import './styles.scss';
 
 let counter = 0;
 
+/** Update tension calculation on string input area
+ * @param $el The string input area */
+function updateTension($el: JQuery) {
+    const id = $el.prop('id');
+    const pitch = $(`#${id} .pitch-field input`).val() as string;
+    const material = $(`#${id} .material-field select`).val() as Tensions.StringMaterial;
+    const gauge = +$(`#${id} .gauge-field input`).val();
+    const lengthFromField = +$(`#${id} .length-field input`).val();
+
+    const length = (lengthFromField > 0) ? lengthFromField : +$('#default-scale').val();
+
+    const courseMultiplier = +$(`#${id} .course-field input`).val();
+
+    const tension = Tensions.calcTension(pitch, material, gauge, length) * courseMultiplier;
+    const pressure = Tensions.calcPressure(gauge, tension);
+
+    const shouldWarn = material === 'PL'
+        && pressure > Tensions.StainlessYieldStrength * courseMultiplier;
+
+    $el.find('.tension-output-field input').val(tension);
+    if (shouldWarn)
+        $el.addClass('warning');
+    else
+        $el.removeClass('warning');
+}
+
+/** Add a string input area to the list */
 function addString(stat: StringStat = null) {
-    const $listArea = $('#tension-boxes');
     counter++;
     const newString = makeStringInput('string-input' + counter, stat);
-    $listArea.append(newString);
+    $('#tension-boxes').append(newString);
     updateTension(newString);
 }
 
+/** Update display for the total tension */
+function updateTotal() {
+    const total = [...$('.tension-output-field input')]
+        .map(el => +$(el).val())
+        .reduce((a, b) => a + b);
+    $('#total-tension').text(total);
+}
+
 interface StringStat {
+    /** Pitch in pitch-octave notation */
     pitch: string;
+    /** The material of the string */
     material: Tensions.StringMaterial;
+    /** Gauge = 1000ths of an inch */
     gauge: number;
+    /** Scale length of the string */
     scaleLength: number;
+    /** # strings per course */
     courseCount: number;
 };
 
@@ -169,6 +208,7 @@ function makeCourseField(courses: number) {
         );
 }
 
+// Set up audio context to allow pitch preview
 const audioCtx: AudioContext
     = new (AudioContext ?? (window as any).webkitAudioContext)();
 const oscillator = audioCtx.createOscillator();
@@ -229,37 +269,6 @@ function makeStringInput(id: string, stat: StringStat) {
     });
 
     return $el;
-}
-
-function updateTension($el: JQuery) {
-    const id = $el.prop('id');
-    const pitch = $(`#${id} .pitch-field input`).val() as string;
-    const material = $(`#${id} .material-field select`).val() as Tensions.StringMaterial;
-    const gauge = +$(`#${id} .gauge-field input`).val();
-    const lengthFromField = +$(`#${id} .length-field input`).val();
-
-    const length = (lengthFromField > 0) ? lengthFromField : +$('#default-scale').val();
-
-    const courseMultiplier = +$(`#${id} .course-field input`).val();
-
-    const tension = Tensions.calcTension(pitch, material, gauge, length) * courseMultiplier;
-    const pressure = Tensions.calcPressure(gauge, tension);
-
-    const shouldWarn = material === 'PL'
-        && pressure > Tensions.StainlessYieldStrength * courseMultiplier;
-
-    $el.find('.tension-output-field input').val(tension);
-    if (shouldWarn)
-        $el.addClass('warning');
-    else
-        $el.removeClass('warning');
-}
-
-function updateTotal() {
-    const total = [...$('.tension-output-field input')]
-        .map(el => +$(el).val())
-        .reduce((a, b) => a + b);
-    $('#total-tension').text(total);
 }
 
 $(() => {

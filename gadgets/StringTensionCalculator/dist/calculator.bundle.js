@@ -11714,12 +11714,39 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let counter = 0;
+/** Update tension calculation on string input area
+ * @param $el The string input area */
+function updateTension($el) {
+    const id = $el.prop('id');
+    const pitch = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .pitch-field input`).val();
+    const material = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .material-field select`).val();
+    const gauge = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .gauge-field input`).val();
+    const lengthFromField = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .length-field input`).val();
+    const length = (lengthFromField > 0) ? lengthFromField : +jquery__WEBPACK_IMPORTED_MODULE_0___default()('#default-scale').val();
+    const courseMultiplier = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .course-field input`).val();
+    const tension = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcTension(pitch, material, gauge, length) * courseMultiplier;
+    const pressure = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcPressure(gauge, tension);
+    const shouldWarn = material === 'PL'
+        && pressure > _tensions__WEBPACK_IMPORTED_MODULE_1__.StainlessYieldStrength * courseMultiplier;
+    $el.find('.tension-output-field input').val(tension);
+    if (shouldWarn)
+        $el.addClass('warning');
+    else
+        $el.removeClass('warning');
+}
+/** Add a string input area to the list */
 function addString(stat = null) {
-    const $listArea = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#tension-boxes');
     counter++;
     const newString = makeStringInput('string-input' + counter, stat);
-    $listArea.append(newString);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#tension-boxes').append(newString);
     updateTension(newString);
+}
+/** Update display for the total tension */
+function updateTotal() {
+    const total = [...jquery__WEBPACK_IMPORTED_MODULE_0___default()('.tension-output-field input')]
+        .map(el => +jquery__WEBPACK_IMPORTED_MODULE_0___default()(el).val())
+        .reduce((a, b) => a + b);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#total-tension').text(total);
 }
 ;
 function loadPreset(preset) {
@@ -11816,6 +11843,7 @@ function makeCourseField(courses) {
         min: 1
     }));
 }
+// Set up audio context to allow pitch preview
 const audioCtx = new (AudioContext !== null && AudioContext !== void 0 ? AudioContext : window.webkitAudioContext)();
 const oscillator = audioCtx.createOscillator();
 oscillator.connect(audioCtx.destination);
@@ -11855,30 +11883,6 @@ function makeStringInput(id, stat) {
         updateTotal();
     });
     return $el;
-}
-function updateTension($el) {
-    const id = $el.prop('id');
-    const pitch = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .pitch-field input`).val();
-    const material = jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .material-field select`).val();
-    const gauge = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .gauge-field input`).val();
-    const lengthFromField = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .length-field input`).val();
-    const length = (lengthFromField > 0) ? lengthFromField : +jquery__WEBPACK_IMPORTED_MODULE_0___default()('#default-scale').val();
-    const courseMultiplier = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .course-field input`).val();
-    const tension = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcTension(pitch, material, gauge, length) * courseMultiplier;
-    const pressure = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcPressure(gauge, tension);
-    const shouldWarn = material === 'PL'
-        && pressure > _tensions__WEBPACK_IMPORTED_MODULE_1__.StainlessYieldStrength * courseMultiplier;
-    $el.find('.tension-output-field input').val(tension);
-    if (shouldWarn)
-        $el.addClass('warning');
-    else
-        $el.removeClass('warning');
-}
-function updateTotal() {
-    const total = [...jquery__WEBPACK_IMPORTED_MODULE_0___default()('.tension-output-field input')]
-        .map(el => +jquery__WEBPACK_IMPORTED_MODULE_0___default()(el).val())
-        .reduce((a, b) => a + b);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#total-tension').text(total);
 }
 jquery__WEBPACK_IMPORTED_MODULE_0___default()(() => {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').val('');
