@@ -1,0 +1,16 @@
+{
+    "mandolin": [
+        { "pitch": "E5", "gauge": 11, "material": "PL", "scaleLength": 13.88, "courseCount": 2 },
+        { "pitch": "A4", "gauge": 16, "material": "PL", "scaleLength": 13.88, "courseCount": 2 },
+        { "pitch": "D4", "gauge": 22, "material": "PB", "scaleLength": 13.88, "courseCount": 2 },
+        { "pitch": "G3", "gauge": 35, "material": "PB", "scaleLength": 13.88, "courseCount": 2 }
+    ],
+    "guitar": [
+        { "pitch": "E4", "gauge": 12, "material": "PL", "scaleLength": 25.5, "courseCount": 1 },
+        { "pitch": "B3", "gauge": 16, "material": "PL", "scaleLength": 25.5, "courseCount": 1 },
+        { "pitch": "G3", "gauge": 24, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
+        { "pitch": "D3", "gauge": 32, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
+        { "pitch": "A2", "gauge": 42, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
+        { "pitch": "E2", "gauge": 53, "material": "PB", "scaleLength": 25.5, "courseCount": 1 }
+    ]
+}

@@ -4,6 +4,7 @@ import * as Tensions from './tensions';
 
 import frequencyData from './frequencyBases.json';
 import materialData from './materialQuadraticParams.json';
+import presets from './presets.json';
 import './styles.scss';
 
 let counter = 0;
@@ -24,21 +25,12 @@ interface StringStat {
     courseCount: number;
 };
 
-const presets = {
-    mandolin: [
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.88, courseCount: 2 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.88, courseCount: 2 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.88, courseCount: 2 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.88, courseCount: 2 }
-    ] as StringStat[]
-};
-
 function loadPreset(preset: string) {
     $('#tension-boxes').empty();
     const stats = presets[preset] as StringStat[] ?? [];
-    for (const stat of stats) {
+    for (const stat of stats)
         addString(stat);
-    }
+
     updateTotal();
 }
 
@@ -261,5 +253,10 @@ function updateTotal() {
 $(() => {
     $<HTMLSelectElement>('#preset-menu').val('');
     $('#add-string').on('click', _ => addString());
+    for (const [instrument, preset] of Object.entries(presets)) {
+        $('#preset-menu').append(
+            $('<option>').val(instrument).text(instrument)
+        )
+    }
     $('#preset-menu').on('change', evt => loadPreset((evt.target as HTMLSelectElement).value));
 });

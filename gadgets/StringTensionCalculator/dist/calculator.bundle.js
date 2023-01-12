@@ -11606,6 +11606,17 @@ module.exports = JSON.parse('{"C":16.35,"Db":17.32,"C#":17.32,"D":18.35,"Eb":19.
 "use strict";
 module.exports = JSON.parse('{"PL":{"a":0.0003956109244,"b":-2.646193476e-7,"c":0,"rSq":0.9999999983,"description":"Plain steel"},"CG":{"a":0.0003769267706,"b":-0.001326558938,"c":0,"rSq":0.9974653096,"description":"Steel flatwound"},"PB":{"a":0.0003504919832,"b":0.0005941710054,"c":0,"rSq":0.9999092769,"description":"Phosphor Bronze roundwound"},"NW":{"a":0.0003186483981,"b":0.0004124301356,"c":0,"rSq":0.9999035025,"description":"Nickel Plated Steel roundwound"},"NYL":{"a":0.00005047250389,"b":-1.117927618e-7,"c":0,"rSq":0.9999999895,"description":"Rectified Nylon"},"NYLW":{"a":0.0004121504571,"b":-0.004276417748,"c":0,"rSq":0.9991048928,"description":"Silver-plated copper wound nylon"}}');
 
+/***/ }),
+
+/***/ "./src/presets.json":
+/*!**************************!*\
+  !*** ./src/presets.json ***!
+  \**************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"mandolin":[{"pitch":"E5","gauge":11,"material":"PL","scaleLength":13.88,"courseCount":2},{"pitch":"A4","gauge":16,"material":"PL","scaleLength":13.88,"courseCount":2},{"pitch":"D4","gauge":22,"material":"PB","scaleLength":13.88,"courseCount":2},{"pitch":"G3","gauge":35,"material":"PB","scaleLength":13.88,"courseCount":2}],"guitar":[{"pitch":"E4","gauge":12,"material":"PL","scaleLength":25.5,"courseCount":1},{"pitch":"B3","gauge":16,"material":"PL","scaleLength":25.5,"courseCount":1},{"pitch":"G3","gauge":24,"material":"PB","scaleLength":25.5,"courseCount":1},{"pitch":"D3","gauge":32,"material":"PB","scaleLength":25.5,"courseCount":1},{"pitch":"A2","gauge":42,"material":"PB","scaleLength":25.5,"courseCount":1},{"pitch":"E2","gauge":53,"material":"PB","scaleLength":25.5,"courseCount":1}]}');
+
 /***/ })
 
 /******/ 	});
@@ -11694,7 +11705,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tensions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tensions */ "./src/tensions.ts");
 /* harmony import */ var _frequencyBases_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frequencyBases.json */ "./src/frequencyBases.json");
 /* harmony import */ var _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./materialQuadraticParams.json */ "./src/materialQuadraticParams.json");
-/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+/* harmony import */ var _presets_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./presets.json */ "./src/presets.json");
+/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+
 
 
 
@@ -11709,21 +11722,12 @@ function addString(stat = null) {
     updateTension(newString);
 }
 ;
-const presets = {
-    mandolin: [
-        { pitch: 'E5', gauge: 11, material: 'PL', scaleLength: 13.88, courseCount: 2 },
-        { pitch: 'A4', gauge: 16, material: 'PL', scaleLength: 13.88, courseCount: 2 },
-        { pitch: 'D4', gauge: 22, material: 'PB', scaleLength: 13.88, courseCount: 2 },
-        { pitch: 'G3', gauge: 35, material: 'PB', scaleLength: 13.88, courseCount: 2 }
-    ]
-};
 function loadPreset(preset) {
     var _a;
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#tension-boxes').empty();
-    const stats = (_a = presets[preset]) !== null && _a !== void 0 ? _a : [];
-    for (const stat of stats) {
+    const stats = (_a = _presets_json__WEBPACK_IMPORTED_MODULE_4__[preset]) !== null && _a !== void 0 ? _a : [];
+    for (const stat of stats)
         addString(stat);
-    }
     updateTotal();
 }
 function openPitchDialog($requestingElement) {
@@ -11869,6 +11873,9 @@ function updateTotal() {
 jquery__WEBPACK_IMPORTED_MODULE_0___default()(() => {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').val('');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#add-string').on('click', _ => addString());
+    for (const [instrument, preset] of Object.entries(_presets_json__WEBPACK_IMPORTED_MODULE_4__)) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<option>').val(instrument).text(instrument));
+    }
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').on('change', evt => loadPreset(evt.target.value));
 });
 
