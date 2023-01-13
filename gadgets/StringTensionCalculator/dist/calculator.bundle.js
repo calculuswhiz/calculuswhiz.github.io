@@ -11758,6 +11758,32 @@ function updateTotal() {
         .reduce((a, b) => a + b);
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#total-tension').text(total);
 }
+/** Dump to texbox so it can be copied */
+function dumpConfig() {
+    const data = [];
+    for (const el of jquery__WEBPACK_IMPORTED_MODULE_0___default()('.string-fields')) {
+        const pitch = jquery__WEBPACK_IMPORTED_MODULE_0___default()(el).find('.pitch-field input').val();
+        const material = jquery__WEBPACK_IMPORTED_MODULE_0___default()(el).find('.material-field select').val();
+        const gauge = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(el).find('.gauge-field input').val();
+        const lengthFromField = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(el).find('.length-field input').val();
+        const courseMultiplier = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(el).find('.course-field input').val();
+        data.push({
+            pitch: pitch,
+            gauge: gauge,
+            material: material,
+            scaleLength: lengthFromField,
+            courseCount: courseMultiplier
+        });
+    }
+    const $dumpArea = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#dump-area');
+    $dumpArea.val(JSON.stringify(data));
+}
+function loadConfig() {
+    const data = JSON.parse(jquery__WEBPACK_IMPORTED_MODULE_0___default()('#dump-area').val().toString());
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#tension-boxes').empty();
+    for (const course of data)
+        addString(course);
+}
 ;
 function loadPreset(preset) {
     var _a;
@@ -11897,7 +11923,9 @@ function makeStringInput(id, stat) {
 jquery__WEBPACK_IMPORTED_MODULE_0___default()(() => {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').val('');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#add-string').on('click', _ => addString());
-    for (const [instrument, preset] of Object.entries(_presets_json__WEBPACK_IMPORTED_MODULE_4__)) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#dump-config').on('click', _ => dumpConfig());
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#load-config').on('click', _ => loadConfig());
+    for (const [instrument] of Object.entries(_presets_json__WEBPACK_IMPORTED_MODULE_4__)) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').append(jquery__WEBPACK_IMPORTED_MODULE_0___default()('<option>').val(instrument).text(instrument));
     }
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#preset-menu').on('change', evt => loadPreset(evt.target.value));

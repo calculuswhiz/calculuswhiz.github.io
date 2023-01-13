@@ -22,7 +22,14 @@
 		<div>
 			Total Tension: <span id="total-tension">...</span>
 		</div>
-		<input type="button" id="add-string" value="Add String" /> <br />
+		<div id="preset-functions">
+			<input type="button" id="add-string" value="Add String" />
+			<input type="button" id="dump-config" value="Dump Data" title="Dumps data to textbox so it can be loaded later" />
+			<input type="button" id="load-config" value="Load Data" title="Load saved data from textbox">
+		</div>
+		SaveData:
+		<textarea id="dump-area"></textarea>
+		<hr />
 		Presets: 
 		<select id="preset-menu">
 			<option value="">Make a selection</option>

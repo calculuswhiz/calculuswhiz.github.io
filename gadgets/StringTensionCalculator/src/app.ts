@@ -52,6 +52,37 @@ function updateTotal() {
     $('#total-tension').text(total);
 }
 
+/** Dump to texbox so it can be copied */
+function dumpConfig() {
+    const data: StringStat[] = [];
+    for (const el of $('.string-fields'))
+    {
+        const pitch = $(el).find('.pitch-field input').val() as string;
+        const material = $(el).find('.material-field select').val() as Tensions.StringMaterial;
+        const gauge = +$(el).find('.gauge-field input').val();
+        const lengthFromField = +$(el).find('.length-field input').val();
+        const courseMultiplier = +$(el).find('.course-field input').val();
+
+        data.push({
+            pitch: pitch,
+            gauge: gauge,
+            material: material,
+            scaleLength: lengthFromField,
+            courseCount: courseMultiplier
+        });
+    }
+
+    const $dumpArea = $('#dump-area');
+    $dumpArea.val(JSON.stringify(data));
+}
+
+function loadConfig() {
+    const data = JSON.parse($('#dump-area').val().toString());
+    $('#tension-boxes').empty();
+    for (const course of data)
+        addString(course);
+}
+
 interface StringStat {
     /** Pitch in pitch-octave notation */
     pitch: string;
@@ -275,7 +306,9 @@ function makeStringInput(id: string, stat: StringStat) {
 $(() => {
     $<HTMLSelectElement>('#preset-menu').val('');
     $('#add-string').on('click', _ => addString());
-    for (const [instrument, preset] of Object.entries(presets)) {
+    $('#dump-config').on('click', _ => dumpConfig());
+    $('#load-config').on('click', _ => loadConfig());
+    for (const [instrument] of Object.entries(presets)) {
         $('#preset-menu').append(
             $('<option>').val(instrument).text(instrument)
         )
