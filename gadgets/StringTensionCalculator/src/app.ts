@@ -22,7 +22,8 @@ function updateTension($el: JQuery) {
 
     const courseMultiplier = +$(`#${id} .course-field input`).val();
 
-    const tension = Tensions.calcTension(pitch, material, gauge, length) * courseMultiplier;
+    const tension = Tensions.calcTension(pitch, material, gauge, length, 'in') * courseMultiplier;
+
     const pressure = Tensions.calcPressure(gauge, tension);
 
     const shouldWarn = material === 'PL'

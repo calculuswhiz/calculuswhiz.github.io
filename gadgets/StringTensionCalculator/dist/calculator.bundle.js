@@ -11532,6 +11532,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "StainlessYieldStrength": () => (/* binding */ StainlessYieldStrength),
 /* harmony export */   "calcPressure": () => (/* binding */ calcPressure),
 /* harmony export */   "calcTension": () => (/* binding */ calcTension),
+/* harmony export */   "estimateUnitWeight": () => (/* binding */ estimateUnitWeight),
 /* harmony export */   "pitchToFreq": () => (/* binding */ pitchToFreq)
 /* harmony export */ });
 /* harmony import */ var _frequencyBases_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frequencyBases.json */ "./src/frequencyBases.json");
@@ -11542,13 +11543,13 @@ __webpack_require__.r(__webpack_exports__);
 /** Acceleration due to gravity (m/s^2) */
 const g = 9.80621;
 /**
- * Estimate unit mass (mass per unit length in kg/m) using a quadratic regression
+ * Estimate unit weight (weight per unit length in g/cm) using a quadratic regression
  * @param material
  * @param gauge Gauge given in 1000ths of an inch
  * */
-function estimateUnitMass(material, gauge) {
+function estimateUnitWeight(material, gauge) {
     const { a, b } = _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_1__[material];
-    return a * Math.pow(gauge, 2) + b * gauge;
+    return .1 * (a * Math.pow(gauge, 2) + b * gauge);
 }
 /**
  * Turns Pitch notation into a frequency
@@ -11560,17 +11561,26 @@ function pitchToFreq(pitch) {
         return null;
     return _frequencyBases_json__WEBPACK_IMPORTED_MODULE_0__[base.toUpperCase()] * Math.pow(2, +octave);
 }
+const cmsInInch = 2.54;
+const lbsInKg = 2.2;
 /**
- * Calculate tension in kg
+ * Calculate tension in kg or lbs depending on unit
  * @param pitch
  * @param material
- * @param gauge
- * @param length
+ * @param gauge in 1/1000ths of inch
+ * @param length in cm
+ * @param unit Specify unit for length: cm or in. If in, assume output is in lbs, else kg
  */
-function calcTension(pitch, material, gauge, length) {
+function calcTension(pitch, material, gauge, length, unit) {
     const freq = pitchToFreq(pitch);
-    const unitMass = estimateUnitMass(material, gauge);
-    return Math.pow((2 * freq * length), 2) * unitMass / (g * 1e5);
+    const unitWeight = estimateUnitWeight(material, gauge);
+    if (unit === 'in') {
+        length *= cmsInInch;
+        return Math.pow((2 * freq * length), 2) * unitWeight / (g * 1e5) * lbsInKg;
+    }
+    else {
+        return Math.pow((2 * freq * length), 2) * unitWeight / (g * 1e5);
+    }
 }
 /**
  * Pressure in MPa. Used as a dummy-check for steel strings to not exceed yield strength
@@ -11724,7 +11734,7 @@ function updateTension($el) {
     const lengthFromField = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .length-field input`).val();
     const length = (lengthFromField > 0) ? lengthFromField : +jquery__WEBPACK_IMPORTED_MODULE_0___default()('#default-scale').val();
     const courseMultiplier = +jquery__WEBPACK_IMPORTED_MODULE_0___default()(`#${id} .course-field input`).val();
-    const tension = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcTension(pitch, material, gauge, length) * courseMultiplier;
+    const tension = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcTension(pitch, material, gauge, length, 'in') * courseMultiplier;
     const pressure = _tensions__WEBPACK_IMPORTED_MODULE_1__.calcPressure(gauge, tension);
     const shouldWarn = material === 'PL'
         && pressure > _tensions__WEBPACK_IMPORTED_MODULE_1__.StainlessYieldStrength * courseMultiplier;

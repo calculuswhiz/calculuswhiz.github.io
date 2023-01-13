@@ -1,15 +1,18 @@
 {
   "scripts": {
-    "test": "mocha",
     "pack": "webpack",
-    "packWatch": "webpack --watch"
+    "packWatch": "webpack --watch",
+    "preTest": "gulp populateTestDirectory && tsc -p test/tsconfig.json",
+    "test": "npm run preTest && mocha"
   },
   "devDependencies": {
+    "@types/gulp": "^4.0.10",
     "@types/jquery": "^3.5.14",
     "@types/showdown": "^2.0.0",
     "@types/webpack": "^5.28.0",
     "assert": "^2.0.0",
     "css-loader": "^6.7.3",
+    "gulp": "^4.0.2",
     "image-loader": "^0.0.1",
     "mocha": "^10.2.0",
     "sass": "^1.57.1",
