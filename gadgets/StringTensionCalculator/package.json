@@ -8,6 +8,8 @@
   "devDependencies": {
     "@types/gulp": "^4.0.10",
     "@types/jquery": "^3.5.14",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
     "@types/showdown": "^2.0.0",
     "@types/webpack": "^5.28.0",
     "assert": "^2.0.0",
@@ -25,6 +27,8 @@
   },
   "dependencies": {
     "jquery": "^3.6.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "showdown": "^2.1.0"
   }
 }

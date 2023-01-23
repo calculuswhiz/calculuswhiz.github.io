@@ -8,33 +8,7 @@
 	<script src="./dist/calculator.bundle.js"></script>
 </head>
 <body>
-	<h1>String Tension Calculator</h1>
-	<p>
-		Values based on <a href="https://www.daddario.com/globalassets/pdfs/accessories/tension_chart_13934.pdf">D&apos;Addario pdf</a> data. For more details on how this works, please see <a href="./findings.html">this article</a>.
-	</p>
-	<p>
-		Assumptions: A4=440, equal temperament
-	</p>
-	<div id="app-root">
-		<div>
-			Default scale length (in.) used when adding new string <input type="number" id="default-scale" step="0.01" />
-		</div>
-		<div>
-			Total Tension: <span id="total-tension">...</span>
-		</div>
-		<div id="preset-functions">
-			<input type="button" id="add-string" value="Add String" />
-			<input type="button" id="dump-config" value="Dump Data" title="Dumps data to textbox so it can be loaded later" />
-			<input type="button" id="load-config" value="Load Data" title="Load saved data from textbox">
-		</div>
-		SaveData:
-		<textarea id="dump-area"></textarea>
-		<hr />
-		Presets: 
-		<select id="preset-menu">
-			<option value="">Make a selection</option>
-		</select>
-		<div id="tension-boxes"></div>
-	</div>
+	<div id="app-info-container"></div>
+	<div id="app-root-container"></div>
 </body>
 </html>

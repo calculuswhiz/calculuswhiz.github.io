@@ -22,9 +22,10 @@ export function estimateUnitWeight(material: StringMaterial, gauge: number) {
  * */
 export function pitchToFreq(pitch: string) {
   const [_, base, octave] = pitch.match(/(.+)(\d+)/) ?? [];
-  if (base == null)
+  const upperBase = base?.toUpperCase();
+  if (base == null || !(upperBase in freqs))
     return null;
-  return freqs[base.toUpperCase()] * 2 ** +octave;
+  return freqs[upperBase as keyof typeof freqs] * 2 ** +octave;
 }
 
 export type AcceptableUnits = 'in' | 'cm';
@@ -47,7 +48,7 @@ export function calcTension(
     length: number,
     unit: AcceptableUnits)
 {
-    const freq = pitchToFreq(pitch);
+    const freq = pitchToFreq(pitch) ?? 0;
     const unitWeight = estimateUnitWeight(material, gauge);
     if (unit === 'in') {
         length *= cmsInInch;

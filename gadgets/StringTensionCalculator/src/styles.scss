@@ -35,11 +35,10 @@ body {
     min-width: 540px;
     width: calc(100% - 10px);
     max-width: 600px;
-    // max-width: 50%;
     background-color: beige;
 }
 
-.string-fields {
+.course-fields {
     margin: 3px;
     display: flex;
     border: 1px solid gray;
@@ -65,7 +64,7 @@ body {
         }
     }
 
-    .string-buttons {
+    .course-buttons {
         input[type="button"] {
             width: 100%;
         }
