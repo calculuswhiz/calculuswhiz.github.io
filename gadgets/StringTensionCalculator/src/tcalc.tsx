@@ -8,7 +8,10 @@ import materialData from './materialQuadraticParams.json';
 import presets from './presets.json';
 import './styles.scss';
 
-interface StringStat {
+/**
+ * Holds parameters of a string's data
+ *  */
+interface CourseStat {
     /** Pitch in pitch-octave notation */
     pitch: string;
     /** The material of the string */
@@ -19,6 +22,15 @@ interface StringStat {
     scaleLength: number;
     /** # strings per course */
     courseCount: number;
+};
+
+/** Unit of measure used by app */
+enum Unit { US='US', Metric='Metric' }
+/** Look up unit names by type and system */
+const unitNameLookup =
+{
+	shortLength: { US: 'in', Metric: 'cm' } as {[system in Unit]: Tensions.AcceptableUnits},
+	weight: { US: 'lb', Metric: 'kg'} as {[system in Unit]: string}
 };
 
 // Set up audio context to allow pitch preview
@@ -45,7 +57,7 @@ function AppInfo()
 
 function PresetFunctions(props:
 {
-	addCourse: (stat: StringStat | null) => void,
+	addCourse: (stat: CourseStat | null) => void,
 	dumpData: () => void,
 	loadData: () => void
 })
@@ -74,7 +86,12 @@ function PresetFunctions(props:
 	</div>;
 }
 
-function PitchDialog(props: { confirmPitchInput: (note: string, octave: number) => void; }) {
+function PitchDialog(
+	props:
+	{
+		confirmPitchInput: (note: string, octave: number) => void;
+	}
+) {
     const pitches = Object.keys(frequencyData);
 
     const [confirmedNote, setConfirmedNote] = useState<string|null>(null);
@@ -134,8 +151,9 @@ function TensionBox(
 	props:
 	{
 		id: number;
-		initStat: StringStat|null;
-		update: (index: number, value: number|null) => void
+		initStat: CourseStat|null;
+		measuringSystem: Unit
+		update: (index: number, value: number|null) => void;
 	}
 )
 {
@@ -156,7 +174,8 @@ function TensionBox(
 	function getTension()
 	{
 		return Tensions.calcTension(
-			pitch, material, gauge, scaleLength, 'in'
+			pitch, material, gauge, scaleLength,
+			unitNameLookup.shortLength[props.measuringSystem]
 		) * courseMultiplier;
 	}
 
@@ -170,7 +189,7 @@ function TensionBox(
 			const newTension = getTension();
 			props.update(props.id, newTension);
 		},
-		[pitch, material, gauge, scaleLength, courseMultiplier]
+		[pitch, material, gauge, scaleLength, courseMultiplier, props.measuringSystem]
 	);
 
 	const materials: {[key: string]: MaterialRegressionEntry} = materialData;
@@ -209,7 +228,9 @@ function TensionBox(
 				}} />
 			</div>
 			<div className="length-field">
-				<label>Scale Length (in.)</label>
+				<label>
+					Scale Length ({unitNameLookup.shortLength[props.measuringSystem]})
+				</label>
 				<input type="text" value={scaleLength} onChange={e => {
 					setScaleLength(+e.target.value);
 				}} />
@@ -222,7 +243,8 @@ function TensionBox(
 			</div>
 		</div>
 		<div className="tension-output-field">
-			Tension <input readOnly value={getTension()} />
+			Tension ({unitNameLookup.weight[props.measuringSystem]})
+			<input readOnly value={getTension()} />
 		</div>
 		<div className="course-buttons">
 			<input type="button" value="Remove" onClick={_ => {
@@ -260,9 +282,11 @@ function AppRoot()
 	const [tensions, setTensions] = useState(new Array<number>);
 	const [totalTension, setTotalTension] = useState(0);
 	const [tensionBoxProps, setTensionBoxProps]
-		= useState(new Array<StringStat|null>);
+		= useState(new Array<CourseStat|null>);
 
-	function addCourse(stat: StringStat | null) {
+	const [measuringSystem, setMeasuringSystem] = useState(Unit.US);
+
+	function addCourse(stat: CourseStat | null) {
 		setTensionBoxProps(tensionBoxProps.concat(stat));
 	}
 
@@ -285,7 +309,7 @@ function AppRoot()
 		setTotalTension(
 			tensions.reduce((a, b) => a + b, 0)
 		);
-	}, [tensions]);
+	}, [tensions, measuringSystem]);
 
 	/**
 	 * @param value New tension value. If null - delete
@@ -316,13 +340,13 @@ function AppRoot()
 	}
 
 	function loadPreset(preset: string) {
-		const stats = presets[preset as keyof typeof presets] as StringStat[] ?? [];
+		const stats = presets[preset as keyof typeof presets] as CourseStat[] ?? [];
 		setTensionBoxProps(stats);
 	}
 
 	return <>
 		<div>
-			Default scale length (in.) used when adding new string
+			Default scale length ({unitNameLookup.weight[measuringSystem]}) used when adding new string
 			<input
 				type="number"
 				id="default-scale"
@@ -332,8 +356,12 @@ function AppRoot()
 			/>
 		</div>
 		<div>
-			Total Tension:
-			<span id="total-tension">{totalTension > 0 ? totalTension : '...'}</span>
+			<label>Go metric</label>
+			<input type="checkbox"
+				onChange={e =>
+					setMeasuringSystem(e.target.checked ? Unit.Metric : Unit.US)
+				}
+			/>
 		</div>
 		<PresetFunctions
 			addCourse={addCourse}
@@ -343,6 +371,14 @@ function AppRoot()
 		SaveData:
 		<textarea id="dump-area"></textarea>
 		<hr />
+		<div>
+			Total Tension:
+			<span id="total-tension">
+				{totalTension > 0 ? totalTension.toFixed(2) : '...'}
+				&nbsp;
+				{unitNameLookup.weight[measuringSystem]}
+			</span>
+		</div>
 		Presets:
 		<select
 			id="preset-menu"
@@ -366,6 +402,7 @@ function AppRoot()
 					key={JSON.stringify(stat) + '-' + i}
 					id={i}
 					initStat={stat}
+					measuringSystem={measuringSystem}
 					update={setTensionAt}
 				/>
 			)

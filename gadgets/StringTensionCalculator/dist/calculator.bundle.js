@@ -34094,6 +34094,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 ;
+/** Unit of measure used by app */
+var Unit;
+(function (Unit) {
+    Unit["US"] = "US";
+    Unit["Metric"] = "Metric";
+})(Unit || (Unit = {}));
+/** Look up unit names by type and system */
+const unitNameLookup = {
+    shortLength: { US: 'in', Metric: 'cm' },
+    weight: { US: 'lb', Metric: 'kg' }
+};
 // Set up audio context to allow pitch preview
 const audioCtx = new (AudioContext !== null && AudioContext !== void 0 ? AudioContext : window.webkitAudioContext)();
 const oscillator = audioCtx.createOscillator();
@@ -34153,7 +34164,7 @@ function TensionBox(props) {
     const [courseMultiplier, setCourseMultiplier] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_k = (_j = props.initStat) === null || _j === void 0 ? void 0 : _j.courseCount) !== null && _k !== void 0 ? _k : 1);
     const [showingPitchDialog, setShowingPitchDialog] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
     function getTension() {
-        return _tensions__WEBPACK_IMPORTED_MODULE_2__.calcTension(pitch, material, gauge, scaleLength, 'in') * courseMultiplier;
+        return _tensions__WEBPACK_IMPORTED_MODULE_2__.calcTension(pitch, material, gauge, scaleLength, unitNameLookup.shortLength[props.measuringSystem]) * courseMultiplier;
     }
     function confirmPitchInput(note, octave) {
         setPitch(note + octave);
@@ -34162,7 +34173,7 @@ function TensionBox(props) {
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         const newTension = getTension();
         props.update(props.id, newTension);
-    }, [pitch, material, gauge, scaleLength, courseMultiplier]);
+    }, [pitch, material, gauge, scaleLength, courseMultiplier, props.measuringSystem]);
     const materials = _materialQuadraticParams_json__WEBPACK_IMPORTED_MODULE_4__;
     const materialEntries = Object.entries(materials);
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: 'course-input' + props.id, className: 'course-fields' },
@@ -34185,7 +34196,10 @@ function TensionBox(props) {
                         setGauge(+e.target.value);
                     } })),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "length-field" },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Scale Length (in.)"),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null,
+                    "Scale Length (",
+                    unitNameLookup.shortLength[props.measuringSystem],
+                    ")"),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "text", value: scaleLength, onChange: e => {
                         setScaleLength(+e.target.value);
                     } })),
@@ -34195,7 +34209,9 @@ function TensionBox(props) {
                         setCourseMultiplier(+e.target.value);
                     } }))),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "tension-output-field" },
-            "Tension ",
+            "Tension (",
+            unitNameLookup.weight[props.measuringSystem],
+            ")",
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { readOnly: true, value: getTension() })),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "course-buttons" },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "button", value: "Remove", onClick: _ => {
@@ -34224,6 +34240,7 @@ function AppRoot() {
     const [tensions, setTensions] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Array);
     const [totalTension, setTotalTension] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
     const [tensionBoxProps, setTensionBoxProps] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Array);
+    const [measuringSystem, setMeasuringSystem] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(Unit.US);
     function addCourse(stat) {
         setTensionBoxProps(tensionBoxProps.concat(stat));
     }
@@ -34242,7 +34259,7 @@ function AppRoot() {
     }
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         setTotalTension(tensions.reduce((a, b) => a + b, 0));
-    }, [tensions]);
+    }, [tensions, measuringSystem]);
     /**
      * @param value New tension value. If null - delete
      * */
@@ -34274,21 +34291,29 @@ function AppRoot() {
     }
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
-            "Default scale length (in.) used when adding new string",
+            "Default scale length (",
+            unitNameLookup.weight[measuringSystem],
+            ") used when adding new string",
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "number", id: "default-scale", step: "0.01", value: defaultLen, onChange: e => setDefaultLen(+e.target.value) })),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
-            "Total Tension:",
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { id: "total-tension" }, totalTension > 0 ? totalTension : '...')),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Go metric"),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "checkbox", onChange: e => setMeasuringSystem(e.target.checked ? Unit.Metric : Unit.US) })),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PresetFunctions, { addCourse: addCourse, dumpData: dumpData, loadData: loadData }),
         "SaveData:",
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("textarea", { id: "dump-area" }),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
+            "Total Tension:",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { id: "total-tension" },
+                totalTension > 0 ? totalTension.toFixed(2) : '...',
+                "\u00A0",
+                unitNameLookup.weight[measuringSystem])),
         "Presets:",
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", { id: "preset-menu", defaultValue: '', onChange: e => loadPreset(e.target.value) },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", { value: "" }, "Make a selection"),
             Object.keys(_presets_json__WEBPACK_IMPORTED_MODULE_5__)
                 .map(inst => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", { key: inst, value: inst }, inst))),
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "tension-boxes" }, tensionBoxProps.map((stat, i) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TensionBox, { key: JSON.stringify(stat) + '-' + i, id: i, initStat: stat, update: setTensionAt }))));
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "tension-boxes" }, tensionBoxProps.map((stat, i) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TensionBox, { key: JSON.stringify(stat) + '-' + i, id: i, initStat: stat, measuringSystem: measuringSystem, update: setTensionAt }))));
 }
 document.addEventListener('DOMContentLoaded', () => {
     const appInfo = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(document.getElementById('app-info-container'));
