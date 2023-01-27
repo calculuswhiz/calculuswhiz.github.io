@@ -1,5 +1,9 @@
-// Paste into your browser's console with F12. A text area should pop up on the screen displaying progress for every lesson.
-// To close it, click the textarea and press Escape
+/* Paste into your browser's console with F12. A text area should pop up on the screen displaying progress for every lesson.
+To close it, click the textarea and press Escape.
+Or, you can make a new bookmark, and enter
+javascript:
+followed by this script as the URL.
+*/
 (() => {
 	class LessonNode {
 		constructor(props) {
@@ -19,13 +23,13 @@
 	/** @type Map<number, LessonNode> */
 	const idMap = new Map();
 
-	// lesson_map holds all the data
+	/* lesson_map holds all the data */
 	const lessonMap = window.lesson_map;
 	const rootID = lessonMap.master_department_id;
 	const root = new LessonNode(rootID, "Root Directory");
 	idMap.set(rootID, root);
 
-	// Departments have content
+	/* Departments have content */
 	for (const dept of lessonMap.departments) {
 		const childNode = new LessonNode({
 			id: dept.id, 
@@ -38,7 +42,7 @@
 		idMap.get(dept.parentID).children.push(childNode);
 	}
 
-	// media_groups are lessons
+	/* media_groups are lessons */
 	for (const group of lessonMap.media_groups) {
 		const childNode = new LessonNode({
 			id: group.id, 
@@ -58,7 +62,7 @@
 		value.children.sort((a, b) => a.priority - b.priority);
 	}
 
-	// Traverse and report:
+	/* Traverse and report: */
 	const report = [];
 	function reportNode(node, currentPath=[]) {
 		if (node.children.length === 0) {
