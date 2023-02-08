@@ -21,7 +21,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\nbody #app-root-container #input-fields {\n  display: table;\n}\nbody #app-root-container #input-fields > div {\n  display: table-row;\n}\nbody #app-root-container #input-fields > div > label, body #app-root-container #input-fields > div input {\n  display: table-cell;\n}\nbody #app-root-container #data-display header {\n  display: flex;\n}\nbody #app-root-container #data-display header span {\n  flex-grow: 1;\n}\nbody #app-root-container #data-display #data-grid {\n  border-collapse: collapse;\n}\nbody #app-root-container #data-display #data-grid thead {\n  font-weight: bold;\n}\nbody #app-root-container #data-display #data-grid thead td {\n  border-bottom: 1px solid black;\n  padding-right: 20px;\n}\nbody #app-root-container #data-display #data-grid tbody tr:nth-child(odd) {\n  background-color: #ccc;\n}\nbody #app-root-container #data-display #data-grid tbody td {\n  padding: 3px;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACC,uBAAA;AACD;AAEE;EACC,cAAA;AAAH;AAEG;EACC,kBAAA;AAAJ;AAEI;EACC,mBAAA;AAAL;AAMG;EACC,aAAA;AAJJ;AAMI;EACC,YAAA;AAJL;AAQG;EACC,yBAAA;AANJ;AAQI;EACC,iBAAA;AANL;AAQK;EACC,8BAAA;EACA,mBAAA;AANN;AAWK;EACC,sBAAA;AATN;AAYK;EACC,YAAA;AAVN","sourcesContent":["body {\r\n\tfont-family: sans-serif;\r\n\r\n\t#app-root-container {\r\n\t\t#input-fields {\r\n\t\t\tdisplay: table;\r\n\r\n\t\t\t> div {\r\n\t\t\t\tdisplay: table-row;\r\n\r\n\t\t\t\t> label,input {\r\n\t\t\t\t\tdisplay: table-cell;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t#data-display {\r\n\t\t\theader {\r\n\t\t\t\tdisplay: flex;\r\n\r\n\t\t\t\tspan {\r\n\t\t\t\t\tflex-grow: 1;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\t\t\t#data-grid {\r\n\t\t\t\tborder-collapse: collapse;\r\n\r\n\t\t\t\tthead {\r\n\t\t\t\t\tfont-weight: bold;\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tborder-bottom: 1px solid black;\r\n\t\t\t\t\t\tpadding-right: 20px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\ttbody {\r\n\t\t\t\t\ttr:nth-child(odd) {\r\n\t\t\t\t\t\tbackground-color: #ccc;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tpadding: 3px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\nbody #app-root-container #input-fields {\n  display: table;\n}\nbody #app-root-container #input-fields > div {\n  display: table-row;\n}\nbody #app-root-container #input-fields > div > label, body #app-root-container #input-fields > div input {\n  display: table-cell;\n  padding-bottom: 5px;\n}\nbody #app-root-container #data-display header {\n  display: flex;\n}\nbody #app-root-container #data-display header span {\n  flex-grow: 1;\n}\nbody #app-root-container #data-display #data-grid {\n  border-collapse: collapse;\n}\nbody #app-root-container #data-display #data-grid thead {\n  font-weight: bold;\n}\nbody #app-root-container #data-display #data-grid thead td {\n  border-bottom: 1px solid black;\n  padding-right: 20px;\n}\nbody #app-root-container #data-display #data-grid tbody tr:nth-child(odd) {\n  background-color: #ccc;\n}\nbody #app-root-container #data-display #data-grid tbody td {\n  padding: 3px;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACC,uBAAA;AACD;AAEE;EACC,cAAA;AAAH;AAEG;EACC,kBAAA;AAAJ;AAEI;EACC,mBAAA;EACA,mBAAA;AAAL;AAMG;EACC,aAAA;AAJJ;AAMI;EACC,YAAA;AAJL;AAQG;EACC,yBAAA;AANJ;AAQI;EACC,iBAAA;AANL;AAQK;EACC,8BAAA;EACA,mBAAA;AANN;AAWK;EACC,sBAAA;AATN;AAYK;EACC,YAAA;AAVN","sourcesContent":["body {\r\n\tfont-family: sans-serif;\r\n\r\n\t#app-root-container {\r\n\t\t#input-fields {\r\n\t\t\tdisplay: table;\r\n\r\n\t\t\t> div {\r\n\t\t\t\tdisplay: table-row;\r\n\r\n\t\t\t\t> label,input {\r\n\t\t\t\t\tdisplay: table-cell;\r\n\t\t\t\t\tpadding-bottom: 5px;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t#data-display {\r\n\t\t\theader {\r\n\t\t\t\tdisplay: flex;\r\n\r\n\t\t\t\tspan {\r\n\t\t\t\t\tflex-grow: 1;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\t\t\t#data-grid {\r\n\t\t\t\tborder-collapse: collapse;\r\n\r\n\t\t\t\tthead {\r\n\t\t\t\t\tfont-weight: bold;\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tborder-bottom: 1px solid black;\r\n\t\t\t\t\t\tpadding-right: 20px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\ttbody {\r\n\t\t\t\t\ttr:nth-child(odd) {\r\n\t\t\t\t\t\tbackground-color: #ccc;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tpadding: 3px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33984,12 +33984,19 @@ function AppInfo() {
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Generic Mortgage Payment Calculator")));
 }
 function NumericInput(props) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: props.id },
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "number", value: props.value, onChange: e => props.setter(+e.target.value) }));
 }
 const millisPerYear = 365.24 * 24 * 60 * 60 * 1000;
+/** Do not calculate if this much principal cannot be paid */
+const noCalcPercent = .1;
 function getPaymentData(principal, compoundRate, paymentPerCycle, escrowAdjustment, paymentCycles) {
+    const paymentThreshold = (escrowAdjustment
+        + (compoundRate * principal)) * (1 + noCalcPercent / 100);
+    if (paymentPerCycle <= paymentThreshold) {
+        throw Error(`Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.`);
+    }
     const millisPerCycle = millisPerYear / paymentCycles;
     const paymentData = [];
     let remainingBalance = principal;
@@ -33997,6 +34004,9 @@ function getPaymentData(principal, compoundRate, paymentPerCycle, escrowAdjustme
     while (remainingBalance >= 0) {
         const interest = compoundRate * remainingBalance;
         const principalPayment = paymentPerCycle - interest - escrowAdjustment;
+        if (principalPayment <= 0) {
+            throw Error('Negative principal payment detected. Terminating.');
+        }
         paymentData.push({
             timeStamp: new Date(millis),
             totalAmount: paymentPerCycle,
@@ -34009,99 +34019,113 @@ function getPaymentData(principal, compoundRate, paymentPerCycle, escrowAdjustme
     }
     if (remainingBalance < 0) {
         // Zero out the balance
-        const finalPayment = paymentData.slice(-1)[0].remainingBalance + escrowAdjustment;
+        const finalBalance = paymentData.slice(-1)[0].remainingBalance;
         paymentData.push({
             timeStamp: new Date(millis + millisPerCycle),
-            totalAmount: finalPayment,
+            totalAmount: finalBalance + escrowAdjustment,
             remainingBalance: 0,
-            principal: finalPayment,
+            principal: finalBalance,
             interest: 0
         });
     }
     return paymentData;
 }
-/** Do not calculate if this much principal cannot be paid */
-const lifeGuard = 100;
 function DataDisplay(props) {
     const effectivePrincipal = props.principal - props.initialPayment;
     const compoundRate = props.loanPercent / 100 / props.paymentCycles;
-    if (props.paymentPerCycle - lifeGuard
-        <= props.escrowAdjustment + compoundRate * effectivePrincipal) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
-            "This will take too long! You are paying ",
-            props.paymentPerCycle,
-            ". You need to pay ",
-            props.escrowAdjustment + compoundRate * effectivePrincipal + lifeGuard,
-            " for this calculator to work.");
+    const parameterValidators = [
+        [props.paymentCycles > 0, "Payment Cycles is not > 0"],
+        [props.loanPercent >= 0, "Loan Percent is not >= 0"],
+        [props.principal > 0, "Principal is not > 0"],
+        [props.initialPayment >= 0, "Initial Payment is not >= 0"],
+        [props.paymentPerCycle > 0, "Payment Per Cycle is not > 0"],
+        [effectivePrincipal > 0, "Trivial solution: only 1 payment required."]
+    ];
+    const failedParams = parameterValidators.filter(p => !p[0]);
+    if (failedParams.length > 0) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, failedParams.map(fp => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", { key: fp[1] }, fp[1])));
     }
-    const getPaymentDataForPrincipal = (principal) => getPaymentData(principal, compoundRate, props.paymentPerCycle, props.escrowAdjustment, props.paymentCycles);
-    // Real payment
-    const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
-    const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
-    const interestEfficiency = 1 - totalInterestPaid / props.principal;
-    const finalPaymentDate = realPaymentData.slice(-1)[0].timeStamp;
-    // Speculative payment
-    const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
-    const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
-    const initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display" },
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-                "Payoff in ",
-                realPaymentData.length - 1,
-                " payments"),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-                "Total Interest: ",
-                totalInterestPaid.toFixed(2)),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { title: "Higher is better" },
-                "Interest Efficiency: ",
-                (100 * interestEfficiency).toFixed(2),
-                "%"),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-                "Initial Payment effect: ",
-                (100 * initialPaymentEffect).toFixed(2),
-                "%"),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-                "Final payment: ",
-                finalPaymentDate.toDateString())),
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", { id: "data-grid" },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null,
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null,
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment #"),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Date"),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment"),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Principal"),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Interest"),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Escrow/other"),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Remaining Principal"))),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.timeStamp.toDateString()),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.totalAmount.toFixed(2)),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.principal.toFixed(2)),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.interest.toFixed(2)),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, props.escrowAdjustment.toFixed(2)),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.remainingBalance.toFixed(2))))))));
+    function getPaymentDataForPrincipal(principal) {
+        return getPaymentData(principal, compoundRate, props.paymentPerCycle, props.escrowAdjustment, props.paymentCycles);
+    }
+    try {
+        // Real payment
+        const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
+        const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+        const interestEfficiency = 1 - totalInterestPaid / props.principal;
+        const finalPaymentDate = realPaymentData.slice(-1)[0].timeStamp;
+        // Speculative payment
+        let initialPaymentEffect;
+        try {
+            const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
+            const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+            initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
+        }
+        catch (_) {
+            initialPaymentEffect = NaN;
+        }
+        return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display" },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+                    realPaymentData.length - 1,
+                    " payments, matures on ",
+                    finalPaymentDate.toDateString()),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+                    "Total Interest: ",
+                    totalInterestPaid.toFixed(2)),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { title: "Higher is better" },
+                    "Interest Efficiency: ",
+                    (100 * interestEfficiency).toFixed(2),
+                    "%"),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+                    "Initial Payment effect: ",
+                    (100 * initialPaymentEffect).toFixed(2),
+                    "%")),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", { id: "data-grid" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null,
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null,
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment #"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Date"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Principal"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Interest"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Escrow/other"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Remaining Principal"))),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.timeStamp.toDateString()),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.totalAmount.toFixed(2)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.principal.toFixed(2)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.interest.toFixed(2)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, props.escrowAdjustment.toFixed(2)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.remainingBalance.toFixed(2))))))));
+    }
+    catch (e) {
+        if (e instanceof Error)
+            return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, e.message);
+        else
+            return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, "Calculation failed!");
+    }
 }
 function AppRoot() {
     const [paymentCycles, setPaymentCycles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(12);
-    const [loanPercent, setLoanPercent] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(3);
+    const [loanPercent, setLoanPercent] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(5);
     const [principal, setPrincipal] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(100000);
     const [initialPayment, setInitialPayment] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
     const [paymentPerCycle, setPaymentPerCycle] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1000);
-    const [escrowAdjustment, setEscrowAdjustment] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+    const [escrowAdjustment, setEscrowAdjustment] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(200);
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "input-fields" },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { id: "payment-cycles-field", label: "Payments Per Year", value: paymentCycles, setter: setPaymentCycles }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { id: "loan-rate-field", label: "Loan Rate (%)", value: loanPercent, setter: setLoanPercent }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Payments Per Year", value: paymentCycles, setter: setPaymentCycles }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Loan Rate (%)", value: loanPercent, setter: setLoanPercent }),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
                 "-- (Per cycle: ",
                 (loanPercent / paymentCycles).toFixed(4),
                 "%)"),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { id: "principal-field", label: "Starting Principal (P)", value: principal, setter: setPrincipal }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { id: "initial-payment-field", label: "Initial Payment", value: initialPayment, setter: setInitialPayment }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { id: "payment-per-cycle-field", label: "Payment per cycle", value: paymentPerCycle, setter: setPaymentPerCycle }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { id: "escrow-adjustment-field", label: "Escrow Adjustment (per cycle)", value: escrowAdjustment, setter: setEscrowAdjustment })),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Starting Principal (P)", value: principal, setter: setPrincipal }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Initial Payment", value: initialPayment, setter: setInitialPayment }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Payment per cycle", value: paymentPerCycle, setter: setPaymentPerCycle }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Escrow Adjustment (per cycle)", value: escrowAdjustment, setter: setEscrowAdjustment })),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DataDisplay, { paymentCycles: paymentCycles, loanPercent: loanPercent, principal: principal, initialPayment: initialPayment, paymentPerCycle: paymentPerCycle, escrowAdjustment: escrowAdjustment }));
 }
