@@ -1,0 +1,50 @@
+body {
+	font-family: sans-serif;
+
+	#app-root-container {
+		#input-fields {
+			display: table;
+
+			> div {
+				display: table-row;
+
+				> label,input {
+					display: table-cell;
+				}
+			}
+		}
+
+		#data-display {
+			header {
+				display: flex;
+
+				span {
+					flex-grow: 1;
+				}
+			}
+
+			#data-grid {
+				border-collapse: collapse;
+
+				thead {
+					font-weight: bold;
+
+					td {
+						border-bottom: 1px solid black;
+						padding-right: 20px;
+					}
+				}
+
+				tbody {
+					tr:nth-child(odd) {
+						background-color: #ccc;
+					}
+
+					td {
+						padding: 3px;
+					}
+				}
+			}
+		}
+	}
+}
