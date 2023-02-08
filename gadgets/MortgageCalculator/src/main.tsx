@@ -31,6 +31,49 @@ type ActivityFields = {
 };
 
 const millisPerYear = 365.24 * 24 * 60 * 60 * 1000;
+
+function getPaymentData(
+	principal: number, compoundRate: number, paymentPerCycle: number,
+	escrowAdjustment: number, paymentCycles: number
+) {
+	const millisPerCycle = millisPerYear / paymentCycles;
+
+	const paymentData: ActivityFields[] = [];
+
+	let remainingBalance = principal;
+	let millis = new Date().getTime();
+
+	while (remainingBalance >= 0) {
+		const interest = compoundRate * remainingBalance;
+		const principalPayment = paymentPerCycle - interest - escrowAdjustment;
+
+		paymentData.push({
+            timeStamp: new Date(millis),
+            totalAmount: paymentPerCycle,
+            remainingBalance: remainingBalance,
+            principal: principalPayment,
+            interest: interest
+        });
+
+        millis += millisPerCycle;
+        remainingBalance -= principalPayment;
+	}
+
+	if (remainingBalance < 0) {
+		// Zero out the balance
+		const finalPayment = paymentData.slice(-1)[0].remainingBalance + escrowAdjustment;
+		paymentData.push({
+			timeStamp: new Date(millis + millisPerCycle),
+			totalAmount: finalPayment,
+			remainingBalance: 0,
+			principal: finalPayment,
+			interest: 0
+		});
+	}
+
+	return paymentData;
+}
+
 /** Do not calculate if this much principal cannot be paid */
 const lifeGuard = 100;
 
@@ -55,51 +98,32 @@ function DataDisplay(props: {
 		</div>;
 	}
 
-	const millisPerCycle = millisPerYear / props.paymentCycles;
+	const getPaymentDataForPrincipal =
+		(principal: number) => getPaymentData(
+			principal, compoundRate, props.paymentPerCycle,
+			props.escrowAdjustment, props.paymentCycles
+		);
 
-	const paymentData: ActivityFields[] = [];
-
-	let millis = new Date().getTime();
-	let remainingBalance = effectivePrincipal;
-	let totalInterestPaid = 0;
-	while (remainingBalance >= 0) {
-		const interest = compoundRate * remainingBalance;
-		totalInterestPaid += interest;
-		const principalPayment = props.paymentPerCycle - interest - props.escrowAdjustment;
-
-		paymentData.push({
-            timeStamp: new Date(millis),
-            totalAmount: props.paymentPerCycle,
-            remainingBalance: remainingBalance,
-            principal: principalPayment,
-            interest: interest
-        });
-
-        millis += millisPerCycle;
-        remainingBalance -= principalPayment;
-	}
-
-	if (remainingBalance < 0) {
-		const finalPayment = paymentData.slice(-1)[0].remainingBalance + props.escrowAdjustment;
-		// Zero it out
-		paymentData.push({
-			timeStamp: new Date(millis + millisPerCycle),
-			totalAmount: finalPayment,
-			remainingBalance: 0,
-			principal: finalPayment,
-			interest: 0
-		});
-	}
-
+	// Real payment
+	const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
+	const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
 	const interestEfficiency = 1 - totalInterestPaid / props.principal;
-	const finalPaymentDate = paymentData.slice(-1)[0].timeStamp;
+	const finalPaymentDate = realPaymentData.slice(-1)[0].timeStamp;
+
+	// Speculative payment
+	const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
+	const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+	const initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
 
 	return <div id="data-display">
 		<header>
-			<span>Payoff in {paymentData.length - 1} payments</span>
+			<span>Payoff in {realPaymentData.length - 1} payments</span>
 			<span>Total Interest: {totalInterestPaid.toFixed(2)}</span>
 			<span title="Higher is better">
 				Interest Efficiency: {(100 * interestEfficiency).toFixed(2)}%
+			</span>
+			<span>
+				Initial Payment effect: {(100 * initialPaymentEffect).toFixed(2)}%
 			</span>
 			<span>Final payment: {finalPaymentDate.toDateString()}</span>
 		</header>
@@ -117,7 +141,7 @@ function DataDisplay(props: {
 			</thead>
 			<tbody>
 			{
-				paymentData.map((payment, idx) => (
+				realPaymentData.map((payment, idx) => (
 					<tr key={payment.timeStamp.toString()}>
 						<td>{idx + 1}</td>
 						<td>{payment.timeStamp.toDateString()}</td>

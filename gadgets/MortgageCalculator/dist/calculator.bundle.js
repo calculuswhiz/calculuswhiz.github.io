@@ -33989,6 +33989,37 @@ function NumericInput(props) {
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "number", value: props.value, onChange: e => props.setter(+e.target.value) }));
 }
 const millisPerYear = 365.24 * 24 * 60 * 60 * 1000;
+function getPaymentData(principal, compoundRate, paymentPerCycle, escrowAdjustment, paymentCycles) {
+    const millisPerCycle = millisPerYear / paymentCycles;
+    const paymentData = [];
+    let remainingBalance = principal;
+    let millis = new Date().getTime();
+    while (remainingBalance >= 0) {
+        const interest = compoundRate * remainingBalance;
+        const principalPayment = paymentPerCycle - interest - escrowAdjustment;
+        paymentData.push({
+            timeStamp: new Date(millis),
+            totalAmount: paymentPerCycle,
+            remainingBalance: remainingBalance,
+            principal: principalPayment,
+            interest: interest
+        });
+        millis += millisPerCycle;
+        remainingBalance -= principalPayment;
+    }
+    if (remainingBalance < 0) {
+        // Zero out the balance
+        const finalPayment = paymentData.slice(-1)[0].remainingBalance + escrowAdjustment;
+        paymentData.push({
+            timeStamp: new Date(millis + millisPerCycle),
+            totalAmount: finalPayment,
+            remainingBalance: 0,
+            principal: finalPayment,
+            interest: 0
+        });
+    }
+    return paymentData;
+}
 /** Do not calculate if this much principal cannot be paid */
 const lifeGuard = 100;
 function DataDisplay(props) {
@@ -34003,43 +34034,21 @@ function DataDisplay(props) {
             props.escrowAdjustment + compoundRate * effectivePrincipal + lifeGuard,
             " for this calculator to work.");
     }
-    const millisPerCycle = millisPerYear / props.paymentCycles;
-    const paymentData = [];
-    let millis = new Date().getTime();
-    let remainingBalance = effectivePrincipal;
-    let totalInterestPaid = 0;
-    while (remainingBalance >= 0) {
-        const interest = compoundRate * remainingBalance;
-        totalInterestPaid += interest;
-        const principalPayment = props.paymentPerCycle - interest - props.escrowAdjustment;
-        paymentData.push({
-            timeStamp: new Date(millis),
-            totalAmount: props.paymentPerCycle,
-            remainingBalance: remainingBalance,
-            principal: principalPayment,
-            interest: interest
-        });
-        millis += millisPerCycle;
-        remainingBalance -= principalPayment;
-    }
-    if (remainingBalance < 0) {
-        const finalPayment = paymentData.slice(-1)[0].remainingBalance + props.escrowAdjustment;
-        // Zero it out
-        paymentData.push({
-            timeStamp: new Date(millis + millisPerCycle),
-            totalAmount: finalPayment,
-            remainingBalance: 0,
-            principal: finalPayment,
-            interest: 0
-        });
-    }
+    const getPaymentDataForPrincipal = (principal) => getPaymentData(principal, compoundRate, props.paymentPerCycle, props.escrowAdjustment, props.paymentCycles);
+    // Real payment
+    const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
+    const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
     const interestEfficiency = 1 - totalInterestPaid / props.principal;
-    const finalPaymentDate = paymentData.slice(-1)[0].timeStamp;
+    const finalPaymentDate = realPaymentData.slice(-1)[0].timeStamp;
+    // Speculative payment
+    const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
+    const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+    const initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
                 "Payoff in ",
-                paymentData.length - 1,
+                realPaymentData.length - 1,
                 " payments"),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
                 "Total Interest: ",
@@ -34047,6 +34056,10 @@ function DataDisplay(props) {
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { title: "Higher is better" },
                 "Interest Efficiency: ",
                 (100 * interestEfficiency).toFixed(2),
+                "%"),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+                "Initial Payment effect: ",
+                (100 * initialPaymentEffect).toFixed(2),
                 "%"),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
                 "Final payment: ",
@@ -34061,7 +34074,7 @@ function DataDisplay(props) {
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Interest"),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Escrow/other"),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Remaining Principal"))),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, paymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.timeStamp.toDateString()),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.totalAmount.toFixed(2)),
