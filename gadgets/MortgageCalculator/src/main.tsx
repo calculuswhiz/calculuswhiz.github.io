@@ -4,6 +4,15 @@ import * as mortgageMethods from './mortgageMethods';
 
 import './styles.scss';
 
+const currencyFormatter = new Intl.NumberFormat(
+	'en-US',
+	{ minimumFractionDigits: 2, maximumFractionDigits: 2 }
+);
+
+function formatDollars(dollars: number) {
+	return currencyFormatter.format(dollars);
+}
+
 function AppInfo() {
 	return <>
 		<header>
@@ -44,7 +53,11 @@ function TemplateTextDiv(props: {
 	for (const [index, text] of decomposed.entries()) {
 		nodes.push(<span key={`text${index}`}>{text}</span>);
 		nodes.push(
-			<strong key={`index${index}`}>{props.displayItems[index]}</strong>
+			<strong key={`index${index}`}>
+			{
+				props.displayItems[index]
+			}
+			</strong>
 		);
 	}
 
@@ -168,12 +181,12 @@ function DataDisplay(props: {
 					title="Total Payment"
 					help="Principal + Interest"
 					template="?"
-					displayItems={[(totalInterestPaid + props.principal).toFixed(2)]} />
+					displayItems={[formatDollars(totalInterestPaid + props.principal)]} />
 				<AggregateItem
 					title="Total Interest"
 					help="How much interest is paid when the loan matures"
 					template="?"
-					displayItems={[totalInterestPaid.toFixed(2)]} />
+					displayItems={[formatDollars(totalInterestPaid)]} />
 				<AggregateItem
 					title="Interest Efficiency"
 					help="1 - (Interest paid / original principal)"
@@ -227,11 +240,11 @@ function DataDisplay(props: {
 						<tr key={payment.timeStamp.toString()}>
 							<td>{idx + 1}</td>
 							<td>{payment.timeStamp.toDateString()}</td>
-							<td>{payment.totalAmount.toFixed(2)}</td>
-							<td>{payment.principal.toFixed(2)}</td>
-							<td>{payment.interest.toFixed(2)}</td>
-							<td>{props.escrowAdjustment.toFixed(2)}</td>
-							<td>{payment.remainingBalance.toFixed(2)}</td>
+							<td>{formatDollars(payment.totalAmount)}</td>
+							<td>{formatDollars(payment.principal)}</td>
+							<td>{formatDollars(payment.interest)}</td>
+							<td>{formatDollars(props.escrowAdjustment)}</td>
+							<td>{formatDollars(payment.remainingBalance)}</td>
 						</tr>
 					))
 				}

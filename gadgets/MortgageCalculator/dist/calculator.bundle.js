@@ -34038,6 +34038,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const currencyFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function formatDollars(dollars) {
+    return currencyFormatter.format(dollars);
+}
 function AppInfo() {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
@@ -34122,8 +34126,8 @@ function DataDisplay(props) {
                         totalPayments,
                         (totalPayments / props.annualPaymentCycles).toFixed(2)
                     ] }),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Payment", help: "Principal + Interest", template: "?", displayItems: [(totalInterestPaid + props.principal).toFixed(2)] }),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Interest", help: "How much interest is paid when the loan matures", template: "?", displayItems: [totalInterestPaid.toFixed(2)] }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Payment", help: "Principal + Interest", template: "?", displayItems: [formatDollars(totalInterestPaid + props.principal)] }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Interest", help: "How much interest is paid when the loan matures", template: "?", displayItems: [formatDollars(totalInterestPaid)] }),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Interest Efficiency", help: "1 - (Interest paid / original principal)", template: "?%", displayItems: [(100 * interestEfficiency).toFixed(2)] }),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Initial Payment Effect", help: "How much the initial payment contributes to interest efficiency", template: "?%", displayItems: [(100 * initialPaymentEffect).toFixed(2)] })),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
@@ -34150,11 +34154,11 @@ function DataDisplay(props) {
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.timeStamp.toDateString()),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.totalAmount.toFixed(2)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.principal.toFixed(2)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.interest.toFixed(2)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, props.escrowAdjustment.toFixed(2)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.remainingBalance.toFixed(2))))))));
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.totalAmount)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.principal)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.interest)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(props.escrowAdjustment)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.remainingBalance))))))));
     }
     catch (e) {
         if (e instanceof Error)
