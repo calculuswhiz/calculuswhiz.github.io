@@ -21,7 +21,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\nbody #app-root-container #input-fields {\n  display: table;\n}\nbody #app-root-container #input-fields > div {\n  display: table-row;\n}\nbody #app-root-container #input-fields > div > label, body #app-root-container #input-fields > div input {\n  display: table-cell;\n  padding-bottom: 5px;\n}\nbody #app-root-container #data-display header {\n  display: flex;\n}\nbody #app-root-container #data-display header span {\n  flex-grow: 1;\n}\nbody #app-root-container #data-display #data-grid {\n  border-collapse: collapse;\n}\nbody #app-root-container #data-display #data-grid thead {\n  font-weight: bold;\n}\nbody #app-root-container #data-display #data-grid thead td {\n  border-bottom: 1px solid black;\n  padding-right: 20px;\n}\nbody #app-root-container #data-display #data-grid tbody tr:nth-child(odd) {\n  background-color: #ccc;\n}\nbody #app-root-container #data-display #data-grid tbody td {\n  padding: 3px;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACC,uBAAA;AACD;AAEE;EACC,cAAA;AAAH;AAEG;EACC,kBAAA;AAAJ;AAEI;EACC,mBAAA;EACA,mBAAA;AAAL;AAMG;EACC,aAAA;AAJJ;AAMI;EACC,YAAA;AAJL;AAQG;EACC,yBAAA;AANJ;AAQI;EACC,iBAAA;AANL;AAQK;EACC,8BAAA;EACA,mBAAA;AANN;AAWK;EACC,sBAAA;AATN;AAYK;EACC,YAAA;AAVN","sourcesContent":["body {\r\n\tfont-family: sans-serif;\r\n\r\n\t#app-root-container {\r\n\t\t#input-fields {\r\n\t\t\tdisplay: table;\r\n\r\n\t\t\t> div {\r\n\t\t\t\tdisplay: table-row;\r\n\r\n\t\t\t\t> label,input {\r\n\t\t\t\t\tdisplay: table-cell;\r\n\t\t\t\t\tpadding-bottom: 5px;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t#data-display {\r\n\t\t\theader {\r\n\t\t\t\tdisplay: flex;\r\n\r\n\t\t\t\tspan {\r\n\t\t\t\t\tflex-grow: 1;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\t\t\t#data-grid {\r\n\t\t\t\tborder-collapse: collapse;\r\n\r\n\t\t\t\tthead {\r\n\t\t\t\t\tfont-weight: bold;\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tborder-bottom: 1px solid black;\r\n\t\t\t\t\t\tpadding-right: 20px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\ttbody {\r\n\t\t\t\t\ttr:nth-child(odd) {\r\n\t\t\t\t\t\tbackground-color: #ccc;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tpadding: 3px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\nbody .help-popover {\n  position: fixed;\n  border: 1px solid black;\n  background-color: gainsboro;\n  font-weight: normal;\n  padding: 5px;\n}\nbody #app-root-container #input-fields {\n  display: flex;\n}\nbody #app-root-container #input-fields .input-set {\n  display: table;\n  padding: 20px;\n  border: 1px solid black;\n}\nbody #app-root-container #input-fields .input-set > div {\n  display: table-row;\n}\nbody #app-root-container #input-fields .input-set > div > label, body #app-root-container #input-fields .input-set > div input {\n  display: table-cell;\n  padding-bottom: 5px;\n}\nbody #app-root-container #data-display header {\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 2px;\n}\nbody #app-root-container #data-display header .aggregate-item {\n  border: 1px solid;\n  text-align: center;\n  cursor: default;\n}\nbody #app-root-container #data-display header span {\n  flex-grow: 1;\n}\nbody #app-root-container #data-display #data-grid {\n  border-collapse: collapse;\n}\nbody #app-root-container #data-display #data-grid thead {\n  font-weight: bold;\n}\nbody #app-root-container #data-display #data-grid thead td {\n  border-bottom: 1px solid black;\n  padding-right: 20px;\n}\nbody #app-root-container #data-display #data-grid tbody tr:nth-child(odd) {\n  background-color: #ccc;\n}\nbody #app-root-container #data-display #data-grid tbody td {\n  padding: 3px;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACC,uBAAA;AACD;AACC;EACC,eAAA;EACA,uBAAA;EACA,2BAAA;EACA,mBAAA;EACA,YAAA;AACF;AAGE;EACC,aAAA;AADH;AAGG;EACC,cAAA;EACA,aAAA;EACA,uBAAA;AADJ;AAGI;EACC,kBAAA;AADL;AAGK;EACC,mBAAA;EACA,mBAAA;AADN;AAQG;EACC,aAAA;EACA,eAAA;EACA,kBAAA;AANJ;AAQI;EACC,iBAAA;EACA,kBAAA;EACA,eAAA;AANL;AASI;EACC,YAAA;AAPL;AAYG;EACC,yBAAA;AAVJ;AAYI;EACC,iBAAA;AAVL;AAYK;EACC,8BAAA;EACA,mBAAA;AAVN;AAeK;EACC,sBAAA;AAbN;AAgBK;EACC,YAAA;AAdN","sourcesContent":["body {\r\n\tfont-family: sans-serif;\r\n\r\n\t.help-popover {\r\n\t\tposition: fixed;\r\n\t\tborder: 1px solid black;\r\n\t\tbackground-color: gainsboro;\r\n\t\tfont-weight: normal;\r\n\t\tpadding: 5px;\r\n\t}\r\n\r\n\t#app-root-container {\r\n\t\t#input-fields {\r\n\t\t\tdisplay: flex;\r\n\r\n\t\t\t.input-set {\r\n\t\t\t\tdisplay: table;\r\n\t\t\t\tpadding: 20px;\r\n\t\t\t\tborder: 1px solid black;\r\n\r\n\t\t\t\t> div {\r\n\t\t\t\t\tdisplay: table-row;\r\n\r\n\t\t\t\t\t> label,input {\r\n\t\t\t\t\t\tdisplay: table-cell;\r\n\t\t\t\t\t\tpadding-bottom: 5px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t#data-display {\r\n\t\t\theader {\r\n\t\t\t\tdisplay: flex;\r\n\t\t\t\tflex-wrap: wrap;\r\n\t\t\t\tmargin-bottom: 2px;\r\n\r\n\t\t\t\t.aggregate-item {\r\n\t\t\t\t\tborder: 1px solid;\r\n\t\t\t\t\ttext-align: center;\r\n\t\t\t\t\tcursor: default;\r\n\t\t\t\t}\r\n\r\n\t\t\t\tspan {\r\n\t\t\t\t\tflex-grow: 1;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\r\n\t\t\t#data-grid {\r\n\t\t\t\tborder-collapse: collapse;\r\n\r\n\t\t\t\tthead {\r\n\t\t\t\t\tfont-weight: bold;\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tborder-bottom: 1px solid black;\r\n\t\t\t\t\t\tpadding-right: 20px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\ttbody {\r\n\t\t\t\t\ttr:nth-child(odd) {\r\n\t\t\t\t\t\tbackground-color: #ccc;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tpadding: 3px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33877,6 +33877,64 @@ function styleTagTransform(css, styleElement) {
 
 module.exports = styleTagTransform;
 
+/***/ }),
+
+/***/ "./src/mortgageMethods.ts":
+/*!********************************!*\
+  !*** ./src/mortgageMethods.ts ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getPaymentData": () => (/* binding */ getPaymentData),
+/* harmony export */   "millisPerYear": () => (/* binding */ millisPerYear),
+/* harmony export */   "noCalcPercent": () => (/* binding */ noCalcPercent)
+/* harmony export */ });
+const millisPerYear = 365.24 * 24 * 60 * 60 * 1000;
+/** Do not calculate if this much principal cannot be paid */
+const noCalcPercent = .1;
+function getPaymentData(principal, compoundRate, paymentPerCycle, escrowAdjustment, paymentCycles) {
+    const paymentThreshold = (escrowAdjustment
+        + (compoundRate * principal)) * (1 + noCalcPercent / 100);
+    if (paymentPerCycle <= paymentThreshold) {
+        throw Error(`Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.`);
+    }
+    const millisPerCycle = millisPerYear / paymentCycles;
+    const paymentData = [];
+    let remainingBalance = principal;
+    let millis = new Date().getTime();
+    while (remainingBalance >= 0) {
+        const interest = compoundRate * remainingBalance;
+        const principalPayment = paymentPerCycle - interest - escrowAdjustment;
+        if (principalPayment <= 0) {
+            throw Error('Negative principal payment detected. Terminating.');
+        }
+        paymentData.push({
+            timeStamp: new Date(millis),
+            totalAmount: paymentPerCycle,
+            remainingBalance: remainingBalance,
+            principal: principalPayment,
+            interest: interest
+        });
+        millis += millisPerCycle;
+        remainingBalance -= principalPayment;
+    }
+    if (remainingBalance < 0) {
+        // Zero out the balance
+        const finalBalance = paymentData.slice(-1)[0].remainingBalance;
+        paymentData.push({
+            timeStamp: new Date(millis + millisPerCycle),
+            totalAmount: finalBalance + escrowAdjustment,
+            remainingBalance: 0,
+            principal: finalBalance,
+            interest: 0
+        });
+    }
+    return paymentData;
+}
+
+
 /***/ })
 
 /******/ 	});
@@ -33974,7 +34032,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+/* harmony import */ var _mortgageMethods__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mortgageMethods */ "./src/mortgageMethods.ts");
+/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+
 
 
 
@@ -33986,55 +34046,42 @@ function AppInfo() {
 function NumericInput(props) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label),
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "number", value: props.value, onChange: e => props.setter(+e.target.value) }));
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "number", value: props.value, min: props.min, max: props.max, onChange: e => props.setter(+e.target.value) }));
 }
-const millisPerYear = 365.24 * 24 * 60 * 60 * 1000;
-/** Do not calculate if this much principal cannot be paid */
-const noCalcPercent = .1;
-function getPaymentData(principal, compoundRate, paymentPerCycle, escrowAdjustment, paymentCycles) {
-    const paymentThreshold = (escrowAdjustment
-        + (compoundRate * principal)) * (1 + noCalcPercent / 100);
-    if (paymentPerCycle <= paymentThreshold) {
-        throw Error(`Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.`);
+function TemplateTextDiv(props) {
+    const decomposed = props.template.split(/(?<!\?)\?(?!\?)/);
+    if (decomposed.length !== props.displayItems.length + 1) {
+        throw Error(`Cannot process template item. Expected ${decomposed.length} parameters.`);
     }
-    const millisPerCycle = millisPerYear / paymentCycles;
-    const paymentData = [];
-    let remainingBalance = principal;
-    let millis = new Date().getTime();
-    while (remainingBalance >= 0) {
-        const interest = compoundRate * remainingBalance;
-        const principalPayment = paymentPerCycle - interest - escrowAdjustment;
-        if (principalPayment <= 0) {
-            throw Error('Negative principal payment detected. Terminating.');
-        }
-        paymentData.push({
-            timeStamp: new Date(millis),
-            totalAmount: paymentPerCycle,
-            remainingBalance: remainingBalance,
-            principal: principalPayment,
-            interest: interest
-        });
-        millis += millisPerCycle;
-        remainingBalance -= principalPayment;
+    const nodes = new Array();
+    for (const [index, text] of decomposed.entries()) {
+        nodes.push(react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { key: `text${index}` }, text));
+        nodes.push(react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", { key: `index${index}` }, props.displayItems[index]));
     }
-    if (remainingBalance < 0) {
-        // Zero out the balance
-        const finalBalance = paymentData.slice(-1)[0].remainingBalance;
-        paymentData.push({
-            timeStamp: new Date(millis + millisPerCycle),
-            totalAmount: finalBalance + escrowAdjustment,
-            remainingBalance: 0,
-            principal: finalBalance,
-            interest: 0
-        });
-    }
-    return paymentData;
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, nodes.slice(0, -1));
+}
+function HelpPopOver(props) {
+    const trueX = Math.min(window.innerWidth - 100, props.pos.x);
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "help-popover", style: { left: trueX, top: props.pos.y }, onClick: props.onDelete }, props.text);
+}
+function AggregateItem(props) {
+    const [showHelp, setShowHelp] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+    const [helpPos, setHelpPos] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({ x: 0, y: 0 });
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { className: "aggregate-item" },
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", { className: "aggregate-title", onClick: e => {
+                setShowHelp(!showHelp);
+                setHelpPos({ x: e.clientX, y: e.clientY });
+            } },
+            props.title,
+            (showHelp && props.help)
+                && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(HelpPopOver, { text: props.help, pos: helpPos, onDelete: _ => setShowHelp(false) })),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TemplateTextDiv, { template: props.template, displayItems: props.displayItems }));
 }
 function DataDisplay(props) {
     const effectivePrincipal = props.principal - props.initialPayment;
-    const compoundRate = props.loanPercent / 100 / props.paymentCycles;
+    const compoundRate = props.loanPercent / 100 / props.annualPaymentCycles;
     const parameterValidators = [
-        [props.paymentCycles > 0, "Payment Cycles is not > 0"],
+        [props.annualPaymentCycles > 0, "Annual Payments is not > 0"],
         [props.loanPercent >= 0, "Loan Percent is not >= 0"],
         [props.principal > 0, "Principal is not > 0"],
         [props.initialPayment >= 0, "Initial Payment is not >= 0"],
@@ -34046,7 +34093,7 @@ function DataDisplay(props) {
         return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, failedParams.map(fp => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", { key: fp[1] }, fp[1])));
     }
     function getPaymentDataForPrincipal(principal) {
-        return getPaymentData(principal, compoundRate, props.paymentPerCycle, props.escrowAdjustment, props.paymentCycles);
+        return _mortgageMethods__WEBPACK_IMPORTED_MODULE_2__.getPaymentData(principal, compoundRate, props.paymentPerCycle, props.escrowAdjustment, props.annualPaymentCycles);
     }
     try {
         // Real payment
@@ -34064,23 +34111,32 @@ function DataDisplay(props) {
         catch (_) {
             initialPaymentEffect = NaN;
         }
+        const totalPayments = realPaymentData.length - 1;
+        const intBreakEvenCycles = Math.ceil(totalInterestPaid / props.rentPayment);
+        const totalPayment = totalInterestPaid + props.principal;
+        const totalBreakEvenCycles = Math.ceil(totalPayment / props.rentPayment);
         return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display" },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-                    realPaymentData.length - 1,
-                    " payments, matures on ",
-                    finalPaymentDate.toDateString()),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-                    "Total Interest: ",
-                    totalInterestPaid.toFixed(2)),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { title: "Higher is better" },
-                    "Interest Efficiency: ",
-                    (100 * interestEfficiency).toFixed(2),
-                    "%"),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-                    "Initial Payment effect: ",
-                    (100 * initialPaymentEffect).toFixed(2),
-                    "%")),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Loan Maturity", help: "How soon you pay it off", template: "?, in ? cycles or ? years", displayItems: [
+                        finalPaymentDate.toDateString(),
+                        totalPayments,
+                        (totalPayments / props.annualPaymentCycles).toFixed(2)
+                    ] }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Payment", help: "Principal + Interest", template: "?", displayItems: [(totalInterestPaid + props.principal).toFixed(2)] }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Interest", help: "How much interest is paid when the loan matures", template: "?", displayItems: [totalInterestPaid.toFixed(2)] }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Interest Efficiency", help: "1 - (Interest paid / original principal)", template: "?%", displayItems: [(100 * interestEfficiency).toFixed(2)] }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Initial Payment Effect", help: "How much the initial payment contributes to interest efficiency", template: "?%", displayItems: [(100 * initialPaymentEffect).toFixed(2)] })),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
+                props.rentPayment > 0
+                    && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Rent-interest break-even point", help: "How long until rent pays for interest", template: "? cycles, or ? years", displayItems: [
+                            intBreakEvenCycles,
+                            (intBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
+                        ] }),
+                props.rentPayment > 0
+                    && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Rent-total break-even point", help: "How long until rent pays for entire loan", template: "? cycles, or ? years", displayItems: [
+                            totalBreakEvenCycles,
+                            (totalBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
+                        ] })),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", { id: "data-grid" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null,
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null,
@@ -34108,26 +34164,31 @@ function DataDisplay(props) {
     }
 }
 function AppRoot() {
-    const [paymentCycles, setPaymentCycles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(12);
+    // Required
+    const [annualPaymentCycles, setAnnualPaymentCycles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(12);
     const [loanPercent, setLoanPercent] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(5);
     const [principal, setPrincipal] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(100000);
     const [initialPayment, setInitialPayment] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
     const [paymentPerCycle, setPaymentPerCycle] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1000);
     const [escrowAdjustment, setEscrowAdjustment] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(200);
+    // Others
+    const [rentPayment, setRentPayment] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "input-fields" },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Payments Per Year", value: paymentCycles, setter: setPaymentCycles }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Loan Rate (%)", value: loanPercent, setter: setLoanPercent }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
-                "-- (Per cycle: ",
-                (loanPercent / paymentCycles).toFixed(4),
-                "%)"),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Starting Principal (P)", value: principal, setter: setPrincipal }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Initial Payment", value: initialPayment, setter: setInitialPayment }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Payment per cycle", value: paymentPerCycle, setter: setPaymentPerCycle }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Escrow Adjustment (per cycle)", value: escrowAdjustment, setter: setEscrowAdjustment })),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "input-set" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Required inputs"),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "# Annual Payments", value: annualPaymentCycles, min: 0, setter: setAnnualPaymentCycles }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Loan Rate (%)", value: loanPercent, min: 0, setter: setLoanPercent }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TemplateTextDiv, { template: "-- (Per cycle: ?%)", displayItems: [(loanPercent / annualPaymentCycles).toFixed(4)] }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Starting Principal", value: principal, min: 0, setter: setPrincipal }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Initial Payment", value: initialPayment, min: 0, setter: setInitialPayment }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Payment per cycle", value: paymentPerCycle, min: 0, setter: setPaymentPerCycle }),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Escrow Adjustment (per cycle)", value: escrowAdjustment, min: 0, setter: setEscrowAdjustment })),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "input-set" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Other inputs"),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumericInput, { label: "Rent per cycle", value: rentPayment, min: 0, setter: setRentPayment }))),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null),
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DataDisplay, { paymentCycles: paymentCycles, loanPercent: loanPercent, principal: principal, initialPayment: initialPayment, paymentPerCycle: paymentPerCycle, escrowAdjustment: escrowAdjustment }));
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DataDisplay, { annualPaymentCycles: annualPaymentCycles, loanPercent: loanPercent, principal: principal, initialPayment: initialPayment, paymentPerCycle: paymentPerCycle, escrowAdjustment: escrowAdjustment, rentPayment: rentPayment }));
 }
 document.addEventListener('DOMContentLoaded', () => {
     const appInfo = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(document.getElementById('app-info-container'));
