@@ -2,8 +2,11 @@ export type ActivityFields = {
 	timeStamp: Date;
 	totalAmount: number;
 	principal: number;
+	dPrincipal: number;
 	interest: number;
+	dInterest: number
 	remainingBalance: number;
+	dRemainingBalance: number;
 };
 
 export const millisPerYear = 365.24 * 24 * 60 * 60 * 1000;
@@ -29,7 +32,7 @@ export function getPaymentData(
 	const paymentData: ActivityFields[] = [];
 
 	let remainingBalance = principal;
-	let millis = new Date().getTime();
+	let millis = Date.now();
 
 	while (remainingBalance >= 0) {
 		const interest = compoundRate * remainingBalance;
@@ -39,12 +42,17 @@ export function getPaymentData(
 			throw Error('Negative principal payment detected. Terminating.');
 		}
 
+		const prevEntry = paymentData.slice(-1)[0];
+
 		paymentData.push({
             timeStamp: new Date(millis),
             totalAmount: paymentPerCycle,
             remainingBalance: remainingBalance,
+            dRemainingBalance: remainingBalance - prevEntry?.remainingBalance,
             principal: principalPayment,
-            interest: interest
+            dPrincipal: principalPayment - prevEntry?.principal,
+            interest: interest,
+            dInterest: interest - prevEntry?.interest,
         });
 
         millis += millisPerCycle;
@@ -53,14 +61,19 @@ export function getPaymentData(
 
 	if (remainingBalance < 0) {
 		// Zero out the balance
-		const finalBalance = paymentData.slice(-1)[0].remainingBalance;
+
+		const penultimateEntry = paymentData.slice(-1)[0]
+		const finalBalance = penultimateEntry.remainingBalance;
 		paymentData.push({
-			timeStamp: new Date(millis + millisPerCycle),
-			totalAmount: finalBalance + escrowAdjustment,
-			remainingBalance: 0,
-			principal: finalBalance,
-			interest: 0
-		});
+            timeStamp: new Date(millis + millisPerCycle),
+            totalAmount: finalBalance + escrowAdjustment,
+            remainingBalance: 0,
+            dRemainingBalance: 0 - penultimateEntry.remainingBalance,
+            principal: finalBalance,
+            dPrincipal: finalBalance - penultimateEntry.principal,
+            interest: 0,
+            dInterest: 0 - penultimateEntry.interest,
+        });
 	}
 
 	return paymentData;

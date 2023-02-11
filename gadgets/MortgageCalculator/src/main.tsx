@@ -1,6 +1,7 @@
-import React, { ReactEventHandler, useState } from "react";
+import React, { ReactEventHandler, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 import * as mortgageMethods from './mortgageMethods';
+import { ActivityFields } from "./mortgageMethods";
 
 import './styles.scss';
 
@@ -13,16 +14,25 @@ function formatDollars(dollars: number) {
 	return currencyFormatter.format(dollars);
 }
 
+const dateFormatter = new Intl.DateTimeFormat(
+	'en-US',
+	{ dateStyle: 'medium' }
+);
+
+function formatDate(date: Date) {
+	return dateFormatter.format(date);
+}
+
 function NumericInput(props: {
 	label: string; value: number;
-	min?: number; max?: number;
+	min?: number; max?: number; step?: number;
 	setter: React.Dispatch<React.SetStateAction<number>>
 }) {
 	return <div>
 		<label>{props.label}</label>
 		<input
 			type="number" value={props.value}
-			min={props.min} max={props.max}
+			min={props.min} max={props.max} step={props.step}
 			onChange={e => props.setter(+e.target.value)} />
 	</div>;
 }
@@ -83,10 +93,13 @@ function AggregateItem(props: {
 	const [helpPos, setHelpPos] = useState({x: 0, y: 0});
 
 	return <span className="aggregate-item">
-		<h3 className="aggregate-title" onClick={e => {
-			setShowHelp(!showHelp);
-			setHelpPos({x: e.clientX, y: e.clientY});
-		}}>
+		<h3
+			className="aggregate-title"
+			title={props.help != null ? "Click to Show Help" : ""}
+			onClick={e => {
+				setShowHelp(!showHelp);
+				setHelpPos({x: e.clientX, y: e.clientY});
+			}}>
 			{props.title}
 			{
 				(showHelp && props.help)
@@ -108,6 +121,8 @@ function DataDisplay(props: {
 	escrowAdjustment: number;
 	rentPayment: number;
 }) {
+	const [isShowingGraph, setIsShowingGraph] = useState(true);
+
 	const effectivePrincipal = props.principal - props.initialPayment;
 	const compoundRate = props.loanPercent / 100 / props.annualPaymentCycles;
 
@@ -157,6 +172,79 @@ function DataDisplay(props: {
 		const intBreakEvenCycles = Math.ceil(totalInterestPaid / props.rentPayment);
 		const totalPayment = totalInterestPaid + props.principal;
 		const totalBreakEvenCycles = Math.ceil(totalPayment / props.rentPayment);
+
+		useEffect(() => {
+			if (!isShowingGraph)
+				return;
+
+			const canvas = document.getElementById('data-graph') as HTMLCanvasElement|null;
+			if (canvas == null){
+				console.error('Cannot get canvas');
+				return;
+			}
+
+			const ctx = canvas.getContext('2d')!;
+			if (ctx == null) {
+				console.error('Cannot get 2d context');
+				return;
+			}
+
+			const width = canvas.width;
+			const height = canvas.height;
+
+			function mapFunc(dataX: number, dataY: number,
+				maxX: number, maxY: number
+			) {
+				return [
+					dataX / maxX * width,
+					(1 - dataY / maxY) * height
+				].map(Math.floor);
+			}
+
+			function graphProperty<T>(
+				data: T[],
+				xValPredicate: (val: T) => number,
+				yValPredicate: (val: T) => number,
+				maxXData: number, maxYData: number,
+				color: string
+			) {
+				ctx.beginPath();
+				ctx.strokeStyle = color;
+				const [firstX, firstY] = mapFunc(
+					0, yValPredicate(data[0]),
+					maxXData, maxYData);
+				ctx.moveTo(firstX, firstY);
+				for (const entry of data.slice(1)) {
+					const [curX, curY] = mapFunc(
+						xValPredicate(entry), yValPredicate(entry),
+						maxXData, maxYData
+					);
+					ctx.lineTo(curX, curY);
+				}
+				ctx.stroke();
+			}
+
+			ctx.clearRect(0, 0, width, height);
+
+			const now = Date.now();
+
+			graphProperty(
+				realPaymentData,
+				val => val.timeStamp.getTime() - now,
+				val => val.remainingBalance,
+				finalPaymentDate.getTime() - Date.now(),
+				effectivePrincipal,
+				'black'
+			);
+			graphProperty(
+				realPaymentData,
+				val => val.timeStamp.getTime() - now,
+				val => val.principal / (val.principal + val.interest),
+				finalPaymentDate.getTime() - Date.now(),
+				1,
+				'blue'
+			);
+		}, [realPaymentData, isShowingGraph]);
 
 		return <div id="data-display">
 			<header>
@@ -214,17 +302,38 @@ function DataDisplay(props: {
 						]} />
  				}
 			</header>
-			<div id="data-grid-container">
+			<div id="display-settings">
+				<input type="button" value="Show/Hide Graph" onClick={_ => setIsShowingGraph(!isShowingGraph)} />
+				<div id="legend">
+					<strong>Key</strong>
+					<div id="keys">
+						<strong style={{color: 'blue'}}>
+							Principal:Payment Ratio
+						</strong>
+						<strong style={{color: 'black'}}>
+							Remaining Balance
+						</strong>
+					</div>
+				</div>
+			</div>
+			{
+				isShowingGraph
+					&& <canvas id="data-graph" width={600} height={300}></canvas>
+			}
+			<div id="data-display-container">
 				<table id="data-grid">
 					<thead>
 						<tr>
-							<td>Payment #</td>
+							<td>Cycle</td>
 							<td>Date</td>
 							<td>Payment</td>
 							<td>Principal</td>
+							<td>Δ Principal</td>
 							<td>Interest</td>
+							<td>Δ Interest</td>
 							<td>Escrow/other</td>
 							<td>Remaining Principal</td>
+							<td>Δ R. Principal</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -232,12 +341,15 @@ function DataDisplay(props: {
 						realPaymentData.map((payment, idx) => (
 							<tr key={payment.timeStamp.toString()}>
 								<td>{idx + 1}</td>
-								<td>{payment.timeStamp.toDateString()}</td>
+								<td>{formatDate(payment.timeStamp)}</td>
 								<td>{formatDollars(payment.totalAmount)}</td>
 								<td>{formatDollars(payment.principal)}</td>
+								<td>{formatDollars(payment.dPrincipal)}</td>
 								<td>{formatDollars(payment.interest)}</td>
+								<td>{formatDollars(payment.dInterest)}</td>
 								<td>{formatDollars(props.escrowAdjustment)}</td>
 								<td>{formatDollars(payment.remainingBalance)}</td>
+								<td>{formatDollars(payment.dRemainingBalance)}</td>
 							</tr>
 						))
 					}
@@ -283,26 +395,26 @@ function AppRoot() {
 					displayItems={[(loanPercent / annualPaymentCycles).toFixed(4)]} />
 				<NumericInput
 					label="Starting Principal" value={principal}
-					min={0}
+					min={0} step={1000}
 					setter={setPrincipal} />
 				<NumericInput
 					label="Initial Payment" value={initialPayment}
-					min={0}
+					min={0} step={1000}
 					setter={setInitialPayment} />
 				<NumericInput
 					label="Payment per cycle" value={paymentPerCycle}
-					min={0}
+					min={0} step={100}
 					setter={setPaymentPerCycle} />
 				<NumericInput
 					label="Escrow Adjustment (per cycle)" value={escrowAdjustment}
-					min={0}
+					min={0} step={10}
 					setter={setEscrowAdjustment} />
 			</div>
 			<div className="input-set">
 				<h2>Other inputs</h2>
 				<NumericInput
 					label="Rent per cycle" value={rentPayment}
-					min={0}
+					min={0} step={100}
 					setter={setRentPayment} />
 			</div>
 		</div>
