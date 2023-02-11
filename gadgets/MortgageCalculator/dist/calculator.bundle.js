@@ -21,7 +21,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\nbody .help-popover {\n  position: fixed;\n  border: 1px solid black;\n  background-color: gainsboro;\n  font-weight: normal;\n  padding: 5px;\n}\nbody #app-root-container #input-fields {\n  display: flex;\n}\nbody #app-root-container #input-fields .input-set {\n  display: table;\n  padding: 20px;\n  border: 1px solid black;\n}\nbody #app-root-container #input-fields .input-set > div {\n  display: table-row;\n}\nbody #app-root-container #input-fields .input-set > div > label, body #app-root-container #input-fields .input-set > div input {\n  display: table-cell;\n  padding-bottom: 5px;\n}\nbody #app-root-container #data-display header {\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 2px;\n}\nbody #app-root-container #data-display header .aggregate-item {\n  border: 1px solid;\n  text-align: center;\n  cursor: default;\n}\nbody #app-root-container #data-display header span {\n  flex-grow: 1;\n}\nbody #app-root-container #data-display #data-grid {\n  border-collapse: collapse;\n}\nbody #app-root-container #data-display #data-grid thead {\n  font-weight: bold;\n}\nbody #app-root-container #data-display #data-grid thead td {\n  border-bottom: 1px solid black;\n  padding-right: 20px;\n}\nbody #app-root-container #data-display #data-grid tbody tr:nth-child(odd) {\n  background-color: #ccc;\n}\nbody #app-root-container #data-display #data-grid tbody td {\n  padding: 3px;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACC,uBAAA;AACD;AACC;EACC,eAAA;EACA,uBAAA;EACA,2BAAA;EACA,mBAAA;EACA,YAAA;AACF;AAGE;EACC,aAAA;AADH;AAGG;EACC,cAAA;EACA,aAAA;EACA,uBAAA;AADJ;AAGI;EACC,kBAAA;AADL;AAGK;EACC,mBAAA;EACA,mBAAA;AADN;AAQG;EACC,aAAA;EACA,eAAA;EACA,kBAAA;AANJ;AAQI;EACC,iBAAA;EACA,kBAAA;EACA,eAAA;AANL;AASI;EACC,YAAA;AAPL;AAYG;EACC,yBAAA;AAVJ;AAYI;EACC,iBAAA;AAVL;AAYK;EACC,8BAAA;EACA,mBAAA;AAVN;AAeK;EACC,sBAAA;AAbN;AAgBK;EACC,YAAA;AAdN","sourcesContent":["body {\r\n\tfont-family: sans-serif;\r\n\r\n\t.help-popover {\r\n\t\tposition: fixed;\r\n\t\tborder: 1px solid black;\r\n\t\tbackground-color: gainsboro;\r\n\t\tfont-weight: normal;\r\n\t\tpadding: 5px;\r\n\t}\r\n\r\n\t#app-root-container {\r\n\t\t#input-fields {\r\n\t\t\tdisplay: flex;\r\n\r\n\t\t\t.input-set {\r\n\t\t\t\tdisplay: table;\r\n\t\t\t\tpadding: 20px;\r\n\t\t\t\tborder: 1px solid black;\r\n\r\n\t\t\t\t> div {\r\n\t\t\t\t\tdisplay: table-row;\r\n\r\n\t\t\t\t\t> label,input {\r\n\t\t\t\t\t\tdisplay: table-cell;\r\n\t\t\t\t\t\tpadding-bottom: 5px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t#data-display {\r\n\t\t\theader {\r\n\t\t\t\tdisplay: flex;\r\n\t\t\t\tflex-wrap: wrap;\r\n\t\t\t\tmargin-bottom: 2px;\r\n\r\n\t\t\t\t.aggregate-item {\r\n\t\t\t\t\tborder: 1px solid;\r\n\t\t\t\t\ttext-align: center;\r\n\t\t\t\t\tcursor: default;\r\n\t\t\t\t}\r\n\r\n\t\t\t\tspan {\r\n\t\t\t\t\tflex-grow: 1;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\r\n\t\t\t#data-grid {\r\n\t\t\t\tborder-collapse: collapse;\r\n\r\n\t\t\t\tthead {\r\n\t\t\t\t\tfont-weight: bold;\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tborder-bottom: 1px solid black;\r\n\t\t\t\t\t\tpadding-right: 20px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n\t\t\t\ttbody {\r\n\t\t\t\t\ttr:nth-child(odd) {\r\n\t\t\t\t\t\tbackground-color: #ccc;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\ttd {\r\n\t\t\t\t\t\tpadding: 3px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "body {\n  font-family: sans-serif;\n}\nbody .help-popover {\n  position: fixed;\n  border: 1px solid black;\n  background-color: gainsboro;\n  font-weight: normal;\n  padding: 5px;\n}\nbody #app-root-container #input-fields {\n  display: flex;\n  flex-wrap: wrap;\n}\nbody #app-root-container #input-fields .input-set {\n  display: table;\n  padding: 20px;\n  border: 1px solid black;\n}\nbody #app-root-container #input-fields .input-set > div {\n  display: table-row;\n}\nbody #app-root-container #input-fields .input-set > div > label, body #app-root-container #input-fields .input-set > div input {\n  display: table-cell;\n  padding-bottom: 5px;\n}\nbody #app-root-container #data-display header {\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 2px;\n}\nbody #app-root-container #data-display header .aggregate-item {\n  border: 1px solid;\n  text-align: center;\n  cursor: default;\n}\nbody #app-root-container #data-display header span {\n  flex-grow: 1;\n}\nbody #app-root-container #data-display #data-grid-container {\n  width: 100%;\n  overflow-x: auto;\n}\nbody #app-root-container #data-display #data-grid-container #data-grid {\n  border-collapse: collapse;\n}\nbody #app-root-container #data-display #data-grid-container #data-grid thead {\n  font-weight: bold;\n}\nbody #app-root-container #data-display #data-grid-container #data-grid thead td {\n  border-bottom: 1px solid black;\n  padding-right: 20px;\n}\nbody #app-root-container #data-display #data-grid-container #data-grid tbody tr:nth-child(odd) {\n  background-color: #ccc;\n}\nbody #app-root-container #data-display #data-grid-container #data-grid tbody td {\n  padding: 3px;\n}", "",{"version":3,"sources":["webpack://./src/styles.scss"],"names":[],"mappings":"AAAA;EACC,uBAAA;AACD;AACC;EACC,eAAA;EACA,uBAAA;EACA,2BAAA;EACA,mBAAA;EACA,YAAA;AACF;AAGE;EACC,aAAA;EACA,eAAA;AADH;AAGG;EACC,cAAA;EACA,aAAA;EACA,uBAAA;AADJ;AAGI;EACC,kBAAA;AADL;AAGK;EACC,mBAAA;EACA,mBAAA;AADN;AAQG;EACC,aAAA;EACA,eAAA;EACA,kBAAA;AANJ;AAQI;EACC,iBAAA;EACA,kBAAA;EACA,eAAA;AANL;AASI;EACC,YAAA;AAPL;AAWG;EACC,WAAA;EACA,gBAAA;AATJ;AAWI;EACC,yBAAA;AATL;AAWK;EACC,iBAAA;AATN;AAWM;EACC,8BAAA;EACA,mBAAA;AATP;AAcM;EACC,sBAAA;AAZP;AAeM;EACC,YAAA;AAbP","sourcesContent":["body {\r\n\tfont-family: sans-serif;\r\n\r\n\t.help-popover {\r\n\t\tposition: fixed;\r\n\t\tborder: 1px solid black;\r\n\t\tbackground-color: gainsboro;\r\n\t\tfont-weight: normal;\r\n\t\tpadding: 5px;\r\n\t}\r\n\r\n\t#app-root-container {\r\n\t\t#input-fields {\r\n\t\t\tdisplay: flex;\r\n\t\t\tflex-wrap: wrap;\r\n\r\n\t\t\t.input-set {\r\n\t\t\t\tdisplay: table;\r\n\t\t\t\tpadding: 20px;\r\n\t\t\t\tborder: 1px solid black;\r\n\r\n\t\t\t\t> div {\r\n\t\t\t\t\tdisplay: table-row;\r\n\r\n\t\t\t\t\t> label,input {\r\n\t\t\t\t\t\tdisplay: table-cell;\r\n\t\t\t\t\t\tpadding-bottom: 5px;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t#data-display {\r\n\t\t\theader {\r\n\t\t\t\tdisplay: flex;\r\n\t\t\t\tflex-wrap: wrap;\r\n\t\t\t\tmargin-bottom: 2px;\r\n\r\n\t\t\t\t.aggregate-item {\r\n\t\t\t\t\tborder: 1px solid;\r\n\t\t\t\t\ttext-align: center;\r\n\t\t\t\t\tcursor: default;\r\n\t\t\t\t}\r\n\r\n\t\t\t\tspan {\r\n\t\t\t\t\tflex-grow: 1;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\t\t\t#data-grid-container {\r\n\t\t\t\twidth: 100%;\r\n\t\t\t\toverflow-x: auto;\r\n\r\n\t\t\t\t#data-grid {\r\n\t\t\t\t\tborder-collapse: collapse;\r\n\r\n\t\t\t\t\tthead {\r\n\t\t\t\t\t\tfont-weight: bold;\r\n\r\n\t\t\t\t\t\ttd {\r\n\t\t\t\t\t\t\tborder-bottom: 1px solid black;\r\n\t\t\t\t\t\t\tpadding-right: 20px;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\ttbody {\r\n\t\t\t\t\t\ttr:nth-child(odd) {\r\n\t\t\t\t\t\t\tbackground-color: #ccc;\r\n\t\t\t\t\t\t}\r\n\r\n\t\t\t\t\t\ttd {\r\n\t\t\t\t\t\t\tpadding: 3px;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -34042,18 +34042,13 @@ const currencyFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits
 function formatDollars(dollars) {
     return currencyFormatter.format(dollars);
 }
-function AppInfo() {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null,
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Generic Mortgage Payment Calculator")));
-}
 function NumericInput(props) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "number", value: props.value, min: props.min, max: props.max, onChange: e => props.setter(+e.target.value) }));
 }
 function TemplateTextDiv(props) {
-    const decomposed = props.template.split(/(?<!\?)\?(?!\?)/);
+    const decomposed = props.template.split(/\?(?!\?)/);
     if (decomposed.length !== props.displayItems.length + 1) {
         throw Error(`Cannot process template item. Expected ${decomposed.length} parameters.`);
     }
@@ -34141,24 +34136,25 @@ function DataDisplay(props) {
                             totalBreakEvenCycles,
                             (totalBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
                         ] })),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", { id: "data-grid" },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null,
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null,
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment #"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Date"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Principal"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Interest"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Escrow/other"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Remaining Principal"))),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.timeStamp.toDateString()),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.totalAmount)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.principal)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.interest)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(props.escrowAdjustment)),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.remainingBalance))))))));
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-grid-container" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", { id: "data-grid" },
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null,
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null,
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment #"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Date"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Principal"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Interest"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Escrow/other"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Remaining Principal"))),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, payment.timeStamp.toDateString()),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.totalAmount)),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.principal)),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.interest)),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(props.escrowAdjustment)),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.remainingBalance)))))))));
     }
     catch (e) {
         if (e instanceof Error)
@@ -34195,8 +34191,6 @@ function AppRoot() {
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DataDisplay, { annualPaymentCycles: annualPaymentCycles, loanPercent: loanPercent, principal: principal, initialPayment: initialPayment, paymentPerCycle: paymentPerCycle, escrowAdjustment: escrowAdjustment, rentPayment: rentPayment }));
 }
 document.addEventListener('DOMContentLoaded', () => {
-    const appInfo = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(document.getElementById('app-info-container'));
-    appInfo.render(react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AppInfo, null));
     const appRoot = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(document.getElementById('app-root-container'));
     appRoot.render(react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AppRoot, null));
 });

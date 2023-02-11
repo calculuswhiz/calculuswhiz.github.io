@@ -12,6 +12,7 @@ body {
 	#app-root-container {
 		#input-fields {
 			display: flex;
+			flex-wrap: wrap;
 
 			.input-set {
 				display: table;
@@ -46,26 +47,30 @@ body {
 				}
 			}
 
+			#data-grid-container {
+				width: 100%;
+				overflow-x: auto;
 
-			#data-grid {
-				border-collapse: collapse;
+				#data-grid {
+					border-collapse: collapse;
 
-				thead {
-					font-weight: bold;
+					thead {
+						font-weight: bold;
 
-					td {
-						border-bottom: 1px solid black;
-						padding-right: 20px;
-					}
-				}
-
-				tbody {
-					tr:nth-child(odd) {
-						background-color: #ccc;
+						td {
+							border-bottom: 1px solid black;
+							padding-right: 20px;
+						}
 					}
 
-					td {
-						padding: 3px;
+					tbody {
+						tr:nth-child(odd) {
+							background-color: #ccc;
+						}
+
+						td {
+							padding: 3px;
+						}
 					}
 				}
 			}

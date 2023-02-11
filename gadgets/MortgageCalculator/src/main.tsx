@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactEventHandler, useEffect, useState } from "react";
+import React, { ReactEventHandler, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 import * as mortgageMethods from './mortgageMethods';
 
@@ -11,14 +11,6 @@ const currencyFormatter = new Intl.NumberFormat(
 
 function formatDollars(dollars: number) {
 	return currencyFormatter.format(dollars);
-}
-
-function AppInfo() {
-	return <>
-		<header>
-			<h1>Generic Mortgage Payment Calculator</h1>
-		</header>
-	</>;
 }
 
 function NumericInput(props: {
@@ -41,7 +33,7 @@ function TemplateTextDiv(props: {
 	displayItems: (string|number)[]
 })
 {
-	const decomposed = props.template.split(/(?<!\?)\?(?!\?)/);
+	const decomposed = props.template.split(/\?(?!\?)/);
 
 	if (decomposed.length !== props.displayItems.length + 1) {
 		throw Error(
@@ -222,34 +214,36 @@ function DataDisplay(props: {
 						]} />
  				}
 			</header>
-			<table id="data-grid">
-				<thead>
-					<tr>
-						<td>Payment #</td>
-						<td>Date</td>
-						<td>Payment</td>
-						<td>Principal</td>
-						<td>Interest</td>
-						<td>Escrow/other</td>
-						<td>Remaining Principal</td>
-					</tr>
-				</thead>
-				<tbody>
-				{
-					realPaymentData.map((payment, idx) => (
-						<tr key={payment.timeStamp.toString()}>
-							<td>{idx + 1}</td>
-							<td>{payment.timeStamp.toDateString()}</td>
-							<td>{formatDollars(payment.totalAmount)}</td>
-							<td>{formatDollars(payment.principal)}</td>
-							<td>{formatDollars(payment.interest)}</td>
-							<td>{formatDollars(props.escrowAdjustment)}</td>
-							<td>{formatDollars(payment.remainingBalance)}</td>
+			<div id="data-grid-container">
+				<table id="data-grid">
+					<thead>
+						<tr>
+							<td>Payment #</td>
+							<td>Date</td>
+							<td>Payment</td>
+							<td>Principal</td>
+							<td>Interest</td>
+							<td>Escrow/other</td>
+							<td>Remaining Principal</td>
 						</tr>
-					))
-				}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+					{
+						realPaymentData.map((payment, idx) => (
+							<tr key={payment.timeStamp.toString()}>
+								<td>{idx + 1}</td>
+								<td>{payment.timeStamp.toDateString()}</td>
+								<td>{formatDollars(payment.totalAmount)}</td>
+								<td>{formatDollars(payment.principal)}</td>
+								<td>{formatDollars(payment.interest)}</td>
+								<td>{formatDollars(props.escrowAdjustment)}</td>
+								<td>{formatDollars(payment.remainingBalance)}</td>
+							</tr>
+						))
+					}
+					</tbody>
+				</table>
+			</div>
 		</div>;
 	} catch (e: any) {
 		if (e instanceof Error)
@@ -325,8 +319,6 @@ function AppRoot() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	const appInfo = ReactDOM.createRoot(document.getElementById('app-info-container')!);
-	appInfo.render(<AppInfo />);
 	const appRoot = ReactDOM.createRoot(document.getElementById('app-root-container')!);
 	appRoot.render(<AppRoot />);
 });

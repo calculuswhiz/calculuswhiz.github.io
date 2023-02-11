@@ -19,7 +19,9 @@ export function getPaymentData(
 			+ (compoundRate * principal)) * (1 + noCalcPercent / 100);
 
 	if (paymentPerCycle <= paymentThreshold) {
-		throw Error(`Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.`);
+		throw Error(
+			`Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.`
+		);
 	}
 
 	const millisPerCycle = millisPerYear / paymentCycles;
