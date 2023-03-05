@@ -34089,6 +34089,7 @@ function AggregateItem(props) {
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TemplateTextDiv, { template: props.template, displayItems: props.displayItems }));
 }
 function DataDisplay(props) {
+    var _a, _b;
     const [isShowingGraph, setIsShowingGraph] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
     const effectivePrincipal = props.principal - props.initialPayment;
     const compoundRate = props.loanPercent / 100 / props.annualPaymentCycles;
@@ -34101,132 +34102,137 @@ function DataDisplay(props) {
         [effectivePrincipal > 0, "Trivial solution: only 1 payment required."]
     ];
     const failedParams = parameterValidators.filter(p => !p[0]);
-    if (failedParams.length > 0) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, failedParams.map(fp => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", { key: fp[1] }, fp[1])));
-    }
     function getPaymentDataForPrincipal(principal) {
-        return _mortgageMethods__WEBPACK_IMPORTED_MODULE_2__.getPaymentData(principal, compoundRate, props.paymentPerCycle, props.escrowAdjustment, props.annualPaymentCycles);
-    }
-    try {
-        // Real payment
-        const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
-        const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
-        const interestEfficiency = 1 - totalInterestPaid / props.principal;
-        const finalPaymentDate = realPaymentData.slice(-1)[0].timeStamp;
-        // Speculative payment
-        let initialPaymentEffect;
+        if (principal === 0)
+            return [];
         try {
-            const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
-            const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
-            initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
+            return _mortgageMethods__WEBPACK_IMPORTED_MODULE_2__.getPaymentData(principal, compoundRate, props.paymentPerCycle, props.escrowAdjustment, props.annualPaymentCycles);
         }
-        catch (_) {
-            initialPaymentEffect = NaN;
+        catch (e) {
+            return [];
         }
-        const totalPayments = realPaymentData.length - 1;
-        const intBreakEvenCycles = Math.ceil(totalInterestPaid / props.rentPayment);
-        const totalPayment = totalInterestPaid + props.principal;
-        const totalBreakEvenCycles = Math.ceil(totalPayment / props.rentPayment);
-        (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-            if (!isShowingGraph)
-                return;
-            const canvas = document.getElementById('data-graph');
-            if (canvas == null) {
-                console.error('Cannot get canvas');
-                return;
-            }
-            const ctx = canvas.getContext('2d');
+    }
+    // Real payment
+    const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
+    const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+    const interestEfficiency = 1 - totalInterestPaid / props.principal;
+    const finalPaymentDate = (_b = (_a = realPaymentData.slice(-1)[0]) === null || _a === void 0 ? void 0 : _a.timeStamp) !== null && _b !== void 0 ? _b : new Date(Date.now());
+    // Speculative payment
+    let initialPaymentEffect;
+    try {
+        const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
+        const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+        initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
+    }
+    catch (_) {
+        initialPaymentEffect = NaN;
+    }
+    const totalPayments = realPaymentData.length - 1;
+    const intBreakEvenCycles = Math.ceil(totalInterestPaid / props.rentPayment);
+    const totalPayment = totalInterestPaid + props.principal;
+    const totalBreakEvenCycles = Math.ceil(totalPayment / props.rentPayment);
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        if (realPaymentData.length === 0)
+            return;
+        if (!isShowingGraph)
+            return;
+        const canvas = document.getElementById('data-graph');
+        if (canvas == null) {
+            console.error('Cannot get canvas');
+            return;
+        }
+        const ctx = canvas.getContext('2d');
+        if (ctx == null) {
+            console.error('Cannot get 2d context');
+            return;
+        }
+        const width = canvas.width;
+        const height = canvas.height;
+        function mapFunc(dataX, dataY, maxX, maxY) {
+            return [
+                dataX / maxX * width,
+                (1 - dataY / maxY) * height
+            ].map(Math.floor);
+        }
+        function graphProperty(data, xValPredicate, yValPredicate, maxXData, maxYData, color) {
             if (ctx == null) {
                 console.error('Cannot get 2d context');
                 return;
             }
-            const width = canvas.width;
-            const height = canvas.height;
-            function mapFunc(dataX, dataY, maxX, maxY) {
-                return [
-                    dataX / maxX * width,
-                    (1 - dataY / maxY) * height
-                ].map(Math.floor);
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            const [firstX, firstY] = mapFunc(0, yValPredicate(data[0]), maxXData, maxYData);
+            ctx.moveTo(firstX, firstY);
+            for (const entry of data.slice(1)) {
+                const [curX, curY] = mapFunc(xValPredicate(entry), yValPredicate(entry), maxXData, maxYData);
+                ctx.lineTo(curX, curY);
             }
-            function graphProperty(data, xValPredicate, yValPredicate, maxXData, maxYData, color) {
-                ctx.beginPath();
-                ctx.strokeStyle = color;
-                const [firstX, firstY] = mapFunc(0, yValPredicate(data[0]), maxXData, maxYData);
-                ctx.moveTo(firstX, firstY);
-                for (const entry of data.slice(1)) {
-                    const [curX, curY] = mapFunc(xValPredicate(entry), yValPredicate(entry), maxXData, maxYData);
-                    ctx.lineTo(curX, curY);
-                }
-                ctx.stroke();
-            }
-            ctx.clearRect(0, 0, width, height);
-            const now = Date.now();
-            graphProperty(realPaymentData, val => val.timeStamp.getTime() - now, val => val.remainingBalance, finalPaymentDate.getTime() - Date.now(), effectivePrincipal, 'black');
-            graphProperty(realPaymentData, val => val.timeStamp.getTime() - now, val => val.principal / (val.principal + val.interest), finalPaymentDate.getTime() - Date.now(), 1, 'blue');
-        }, [realPaymentData, isShowingGraph]);
-        return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display" },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Loan Maturity", help: "How soon you pay it off", template: "?, in ? cycles or ? years", displayItems: [
-                        finalPaymentDate.toDateString(),
-                        totalPayments,
-                        (totalPayments / props.annualPaymentCycles).toFixed(2)
+            ctx.stroke();
+        }
+        ctx.clearRect(0, 0, width, height);
+        const now = Date.now();
+        graphProperty(realPaymentData, val => val.timeStamp.getTime() - now, val => val.remainingBalance, finalPaymentDate.getTime() - Date.now(), effectivePrincipal, 'black');
+        graphProperty(realPaymentData, val => val.timeStamp.getTime() - now, val => val.principal / (val.principal + val.interest), finalPaymentDate.getTime() - Date.now(), 1, 'blue');
+    }, [realPaymentData, isShowingGraph]);
+    if (failedParams.length > 0) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, failedParams.map(fp => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", { key: fp[1] }, fp[1])));
+    }
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display" },
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Loan Maturity", help: "How soon you pay it off", template: "?, in ? cycles or ? years", displayItems: [
+                    finalPaymentDate.toDateString(),
+                    totalPayments,
+                    (totalPayments / props.annualPaymentCycles).toFixed(2)
+                ] }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Payment", help: "Principal + Interest", template: "?", displayItems: [formatDollars(totalInterestPaid + props.principal)] }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Interest", help: "How much interest is paid when the loan matures", template: "?", displayItems: [formatDollars(totalInterestPaid)] }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Interest Efficiency", help: "1 - (Interest paid / original principal)", template: "?%", displayItems: [(100 * interestEfficiency).toFixed(2)] }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Initial Payment Effect", help: "How much the initial payment contributes to interest efficiency", template: "?%", displayItems: [(100 * initialPaymentEffect).toFixed(2)] })),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
+            props.rentPayment > 0
+                && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Rent-interest break-even point", help: "How long until rent pays for interest", template: "? cycles, or ? years", displayItems: [
+                        intBreakEvenCycles,
+                        (intBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
                     ] }),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Payment", help: "Principal + Interest", template: "?", displayItems: [formatDollars(totalInterestPaid + props.principal)] }),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Total Interest", help: "How much interest is paid when the loan matures", template: "?", displayItems: [formatDollars(totalInterestPaid)] }),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Interest Efficiency", help: "1 - (Interest paid / original principal)", template: "?%", displayItems: [(100 * interestEfficiency).toFixed(2)] }),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Initial Payment Effect", help: "How much the initial payment contributes to interest efficiency", template: "?%", displayItems: [(100 * initialPaymentEffect).toFixed(2)] })),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", null,
-                props.rentPayment > 0
-                    && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Rent-interest break-even point", help: "How long until rent pays for interest", template: "? cycles, or ? years", displayItems: [
-                            intBreakEvenCycles,
-                            (intBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
-                        ] }),
-                props.rentPayment > 0
-                    && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Rent-total break-even point", help: "How long until rent pays for entire loan", template: "? cycles, or ? years", displayItems: [
-                            totalBreakEvenCycles,
-                            (totalBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
-                        ] })),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "display-settings" },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "button", value: "Show/Hide Graph", onClick: _ => setIsShowingGraph(!isShowingGraph) }),
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "legend" },
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Key"),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "keys" },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", { style: { color: 'blue' } }, "Principal:Payment Ratio"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", { style: { color: 'black' } }, "Remaining Balance")))),
-            isShowingGraph
-                && react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", { id: "data-graph", width: 600, height: 300 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display-container" },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", { id: "data-grid" },
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null,
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null,
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Cycle"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Date"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Principal"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "\u0394 Principal"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Interest"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "\u0394 Interest"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Escrow/other"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Remaining Principal"),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "\u0394 R. Principal"))),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDate(payment.timeStamp)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.totalAmount)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.principal)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.dPrincipal)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.interest)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.dInterest)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(props.escrowAdjustment)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.remainingBalance)),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.dRemainingBalance)))))))));
-    }
-    catch (e) {
-        if (e instanceof Error)
-            return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, e.message);
-        else
-            return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, "Calculation failed!");
-    }
+            props.rentPayment > 0
+                && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AggregateItem, { title: "Rent-total break-even point", help: "How long until rent pays for entire loan", template: "? cycles, or ? years", displayItems: [
+                        totalBreakEvenCycles,
+                        (totalBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
+                    ] })),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "display-settings" },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "button", value: "Show/Hide Graph", onClick: _ => setIsShowingGraph(!isShowingGraph) }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "legend" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Key"),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "keys" },
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", { style: { color: 'blue' } }, "Principal:Payment Ratio"),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", { style: { color: 'black' } }, "Remaining Balance")))),
+        isShowingGraph
+            && react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", { id: "data-graph", width: 600, height: 300 }),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "data-display-container" },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", { id: "data-grid" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null,
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null,
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Cycle"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Date"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Payment"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Principal"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "\u0394 Principal"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Interest"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "\u0394 Interest"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Escrow/other"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "Remaining Principal"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, "\u0394 R. Principal"))),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, realPaymentData.map((payment, idx) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", { key: payment.timeStamp.toString() },
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, idx + 1),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDate(payment.timeStamp)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.totalAmount)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.principal)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.dPrincipal)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.interest)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.dInterest)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(props.escrowAdjustment)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.remainingBalance)),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, formatDollars(payment.dRemainingBalance)))))))));
 }
 function AppRoot() {
     // Required
@@ -34256,7 +34262,10 @@ function AppRoot() {
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DataDisplay, { annualPaymentCycles: annualPaymentCycles, loanPercent: loanPercent, principal: principal, initialPayment: initialPayment, paymentPerCycle: paymentPerCycle, escrowAdjustment: escrowAdjustment, rentPayment: rentPayment }));
 }
 document.addEventListener('DOMContentLoaded', () => {
-    const appRoot = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(document.getElementById('app-root-container'));
+    const container = document.getElementById('app-root-container');
+    if (container == null)
+        throw 'Bad id probably';
+    const appRoot = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(container);
     appRoot.render(react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AppRoot, null));
 });
 

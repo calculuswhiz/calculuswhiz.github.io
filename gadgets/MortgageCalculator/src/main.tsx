@@ -1,7 +1,6 @@
 import React, { ReactEventHandler, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 import * as mortgageMethods from './mortgageMethods';
-import { ActivityFields } from "./mortgageMethods";
 
 import './styles.scss';
 
@@ -136,6 +135,122 @@ function DataDisplay(props: {
 	];
 	const failedParams = parameterValidators.filter(p => !p[0]);
 
+	function getPaymentDataForPrincipal(principal: number) {
+		if (principal === 0)
+			return [];
+
+		try {
+			return mortgageMethods.getPaymentData(
+				principal, compoundRate, props.paymentPerCycle,
+				props.escrowAdjustment, props.annualPaymentCycles
+			);
+		} catch (e)
+		{
+			return [];
+		}
+	}
+
+	// Real payment
+	const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
+	const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+	const interestEfficiency = 1 - totalInterestPaid / props.principal;
+	const finalPaymentDate = realPaymentData.slice(-1)[0]?.timeStamp ?? new Date(Date.now());
+
+	// Speculative payment
+	let initialPaymentEffect;
+	try {
+		const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
+		const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
+		initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
+	} catch (_) {
+		initialPaymentEffect = NaN;
+	}
+
+	const totalPayments = realPaymentData.length - 1;
+	const intBreakEvenCycles = Math.ceil(totalInterestPaid / props.rentPayment);
+	const totalPayment = totalInterestPaid + props.principal;
+	const totalBreakEvenCycles = Math.ceil(totalPayment / props.rentPayment);
+
+	useEffect(() => {
+		if (realPaymentData.length === 0)
+			return;
+
+		if (!isShowingGraph)
+			return;
+
+		const canvas = document.getElementById('data-graph') as HTMLCanvasElement|null;
+		if (canvas == null){
+			console.error('Cannot get canvas');
+			return;
+		}
+
+		const ctx = canvas.getContext('2d');
+		if (ctx == null) {
+			console.error('Cannot get 2d context');
+			return;
+		}
+
+		const width = canvas.width;
+		const height = canvas.height;
+
+		function mapFunc(dataX: number, dataY: number,
+			maxX: number, maxY: number
+		) {
+			return [
+				dataX / maxX * width,
+				(1 - dataY / maxY) * height
+			].map(Math.floor);
+		}
+
+		function graphProperty<T>(
+			data: T[],
+			xValPredicate: (val: T) => number,
+			yValPredicate: (val: T) => number,
+			maxXData: number, maxYData: number,
+			color: string
+		) {
+			if (ctx == null) {
+				console.error('Cannot get 2d context');
+				return;
+			}
+			ctx.beginPath();
+			ctx.strokeStyle = color;
+			const [firstX, firstY] = mapFunc(
+				0, yValPredicate(data[0]),
+				maxXData, maxYData);
+			ctx.moveTo(firstX, firstY);
+			for (const entry of data.slice(1)) {
+				const [curX, curY] = mapFunc(
+					xValPredicate(entry), yValPredicate(entry),
+					maxXData, maxYData
+				);
+				ctx.lineTo(curX, curY);
+			}
+			ctx.stroke();
+		}
+
+		ctx.clearRect(0, 0, width, height);
+
+		const now = Date.now();
+
+		graphProperty(
+			realPaymentData,
+			val => val.timeStamp.getTime() - now,
+			val => val.remainingBalance,
+			finalPaymentDate.getTime() - Date.now(),
+			effectivePrincipal,
+			'black'
+		);
+		graphProperty(
+			realPaymentData,
+			val => val.timeStamp.getTime() - now,
+			val => val.principal / (val.principal + val.interest),
+			finalPaymentDate.getTime() - Date.now(),
+			1,
+			'blue'
+		);
+	}, [realPaymentData, isShowingGraph]);
+
 	if (failedParams.length > 0) {
 		return <ul>
 		{
@@ -144,225 +259,117 @@ function DataDisplay(props: {
 		</ul>;
 	}
 
-	function getPaymentDataForPrincipal(principal: number) {
-		return mortgageMethods.getPaymentData(
-			principal, compoundRate, props.paymentPerCycle,
-			props.escrowAdjustment, props.annualPaymentCycles
-		);
-	}
-
-	try {
-		// Real payment
-		const realPaymentData = getPaymentDataForPrincipal(effectivePrincipal);
-		const totalInterestPaid = realPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
-		const interestEfficiency = 1 - totalInterestPaid / props.principal;
-		const finalPaymentDate = realPaymentData.slice(-1)[0].timeStamp;
-
-		// Speculative payment
-		let initialPaymentEffect;
-		try {
-			const noInitialPaymentData = getPaymentDataForPrincipal(props.principal);
-			const interestWithoutInitial = noInitialPaymentData.reduce((prev, cur) => prev + cur.interest, 0);
-			initialPaymentEffect = (interestWithoutInitial - totalInterestPaid) / props.principal;
-		} catch (_) {
-			initialPaymentEffect = NaN;
-		}
-
-		const totalPayments = realPaymentData.length - 1;
-		const intBreakEvenCycles = Math.ceil(totalInterestPaid / props.rentPayment);
-		const totalPayment = totalInterestPaid + props.principal;
-		const totalBreakEvenCycles = Math.ceil(totalPayment / props.rentPayment);
-
-		useEffect(() => {
-			if (!isShowingGraph)
-				return;
-
-			const canvas = document.getElementById('data-graph') as HTMLCanvasElement|null;
-			if (canvas == null){
-				console.error('Cannot get canvas');
-				return;
-			}
-
-			const ctx = canvas.getContext('2d')!;
-			if (ctx == null) {
-				console.error('Cannot get 2d context');
-				return;
-			}
-
-			const width = canvas.width;
-			const height = canvas.height;
-
-			function mapFunc(dataX: number, dataY: number,
-				maxX: number, maxY: number
-			) {
-				return [
-					dataX / maxX * width,
-					(1 - dataY / maxY) * height
-				].map(Math.floor);
-			}
-
-			function graphProperty<T>(
-				data: T[],
-				xValPredicate: (val: T) => number,
-				yValPredicate: (val: T) => number,
-				maxXData: number, maxYData: number,
-				color: string
-			) {
-				ctx.beginPath();
-				ctx.strokeStyle = color;
-				const [firstX, firstY] = mapFunc(
-					0, yValPredicate(data[0]),
-					maxXData, maxYData);
-				ctx.moveTo(firstX, firstY);
-				for (const entry of data.slice(1)) {
-					const [curX, curY] = mapFunc(
-						xValPredicate(entry), yValPredicate(entry),
-						maxXData, maxYData
-					);
-					ctx.lineTo(curX, curY);
-				}
-				ctx.stroke();
-			}
-
-			ctx.clearRect(0, 0, width, height);
-
-			const now = Date.now();
-
-			graphProperty(
-				realPaymentData,
-				val => val.timeStamp.getTime() - now,
-				val => val.remainingBalance,
-				finalPaymentDate.getTime() - Date.now(),
-				effectivePrincipal,
-				'black'
-			);
-			graphProperty(
-				realPaymentData,
-				val => val.timeStamp.getTime() - now,
-				val => val.principal / (val.principal + val.interest),
-				finalPaymentDate.getTime() - Date.now(),
-				1,
-				'blue'
-			);
-		}, [realPaymentData, isShowingGraph]);
-
-		return <div id="data-display">
-			<header>
-				<AggregateItem
-					title="Loan Maturity"
-					help="How soon you pay it off"
-					template="?, in ? cycles or ? years"
+	return <div id="data-display">
+		<header>
+			<AggregateItem
+				title="Loan Maturity"
+				help="How soon you pay it off"
+				template="?, in ? cycles or ? years"
+				displayItems={[
+					finalPaymentDate.toDateString(),
+					totalPayments,
+					(totalPayments / props.annualPaymentCycles).toFixed(2)
+				]} />
+			<AggregateItem
+				title="Total Payment"
+				help="Principal + Interest"
+				template="?"
+				displayItems={[formatDollars(totalInterestPaid + props.principal)]} />
+			<AggregateItem
+				title="Total Interest"
+				help="How much interest is paid when the loan matures"
+				template="?"
+				displayItems={[formatDollars(totalInterestPaid)]} />
+			<AggregateItem
+				title="Interest Efficiency"
+				help="1 - (Interest paid / original principal)"
+				template="?%"
+				displayItems={[(100 * interestEfficiency).toFixed(2)]} />
+			<AggregateItem
+				title="Initial Payment Effect"
+				help="How much the initial payment contributes to interest efficiency"
+				template="?%"
+				displayItems={[(100 * initialPaymentEffect).toFixed(2)]} />
+		</header>
+		<header>
+			{
+				props.rentPayment > 0
+				&& <AggregateItem
+					title="Rent-interest break-even point"
+					help="How long until rent pays for interest"
+					template="? cycles, or ? years"
 					displayItems={[
-						finalPaymentDate.toDateString(),
-						totalPayments,
-						(totalPayments / props.annualPaymentCycles).toFixed(2)
+						intBreakEvenCycles,
+						(intBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
 					]} />
-				<AggregateItem
-					title="Total Payment"
-					help="Principal + Interest"
-					template="?"
-					displayItems={[formatDollars(totalInterestPaid + props.principal)]} />
-				<AggregateItem
-					title="Total Interest"
-					help="How much interest is paid when the loan matures"
-					template="?"
-					displayItems={[formatDollars(totalInterestPaid)]} />
-				<AggregateItem
-					title="Interest Efficiency"
-					help="1 - (Interest paid / original principal)"
-					template="?%"
-					displayItems={[(100 * interestEfficiency).toFixed(2)]} />
-				<AggregateItem
-					title="Initial Payment Effect"
-					help="How much the initial payment contributes to interest efficiency"
-					template="?%"
-					displayItems={[(100 * initialPaymentEffect).toFixed(2)]} />
-			</header>
-			<header>
+				}
 				{
-					props.rentPayment > 0
-					&& <AggregateItem
-						title="Rent-interest break-even point"
-						help="How long until rent pays for interest"
-						template="? cycles, or ? years"
-						displayItems={[
-							intBreakEvenCycles,
-							(intBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
-						]} />
- 				}
- 				{
-					props.rentPayment > 0
-					&& <AggregateItem
-						title="Rent-total break-even point"
-						help="How long until rent pays for entire loan"
-						template="? cycles, or ? years"
-						displayItems={[
-							totalBreakEvenCycles,
-							(totalBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
-						]} />
- 				}
-			</header>
-			<div id="display-settings">
-				<input type="button" value="Show/Hide Graph" onClick={_ => setIsShowingGraph(!isShowingGraph)} />
-				<div id="legend">
-					<strong>Key</strong>
-					<div id="keys">
-						<strong style={{color: 'blue'}}>
-							Principal:Payment Ratio
-						</strong>
-						<strong style={{color: 'black'}}>
-							Remaining Balance
-						</strong>
-					</div>
+				props.rentPayment > 0
+				&& <AggregateItem
+					title="Rent-total break-even point"
+					help="How long until rent pays for entire loan"
+					template="? cycles, or ? years"
+					displayItems={[
+						totalBreakEvenCycles,
+						(totalBreakEvenCycles / props.annualPaymentCycles).toFixed(2)
+					]} />
+				}
+		</header>
+		<div id="display-settings">
+			<input type="button" value="Show/Hide Graph" onClick={_ => setIsShowingGraph(!isShowingGraph)} />
+			<div id="legend">
+				<strong>Key</strong>
+				<div id="keys">
+					<strong style={{color: 'blue'}}>
+						Principal:Payment Ratio
+					</strong>
+					<strong style={{color: 'black'}}>
+						Remaining Balance
+					</strong>
 				</div>
 			</div>
-			{
-				isShowingGraph
-					&& <canvas id="data-graph" width={600} height={300}></canvas>
-			}
-			<div id="data-display-container">
-				<table id="data-grid">
-					<thead>
-						<tr>
-							<td>Cycle</td>
-							<td>Date</td>
-							<td>Payment</td>
-							<td>Principal</td>
-							<td>Δ Principal</td>
-							<td>Interest</td>
-							<td>Δ Interest</td>
-							<td>Escrow/other</td>
-							<td>Remaining Principal</td>
-							<td>Δ R. Principal</td>
+		</div>
+		{
+			isShowingGraph
+				&& <canvas id="data-graph" width={600} height={300}></canvas>
+		}
+		<div id="data-display-container">
+			<table id="data-grid">
+				<thead>
+					<tr>
+						<td>Cycle</td>
+						<td>Date</td>
+						<td>Payment</td>
+						<td>Principal</td>
+						<td>Δ Principal</td>
+						<td>Interest</td>
+						<td>Δ Interest</td>
+						<td>Escrow/other</td>
+						<td>Remaining Principal</td>
+						<td>Δ R. Principal</td>
+					</tr>
+				</thead>
+				<tbody>
+				{
+					realPaymentData.map((payment, idx) => (
+						<tr key={payment.timeStamp.toString()}>
+							<td>{idx + 1}</td>
+							<td>{formatDate(payment.timeStamp)}</td>
+							<td>{formatDollars(payment.totalAmount)}</td>
+							<td>{formatDollars(payment.principal)}</td>
+							<td>{formatDollars(payment.dPrincipal)}</td>
+							<td>{formatDollars(payment.interest)}</td>
+							<td>{formatDollars(payment.dInterest)}</td>
+							<td>{formatDollars(props.escrowAdjustment)}</td>
+							<td>{formatDollars(payment.remainingBalance)}</td>
+							<td>{formatDollars(payment.dRemainingBalance)}</td>
 						</tr>
-					</thead>
-					<tbody>
-					{
-						realPaymentData.map((payment, idx) => (
-							<tr key={payment.timeStamp.toString()}>
-								<td>{idx + 1}</td>
-								<td>{formatDate(payment.timeStamp)}</td>
-								<td>{formatDollars(payment.totalAmount)}</td>
-								<td>{formatDollars(payment.principal)}</td>
-								<td>{formatDollars(payment.dPrincipal)}</td>
-								<td>{formatDollars(payment.interest)}</td>
-								<td>{formatDollars(payment.dInterest)}</td>
-								<td>{formatDollars(props.escrowAdjustment)}</td>
-								<td>{formatDollars(payment.remainingBalance)}</td>
-								<td>{formatDollars(payment.dRemainingBalance)}</td>
-							</tr>
-						))
-					}
-					</tbody>
-				</table>
-			</div>
-		</div>;
-	} catch (e: any) {
-		if (e instanceof Error)
-			return <>{e.message}</>;
-		else
-			return <>Calculation failed!</>;
-	}
+					))
+				}
+				</tbody>
+			</table>
+		</div>
+	</div>;
 }
 
 function AppRoot() {
@@ -431,6 +438,9 @@ function AppRoot() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	const appRoot = ReactDOM.createRoot(document.getElementById('app-root-container')!);
+	const container = document.getElementById('app-root-container');
+	if (container == null)
+		throw 'Bad id probably';
+	const appRoot = ReactDOM.createRoot(container);
 	appRoot.render(<AppRoot />);
 });
