@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My take on the NYT Digits game</title>
+  </head>
+  <body style="display: none;">
+    <div id="app">
+      <div id="target-number"></div>
+      <div id="usable-digits"></div>
+      <div id="operators">
+        <div id='undo-btn' class='input-button'>Undo</div>
+        <div id='add-btn' class="operator-input input-button" data-op-char="+">+</div>
+        <div id='sub-btn' class="operator-input input-button" data-op-char="-">-</div>
+        <div id='mul-btn' class="operator-input input-button" data-op-char="*">×</div>
+        <div id='div-btn' class="operator-input input-button" data-op-char="/">÷</div>
+      </div>
+      <input type="button" id="view-solution-btn" value="View shortest solution" />
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
