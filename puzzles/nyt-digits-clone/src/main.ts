@@ -93,9 +93,7 @@ class MoveNode {
 }
 
 /** Scoring:
- * Difficulty increses with:
- * Fewer unique solutions
- * More unique operations used
+ * Puzzle is as hard as easiest solution
  * @param difficulty Out of difficultyGranularity
  *  */
 function generateNewPuzzle(difficulty: number) {
@@ -113,14 +111,12 @@ function generateNewPuzzle(difficulty: number) {
   const root = new MoveNode(relevantDigits, "", undefined);
   root.buildChildNodes(3);
 
-  const scoreTracker = new Map<number, number[]>();
+  const scoreTracker = new Map<number, number>();
   function addScore(value: number, score: number) {
     let entry = scoreTracker.get(value);
-    if (entry === undefined) {
-      entry = [];
-      scoreTracker.set(value, entry);
+    if (entry ?? 0 < score) {
+      scoreTracker.set(value, score);
     }
-    entry.push(score);
   }
 
   // Traverse tree
@@ -135,27 +131,18 @@ function generateNewPuzzle(difficulty: number) {
     }
   }
 
-  const finalScores = new Map<number, number>();
-  for (const [entry, scores] of scoreTracker) {
-    finalScores.set(
-      entry,
-      // Average, but more possible solutions = easier
-      scores.reduce((prev, cur) => prev * cur) ** (1 / scores.length),
-    );
-  }
+  const rankedFinalScores = [...scoreTracker].sort((a, b) => b[1] - a[1]);
 
-  const rankedFinalScores = [...finalScores].sort((a, b) => b[1] - a[1]);
+  const puzzleSelection =
+    (rankedFinalScores.length *
+      (1 - (difficulty - 1 + Math.random()) / difficultyGranularity)) |
+    0;
 
   return {
     digits: [...relevantDigits].sort((a, b) => a - b),
-    winningValue:
-      rankedFinalScores[
-        ((rankedFinalScores.length / difficultyGranularity) *
-          (difficulty - 1 + Math.random())) |
-          0
-      ][0],
+    winningValue: rankedFinalScores[puzzleSelection][0],
     tree: root,
-    scores: finalScores,
+    scores: rankedFinalScores,
   };
 }
 
@@ -304,11 +291,12 @@ const gameState = {
     this.puzzle = generateNewPuzzle(difficulty);
     this.resetDigits();
 
-    // console.log(
-    //   `Puzzle target score: ${this.puzzle.scores.get(
-    //     this.puzzle.winningValue,
-    //   )}`,
-    // );
+    console.log(this.puzzle.scores);
+    console.log(
+      `Puzzle target score: ${this.puzzle.scores.find(
+        (s) => s[0] === this.puzzle?.winningValue,
+      )}`,
+    );
   },
 };
 
