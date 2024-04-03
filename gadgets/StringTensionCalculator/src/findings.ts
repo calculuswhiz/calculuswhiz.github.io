@@ -1,41 +1,49 @@
-import $ from 'jquery';
 import Showdown from 'showdown';
 
 import './styles.scss';
 import materialData from './materialQuadraticParams.json';
-import findingsSource from './findings.md';
+import findingsSource from './findings.md?raw';
 
-function valueToTableData(value: MaterialRegressionEntry) {
-	const {a, b, rSq, description} = value;
-
-	return [
-		$('<td>').text(description),
-		$('<td>').text(a.toPrecision(4)),
-		$('<td>').text(b.toPrecision(4)),
-		$('<td>').text(rSq)
-	];
+function makeTd(content: string|number){
+	const td = document.createElement('td');
+	td.innerText = content.toString();
+	return td;
 }
 
-$(async () => {
-	const converter = new Showdown.Converter(
-	{
-		tables: true,
-		tablesHeaderId: true
-	});
-	converter.setFlavor('github');
-	const markdown: string = await $.get(findingsSource);
-	const html = converter.makeHtml(markdown);
+function *valueToTableData(value: MaterialRegressionEntry) {
+	const {a, b, rSq, description} = value;
 
-	$('#root').html(html);
 
-	const materialEntries = Object.values(materialData) as MaterialRegressionEntry[];
-	materialEntries.sort((a, b) => b.a - a.a);
+	yield makeTd(description);
+	yield makeTd(a.toPrecision(4));
+	yield makeTd(b.toPrecision(4));
+	yield makeTd(rSq);
+}
 
-	for (const value of materialEntries)
-	{
-		$('#pre-table-1 + table tbody')
-			.append(
-				$('<tr>').append(valueToTableData(value))
-			)
-	}
+const converter = new Showdown.Converter(
+{
+	tables: true,
+	tablesHeaderId: true
 });
+converter.setFlavor('github');
+const markdown: string = findingsSource;
+const html = converter.makeHtml(markdown);
+
+const root = document.querySelector('#root');
+if (root == null)
+	throw Error('No root!');
+root.innerHTML = html;
+
+const materialEntries = Object.values(materialData) as MaterialRegressionEntry[];
+materialEntries.sort((a, b) => b.a - a.a);
+
+const tBody = document.querySelector('#pre-table-1 + table tbody');
+for (const value of materialEntries)
+{
+	const tr = document.createElement('tr');
+	for (const data of valueToTableData(value))
+	{
+		tr.append(data);
+	}
+	tBody?.append(tr);
+}

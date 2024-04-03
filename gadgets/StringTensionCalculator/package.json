@@ -1,34 +1,31 @@
 {
+  "name": "string-tension-calculator",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "pack": "webpack",
-    "packWatch": "webpack --watch",
-    "preTest": "gulp populateTestDirectory && tsc -p test/tsconfig.json",
-    "test": "npm run preTest && mocha"
-  },
-  "devDependencies": {
-    "@types/gulp": "^4.0.10",
-    "@types/jquery": "^3.5.14",
-    "@types/react": "^18.0.27",
-    "@types/react-dom": "^18.0.10",
-    "@types/showdown": "^2.0.0",
-    "@types/webpack": "^5.28.0",
-    "assert": "^2.0.0",
-    "css-loader": "^6.7.3",
-    "gulp": "^4.0.2",
-    "image-loader": "^0.0.1",
-    "mocha": "^10.2.0",
-    "sass": "^1.57.1",
-    "sass-loader": "^13.2.0",
-    "style-loader": "^3.3.1",
-    "ts-loader": "^9.4.2",
-    "typescript": "^4.9.4",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "jquery": "^3.6.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "showdown": "^2.1.0"
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@types/showdown": "^2.0.6",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "sass": "^1.72.0",
+    "showdown": "^2.1.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.8"
   }
 }

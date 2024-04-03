@@ -32,10 +32,22 @@ body {
 #tension-boxes {
     margin: 5px;
     border: 1px solid black;
-    min-width: 540px;
     width: calc(100% - 10px);
     max-width: 600px;
     background-color: beige;
+}
+
+@media (orientation: portrait)
+{
+    .course-fields {
+        flex-direction: column;
+
+        .tension-output-field {
+            padding: 5px 0 5px 0;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+    }
 }
 
 .course-fields {
@@ -69,11 +81,14 @@ body {
             width: 100%;
         }
     }
-}
 
+    .tension-output-field {
+        background-color: lightgray;
 
-.tension-output-field {
-    padding: 0 5px;
+        input {
+            float: right;
+        }
+    }
 }
 
 .warning {
