@@ -22,6 +22,28 @@ let Instruments = [
 		]
 	}),
 	new Fretophone({
+		name: 'Dobro (Open G)',
+		courses : [
+			new Course({startPitch: 'G'}, {isChromatic : true}),
+			new Course({startPitch: 'B'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true}),
+			new Course({startPitch: 'G'}, {isChromatic : true}),
+			new Course({startPitch: 'B'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true})
+		]
+	}),
+	new Fretophone({
+		name: 'Dobro (Open D)',
+		courses : [
+			new Course({startPitch: 'D'}, {isChromatic : true}),
+			new Course({startPitch: 'A'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true}),
+			new Course({startPitch: 'F#'}, {isChromatic : true}),
+			new Course({startPitch: 'A'}, {isChromatic : true}),
+			new Course({startPitch: 'D'}, {isChromatic : true})
+		]
+	}),
+	new Fretophone({
 		name: 'Russian Guitar',
 		courses : [
 			new Course({startPitch: 'D'}, {isChromatic : true}),
