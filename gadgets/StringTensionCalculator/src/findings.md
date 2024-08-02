@@ -1,7 +1,5 @@
 # **D'Addario String Data Analysis**
 
-Or: How to find the strings you want for that custom instrument
-
 # Introduction
 
 When I started delving into lutherie for unusual lute-type instruments, I ran into a major issue: "How do I even get strings for this?" For example, my custom-built octave mandolin has a low-C. I wondered about things like:

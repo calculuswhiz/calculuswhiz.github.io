@@ -1,6 +1,6 @@
 import * as Tensions from './tensions';
 import frequencyData from './frequencyBases.json';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import materialData from './materialQuadraticParams.json';
 import presets from './presets.json';
 
@@ -8,6 +8,8 @@ import presets from './presets.json';
  * Holds parameters of a string's data
  *  */
 interface CourseStat {
+    /** Used to generate keys */
+    uniqueId: string;
     /** Pitch in pitch-octave notation */
     pitch: string;
     /** The material of the string */
@@ -31,12 +33,16 @@ const unitNameLookup = {
 // Set up audio context to allow pitch preview
 const audioCtx: AudioContext
     = new (AudioContext ?? (window as any).webkitAudioContext)();
-const gainNode = new GainNode(audioCtx, {gain: 0.01});
+const gainNode = new GainNode(audioCtx, {gain: 0.05});
 gainNode.connect(audioCtx.destination);
 const oscillator = new OscillatorNode(audioCtx);
 oscillator.connect(gainNode);
 let oscillatorIsGoing = false;
 let contextIsRunning = false;
+
+function getDefaultScaleLength() {
+  return +(document.querySelector('input#default-scale') as HTMLInputElement).value;
+}
 
 export function AppInfo() {
   const [showingDetails, setShowingDetails] = useState(false);
@@ -46,8 +52,11 @@ export function AppInfo() {
   return <div id="app-info-container">
     <h1>String Tension Calculator</h1>
     <p>
-      Values based on <a href="https://www.daddario.com/globalassets/pdfs/accessories/tension_chart_13934.pdf">D&apos;Addario pdf</a> data.
-      For more details on how this works, please see <a href="./findings.html">this article</a>.
+      Current Values based on <a href="https://www.daddario.com/globalassets/pdfs/accessories/tension_chart_13934.pdf">D&apos;Addario pdf</a> data.
+      For an analysis of D&apos;Addario strings, please see <a href="./findings.html">this article</a>.<br />
+      However, I plan of phasing out the simple regression curves in order to support a broad range
+      of strings and manufacturers.<br />
+      (Looking at their <a href="https://www.ghsstrings.com/u/uvh28">data</a>, GHS strings don&apos;t behave quite as nicely.)
     </p>
     <div id="detail-view">
       <h2>Details</h2>
@@ -64,7 +73,7 @@ export function AppInfo() {
                   <li key={m.description}>{m.description}</li>
                 )
               }</ul>
-              These are based on D&apos;Addario's data. Different companies may wind their strings
+              These are based on D&apos;Addario&apos;s data. Different companies may wind their strings
               differently, but the unwound strings should not deviate by any significant amount.
             </li>
           </ul>
@@ -76,22 +85,36 @@ export function AppInfo() {
 
 export function PresetFunctionButtons(props:
 {
-  addCourse: (stat: CourseStat | null) => void,
+  addCourse: (stat: CourseStat) => void,
   dumpData: () => void,
-  loadData: () => void
+  loadData: () => void,
+  copyData: () => void
 }) {
   return <div id="preset-functions">
     <input
       type="button"
       id="add-string"
       value="Add String"
-      onClick={() => props.addCourse(null)} />
+      onClick={() => props.addCourse({
+        uniqueId: crypto.randomUUID(),
+        courseCount: 1,
+        gauge: 0,
+        material: 'PL',
+        pitch: '',
+        scaleLength: getDefaultScaleLength()
+      })} />
     <input
       type="button"
       id="dump-config"
-      value="Dump Data (not working properly yet)"
+      value="Dump Data"
       title="Dumps data to textbox so it can be loaded later"
       onClick={() => props.dumpData() } />
+    <input
+      type="button"
+      id="copy-config"
+      value="Copy Data"
+      title="Copy data to be saved later"
+      onClick={() => props.copyData()} />
     <input
       type="button"
       id="load-config"
@@ -173,69 +196,45 @@ export function PitchDialog(
 
 interface ITensionBoxProps {
   id: number;
-  initStat: CourseStat|null;
+  stat: CourseStat;
   measuringSystem: Unit;
-  update: (index: number, value: number|null) => void;
+  tension: number;
+  update: <T extends keyof CourseStat>(index: number, field: T, value: CourseStat[T]) => void;
+  deleteCourse: (index: number) => void;
 }
 
 export function TensionBox(
-  {id, initStat, measuringSystem, update }: ITensionBoxProps
+  {id, stat, measuringSystem, tension, update, deleteCourse }: ITensionBoxProps
 ) {
-  const [pitch, setPitch] = useState(initStat?.pitch ?? '');
-  const [material, setMaterial]
-    = useState<Tensions.StringMaterial>(initStat?.material ?? 'PL');
-  const [gauge, setGauge] = useState(initStat?.gauge ?? 0);
-  const [scaleLength, setScaleLength] = useState(
-    initStat?.scaleLength
-    ?? +(document.querySelector('input#default-scale') as HTMLInputElement)
-      .value
-  );
-  const [courseMultiplier, setCourseMultiplier]
-    = useState(initStat?.courseCount ?? 1);
 
   const [showingPitchDialog, setShowingPitchDialog] = useState(false);
 
-  const getTension = useCallback(
-    () => Tensions.calcTension(
-      pitch, material, gauge, scaleLength,
-      unitNameLookup.shortLength[measuringSystem]
-    ) * courseMultiplier,
-    [pitch, material, gauge, scaleLength, measuringSystem, courseMultiplier]
-  );
-
   function confirmPitchInput(note: string, octave: number) {
-    setPitch(note + octave);
+    update(id, 'pitch', `${note}${octave}`);
     setShowingPitchDialog(false);
   }
-
-  useEffect(
-    () => {
-      const newTension = getTension();
-      update(id, newTension);
-    },
-    [id, getTension, update]
-  );
 
   const materials: {[key: string]: MaterialRegressionEntry} = materialData;
   const materialEntries = Object.entries(materials);
 
-  return <div id={'course-input' + id} className='course-fields'>
+  return <div id={`course-input${id}`} className='course-fields'>
     <div className="input-fields">
       <div className="pitch-field">
         <label>Pitch (E.g. C3)</label>
         <input
           type="text"
-          value={pitch}
-          onChange={ e => setPitch(e.target.value.trim()) }
+          value={stat.pitch}
+          readOnly
+          // onChange={ e => update(id, 'pitch', e.target.value.trim()) }
           onClick={ () => setShowingPitchDialog(true) } />
         {
           showingPitchDialog
           ? <PitchDialog
             confirmPitchInput={confirmPitchInput}
             currentValue={{
-              note: pitch.slice(0, -1),
-              octave: pitch.slice(-1).length > 0
-                ? +pitch.slice(-1)
+              note: stat.pitch.slice(0, -1),
+              octave: stat.pitch.slice(-1).length > 0
+                ? +stat.pitch.slice(-1)
                 : null
             }} />
           : null
@@ -244,9 +243,9 @@ export function TensionBox(
       <div className="material-field">
         <label>Material</label>
         <select
-          value={material}
+          value={stat.material}
           onChange={e =>
-            setMaterial(e.target.value as Tensions.StringMaterial)
+            update(id, 'material', e.target.value as Tensions.StringMaterial)
           }
         >{
           materialEntries.map(([key, regression]) =>
@@ -260,8 +259,8 @@ export function TensionBox(
         <label>Gauge (E.g. 050)</label>
         <input
           type='text'
-          value={gauge}
-          onChange={e => setGauge(+e.target.value) } />
+          value={stat.gauge}
+          onChange={e => update(id, 'gauge', +e.target.value) } />
       </div>
       <div className="length-field">
         <label>
@@ -269,21 +268,21 @@ export function TensionBox(
         </label>
         <input
           type="text"
-          value={scaleLength}
-          onChange={e => setScaleLength(+e.target.value) } />
+          value={stat.scaleLength}
+          onChange={e => update(id, 'scaleLength', +e.target.value) } />
       </div>
       <div className="course-field">
         <label>Course multiplier</label>
         <input
           type="text"
-          value={courseMultiplier}
+          value={stat.courseCount}
           min={1}
-          onChange={e => setCourseMultiplier(+e.target.value)} />
+          onChange={e => update(id, 'courseCount', +e.target.value)} />
       </div>
     </div>
     <div className="tension-output-field">
       Tension ({unitNameLookup.weight[measuringSystem]})
-      <input readOnly value={getTension().toFixed(3)} />
+      <input readOnly value={tension.toFixed(3)} />
     </div>
     <div className="course-buttons">
       <input
@@ -294,7 +293,7 @@ export function TensionBox(
               audioCtx.suspend();
           contextIsRunning = false;
 
-          update(id, null);
+          deleteCourse(id);
         }} />
       <input
         type="button"
@@ -311,7 +310,7 @@ export function TensionBox(
               audioCtx.resume();
           contextIsRunning = !contextIsRunning;
 
-          const freq = Tensions.pitchToFreq(pitch);
+          const freq = Tensions.pitchToFreq(stat.pitch);
           if (freq != null)
             oscillator.frequency.setValueAtTime(freq, 0);
         }} />
@@ -322,14 +321,30 @@ export function TensionBox(
 export function AppRoot() {
   const [defaultLen, setDefaultLen] = useState(25);
 
-  const [tensions, setTensions] = useState(new Array<number>);
   const [totalTension, setTotalTension] = useState(0);
-  const [tensionBoxProps, setTensionBoxProps] = useState(new Array<CourseStat|null>);
+  const [tensionBoxProps, setTensionBoxProps] = useState(new Array<CourseStat>);
 
   const [measuringSystem, setMeasuringSystem] = useState(Unit.US);
 
-  function addCourse(stat: CourseStat | null) {
+  const [showingCopyNotice, setShowingCopyNotice] = useState(false);
+
+  function addCourse(stat: CourseStat) {
     setTensionBoxProps(tensionBoxProps.concat(stat));
+  }
+
+  function deleteCourse(index: number) {
+    setTensionBoxProps([
+      ...tensionBoxProps.slice(0, index),
+      ...tensionBoxProps.slice(index + 1)
+    ]);
+  }
+
+  /**
+   * Set new field value
+   * */
+  function setFieldAt<T extends keyof CourseStat>(index: number, field: T, value: CourseStat[T]) {
+    tensionBoxProps[index][field] = value;
+    setTensionBoxProps([...tensionBoxProps]);
   }
 
   function dumpData() {
@@ -347,40 +362,23 @@ export function AppRoot() {
   }
 
   useEffect(() => {
-    setTotalTension(
-      tensions.reduce((a, b) => a + b, 0)
-    );
-  }, [tensions, measuringSystem]);
-
-  /**
-   * @param value New tension value. If null - delete
-   * TODO: this should set more than just tension...
-   * */
-  const setTensionAt = useCallback((index: number, value: number|null) => {
-    setTensions(oldTensions => {
-      const newTensions = [...oldTensions];
-      if (value !== null) {
-        newTensions[index] = value;
-        return newTensions;
-      } else {
-        return [
-          ...newTensions.slice(0, index),
-          ...newTensions.slice(index + 1)
-        ];
-      }
-    });
-
-    if (value === null) {
-      setTensionBoxProps([
-        ...tensionBoxProps.slice(0, index),
-        ...tensionBoxProps.slice(index + 1)
-      ]);
-    }
-  }, [tensionBoxProps]);
+    const total = tensionBoxProps.reduce((prev, cur) => prev + Tensions.calcTension(
+        cur.pitch, cur.material, cur.gauge,
+        cur.scaleLength, unitNameLookup.shortLength[measuringSystem]
+      ) * cur.courseCount, 0);
+    setTotalTension(total);
+  }, [tensionBoxProps, measuringSystem]);
 
   function loadPreset(preset: string) {
     const stats = presets[preset as keyof typeof presets] as CourseStat[] ?? [];
     setTensionBoxProps(stats);
+  }
+
+  async function copyData() {
+    const dumpArea = document.getElementById('dump-area') as HTMLTextAreaElement;
+    await navigator.clipboard.writeText(dumpArea.value);
+    setShowingCopyNotice(true);
+    setTimeout(() => { setShowingCopyNotice(false); }, 3000);
   }
 
   return <div id="app-root-container">
@@ -402,11 +400,13 @@ export function AppRoot() {
           setMeasuringSystem(e.target.checked ? Unit.Metric : Unit.US)
         } />
     </div>
+    {showingCopyNotice ? <div id="copy-notice">Copied</div> : null}
     <PresetFunctionButtons
       addCourse={addCourse}
       dumpData={dumpData}
-      loadData={loadData} />
-    SaveData:
+      loadData={loadData}
+      copyData={copyData} />
+    <p>SaveData:</p>
     <textarea id="dump-area"></textarea>
     <hr />
     <div>
@@ -436,11 +436,18 @@ export function AppRoot() {
     {
       tensionBoxProps.map((stat, i) =>
         <TensionBox
-          key={`${JSON.stringify(stat)}-${i}`}
+          key={stat.uniqueId}
           id={i}
-          initStat={stat}
+          stat={stat}
+          tension={
+            Tensions.calcTension(
+              stat.pitch, stat.material, stat.gauge,
+              stat.scaleLength, unitNameLookup.shortLength[measuringSystem]
+            ) * stat.courseCount
+          }
           measuringSystem={measuringSystem}
-          update={setTensionAt} />
+          update={setFieldAt}
+          deleteCourse={deleteCourse} />
       )
     }
     </div>

@@ -2,41 +2,6 @@ body {
     font-family: sans-serif;
 }
 
-#pitch-dialog {
-    position: absolute;
-    width: 300px;
-    height: 150px;
-    display: flex;
-    border: 1px solid black;
-    background-color: white;
-
-    #note-buttons, #octave-buttons {
-        width: 50%;
-        padding: 5px;
-
-        .note-button {
-            width: 30px;
-        }
-
-        .octave-button {
-            width: 50%;
-        }
-
-        .selected-note, .selected-octave {
-            color: red;
-            font-weight: bold;
-        }
-    }
-}
-
-#tension-boxes {
-    margin: 5px;
-    border: 1px solid black;
-    width: calc(100% - 10px);
-    max-width: 600px;
-    background-color: beige;
-}
-
 @media (orientation: portrait)
 {
     .course-fields {
@@ -48,52 +13,6 @@ body {
             border-bottom: 1px solid black;
         }
     }
-}
-
-.course-fields {
-    margin: 3px;
-    display: flex;
-    border: 1px solid gray;
-
-    > .input-fields {
-        display: table;
-        width: 100%;
-
-        > div {
-            display: table-row;
-
-            > * {
-                display: table-cell;
-            }
-
-            > input, > select {
-                float: right;
-            }
-
-            > select {
-                width: 200px;
-            }
-        }
-    }
-
-    .course-buttons {
-        input[type="button"] {
-            width: 100%;
-        }
-    }
-
-    .tension-output-field {
-        background-color: lightgray;
-
-        input {
-            float: right;
-        }
-    }
-}
-
-.warning {
-    background-color: red;
-    content: 'Please check input parameters!';
 }
 
 table {
@@ -113,4 +32,120 @@ article
 {
     max-width: 8.5in;
     width: 100%;
+}
+
+#detail-view {
+    h2 {
+        display: inline;
+        padding-right: 5px;
+    }
+}
+
+#app-root-container {
+    #preset-functions {
+        input {
+            margin: 3px;
+            padding: 3px;
+        }
+    }
+
+    #dump-area {
+        width: 400px;
+        height: 100px;
+    }
+
+    #copy-notice {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        padding: 10px;
+        background: lime;
+        border: 1px solid black;
+    }
+
+    .course-fields {
+        margin: 3px;
+        display: flex;
+        border: 1px solid gray;
+
+        > .input-fields {
+            display: table;
+            width: 100%;
+
+            > div {
+                display: table-row;
+
+                > * {
+                    display: table-cell;
+                }
+
+                > input, > select {
+                    float: right;
+                }
+
+                > select {
+                    width: 200px;
+                }
+            }
+        }
+
+        .course-buttons {
+            input[type="button"] {
+                width: 100%;
+            }
+        }
+
+        .tension-output-field {
+            background-color: lightgray;
+
+            input {
+                float: right;
+            }
+        }
+    }
+
+    .warning {
+        background-color: red;
+        content: 'Please check input parameters!';
+    }
+
+    #tension-boxes {
+        margin: 5px;
+        border: 1px solid black;
+        width: calc(100% - 10px);
+        max-width: 600px;
+        background-color: beige;
+    }
+
+    #pitch-dialog {
+        position: absolute;
+        width: 300px;
+        height: 150px;
+        display: flex;
+        border: 1px solid black;
+        background-color: white;
+
+        #note-buttons, #octave-buttons {
+            width: 50%;
+            padding: 5px;
+
+            .note-button {
+                width: 30px;
+            }
+
+            .octave-button {
+                width: 50%;
+            }
+
+            .selected-note, .selected-octave {
+                color: red;
+                font-weight: bold;
+            }
+
+            .is-current {
+                color: lime;
+                font-weight: bold;
+            }
+        }
+    }
 }

@@ -1,16 +1,32 @@
 {
     "mandolin": [
-        { "pitch": "E5", "gauge": 11, "material": "PL", "scaleLength": 13.88, "courseCount": 2 },
-        { "pitch": "A4", "gauge": 16, "material": "PL", "scaleLength": 13.88, "courseCount": 2 },
-        { "pitch": "D4", "gauge": 22, "material": "PB", "scaleLength": 13.88, "courseCount": 2 },
-        { "pitch": "G3", "gauge": 35, "material": "PB", "scaleLength": 13.88, "courseCount": 2 }
+        { "uniqueId": "a", "pitch": "E5", "gauge": 11, "material": "PL", "scaleLength": 13.88, "courseCount": 2 },
+        { "uniqueId": "b", "pitch": "A4", "gauge": 16, "material": "PL", "scaleLength": 13.88, "courseCount": 2 },
+        { "uniqueId": "c", "pitch": "D4", "gauge": 22, "material": "PB", "scaleLength": 13.88, "courseCount": 2 },
+        { "uniqueId": "d", "pitch": "G3", "gauge": 35, "material": "PB", "scaleLength": 13.88, "courseCount": 2 }
     ],
     "guitar": [
-        { "pitch": "E4", "gauge": 12, "material": "PL", "scaleLength": 25.5, "courseCount": 1 },
-        { "pitch": "B3", "gauge": 16, "material": "PL", "scaleLength": 25.5, "courseCount": 1 },
-        { "pitch": "G3", "gauge": 24, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
-        { "pitch": "D3", "gauge": 32, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
-        { "pitch": "A2", "gauge": 42, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
-        { "pitch": "E2", "gauge": 53, "material": "PB", "scaleLength": 25.5, "courseCount": 1 }
+        { "uniqueId": "a", "pitch": "E4", "gauge": 12, "material": "PL", "scaleLength": 25.5, "courseCount": 1 },
+        { "uniqueId": "b", "pitch": "B3", "gauge": 16, "material": "PL", "scaleLength": 25.5, "courseCount": 1 },
+        { "uniqueId": "c", "pitch": "G3", "gauge": 24, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
+        { "uniqueId": "d", "pitch": "D3", "gauge": 32, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
+        { "uniqueId": "e", "pitch": "A2", "gauge": 42, "material": "PB", "scaleLength": 25.5, "courseCount": 1 },
+        { "uniqueId": "f", "pitch": "E2", "gauge": 53, "material": "PB", "scaleLength": 25.5, "courseCount": 1 }
+    ],
+    "dobro (g)": [
+        { "uniqueId": "a", "pitch": "D4", "gauge": 16, "material": "PL", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "b", "pitch": "B3", "gauge": 18, "material": "PL", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "c", "pitch": "G3", "gauge": 28, "material": "PB", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "d", "pitch": "D3", "gauge": 36, "material": "PB", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "e", "pitch": "B2", "gauge": 46, "material": "PB", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "f", "pitch": "G2", "gauge": 56, "material": "PB", "scaleLength": 25, "courseCount": 1 }
+    ],
+    "dobro (d)": [
+        { "uniqueId": "a", "pitch": "D4", "gauge": 16, "material": "PL", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "b", "pitch": "A3", "gauge": 18, "material": "PL", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "c", "pitch": "F#3", "gauge": 28, "material": "PB", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "d", "pitch": "D3", "gauge": 36, "material": "PB", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "e", "pitch": "A2", "gauge": 46, "material": "PB", "scaleLength": 25, "courseCount": 1 },
+        { "uniqueId": "f", "pitch": "D2", "gauge": 56, "material": "PB", "scaleLength": 25, "courseCount": 1 }
     ]
 }
