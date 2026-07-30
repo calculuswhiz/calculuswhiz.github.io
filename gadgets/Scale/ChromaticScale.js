@@ -1,113 +1,73 @@
 /*
 	Adds an oscillator source to an existing audioContext. This does not automatically connect anything for you.
 */
-let ChromaticScale = (function ()
-{
-	let map = new WeakMap();
-	
-	let internal = function (object)
-	{
-        if (!map.has(object))
-            map.set(object, {});
-        return map.get(object);
-    };
-	
-	class ChromaticScale
-	{
-		constructor(props)
-		{
-			let my = internal(this);
-			
-			function coalesce(props, key, defaultValue)
-			{
-				if (props == null || props[key] === undefined)
-					return defaultValue;
-				else
-					return props[key];
-			}
-			
-			this.semitones = coalesce(props, 'semitones', 12);
-			this.scaleBase = coalesce(props, 'scaleBase', 2);
-			this.startFrequency = coalesce(props, 'startFrequency', 440);
-			this.waveType = coalesce(props, 'waveType', 'sine');
-			this.msPerNote = coalesce(props, 'msPerNote', 500);
-			this.octaves = coalesce(props, 'octaves', 1);
-			
- 			my.playing = false;
-			my.timer = null;
-			
-			my.audioContext = props.audioContext;
-		}
-		
-		setProperties(props)
-		{
-			for (let prop in props)
-			{
-				this[prop] = props[prop];
-			}
-		}
-		
-		turnOn()
-		{
-			let my = internal(this);
+class ChromaticScale {
+	constructor(props) {
+		this.semitones = props?.semitones ?? 12;
+		this.scaleBase = props?.scaleBase ?? 2;
+		this.startFrequency = props?.startFrequency ?? 440;
+		this.waveType = props?.waveType ?? 'sine';
+		this.msPerNote = props?.msPerNote ?? 500;
+		this.octaves = props?.octaves ?? 1;
 
-			if (my.playing)
-				return;
-			else
-				my.playing = true;
-			
-			// Add oscillator to the existing context
-			my.oscillator = my.audioContext.createOscillator();
-				
-			// Initial conditions:
-			let { semitones, scaleBase, startFrequency, waveType, msPerNote, octaves } = this;
-			let oscillator = my.oscillator;
-			oscillator.type = waveType;
-			oscillator.frequency.value = startFrequency;
-			let step = 0;
-			let notesToPlay = octaves * semitones;
-			
-			oscillator.start();
-			
-			my.timer = setInterval(function ()
-			{
-				if (step < notesToPlay)
-				{
-					oscillator.frequency.value = startFrequency * Math.pow(scaleBase, ++step / semitones);
-				}
-				else
-				{
-					oscillator.stop();
-					clearInterval(this._timer);
-					my.playing = false;
-				}
-			}.bind(this), msPerNote);
-		}
-		
-		turnOff()
-		{
-			let my = internal(this);
-			
-			my.oscillator.stop();
-			clearInterval(my.timer);
-			my.playing = false;
-		}
-		
-		get active()
-		{
-			return internal(this).playing;
-		}
-		
-		getPlayingFrequency()
-		{
-			return internal(this).oscillator.frequency.value;
-		}
-		
-		getNode()
-		{
-			return internal(this).oscillator;
-		}
+		this.playing = false;
+		this.timer = null;
+
+		this.audioContext = props.audioContext;
 	}
-	
-	return ChromaticScale;
-})();
+
+	setProperties(props) {
+		for (const prop in props)
+			this[prop] = props[prop];
+	}
+
+	turnOn() {
+		if (this.playing)
+			return;
+		else
+			this.playing = true;
+
+		// Add oscillator to the existing context
+		this.oscillator = this.audioContext.createOscillator();
+
+		// Initial conditions:
+		const { semitones, scaleBase, startFrequency, waveType, msPerNote, octaves } = this;
+		const oscillator = this.oscillator;
+		oscillator.type = waveType;
+		oscillator.frequency.value = startFrequency;
+		let step = 0;
+		const notesToPlay = octaves * semitones;
+
+		oscillator.start();
+
+		this.timer = setInterval(() => {
+			if (step < notesToPlay) {
+				step++;
+				oscillator.frequency.value = startFrequency * scaleBase ** (step / semitones);
+			}
+			else {
+				oscillator.stop();
+				clearInterval(this.timer);
+				this.playing = false;
+			}
+		}, msPerNote);
+	}
+
+	turnOff() {
+		this.oscillator.stop();
+		clearInterval(this.timer);
+		this.playing = false;
+	}
+
+	get active() {
+		return this.playing;
+	}
+
+	getPlayingFrequency() {
+		return this.oscillator.frequency.value;
+	}
+
+	getNode() {
+		return this.oscillator;
+	}
+}

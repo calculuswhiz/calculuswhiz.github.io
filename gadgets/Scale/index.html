@@ -1,125 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Scale Demo</title>
 	<meta charset="utf-8">
-	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
 	<script src="./ChromaticScale.js"></script>
 	<script src="../../javascripts/Oscilloscope.js"></script>
 	<link rel="stylesheet" type="text/css" href="./styles.css">
-	<script>
-		function ready()
-		{
-			try
-			{
-				let canvas = $('#scope-screen')[0];
-				
-				// Set up oscilloscope:
-				let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-				let scope = new Oscilloscope(
-				{ 
-					audioContext : audioContext, 
-					canvas : canvas,
-					fftSize : Number($('#fft-menu option:selected').val()),
-					beamColor : $('#scope-color').val(),
-					domain : Oscilloscope.domainType[$('#domain-menu option:selected').val()]
-				});
-				scope.getNode().connect(audioContext.destination);
-				let scaleCount = 0;
-				let scaleOscillators = [];
-				
-				function setMessageText(text)
-				{
-					$('#message').text(text);		
-				}
-				
-	 			$('#play-btn').click(function ()
-				{
-					// Create new oscillator
-					let scaleOscillator = new ChromaticScale({ audioContext : audioContext });
-					scaleOscillators.push(scaleOscillator);
-					
-					let params = 
-					{
-						semitones      : Number($('#semitones').val()),
-						octaves        : Number($('#octaves').val()),
-						scaleBase      : Number($('#scale-base').val()),
-						startFrequency : Number($('#start-freq').val()),
-						waveType       : $('#wave-menu option:selected').val(),
-						msPerNote      : Number($('#ms-per-note').val())
-					};
-					
-					scaleOscillator.setProperties(params);
-					scaleOscillator.turnOn();
-					scaleOscillator.getNode().connect(scope.getNode());
-					
-					scaleOscillator.getNode().addEventListener('ended', function ()
-					{
-						setMessageText(`${--scaleCount} scales currently playing.`);
-						if (scaleCount == 0)
-						{
-							scaleOscillators = [];
-						}
-					});
-					
-					setMessageText(`${++scaleCount} scales currently playing.`);
-				});
-				
-				function stopAll()
-				{
-					// Rip out all connections
-					scaleOscillators.forEach(function (scaleOscillator)
-					{
-						if (scaleOscillator != null)
-						{
-							scaleOscillator.turnOff();
-							scaleOscillator.getNode().disconnect();
-						}
-					});
-					scaleOscillators = [];
-				}
-				
-				$('#stop-btn').click(function ()
-				{
-					stopAll();
-				});
-				
-				$('#reset-btn').click(function ()
-				{
-					stopAll();
-					
-					$('#semitones').val('12');
-					$('#octaves').val('1');
-					$('#scale-base').val('2');
-					$('#start-freq').val('440');
-					$('#wave-menu').val('sine');
-					$('#ms-per-note').val('250');
-				});
-				
-				$('#scope-color').keyup(function ()
-				{
-					scope.beamColor = $('#scope-color').val();
-				});
-				
-				$('#fft-menu').change(function ()
-				{
-					scope.setFFTSize(Number($('#fft-menu option:selected').val()));
-				});
-				
-				$('#domain-menu').change(function ()
-				{
-					scope.domain = Oscilloscope.domainType[$('#domain-menu option:selected').val()];
-				});
-				
-				$('#activator').remove();
-			}
-			catch (exc)
-			{
-				$('body').text(exc.message);
-			}
-		}
-	</script>
+	<script src="./index.js"></script>
 </head>
+
 <body>
 	<div id="app-root">
 		<div id="generator-root">
@@ -193,4 +83,5 @@
 		</div>
 	</div>
 </body>
+
 </html>
