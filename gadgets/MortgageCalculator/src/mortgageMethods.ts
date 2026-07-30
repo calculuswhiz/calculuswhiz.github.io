@@ -19,7 +19,7 @@ export function getPaymentData(
 	escrowAdjustment: number, paymentCycles: number
 ) {
 	const paymentThreshold = (escrowAdjustment
-			+ (compoundRate * principal)) * (1 + noCalcPercent / 100);
+		+ (compoundRate * principal)) * (1 + noCalcPercent / 100);
 
 	if (paymentPerCycle <= paymentThreshold) {
 		throw Error(
@@ -45,18 +45,18 @@ export function getPaymentData(
 		const prevEntry = paymentData.slice(-1)[0];
 
 		paymentData.push({
-            timeStamp: new Date(millis),
-            totalAmount: paymentPerCycle,
-            remainingBalance: remainingBalance,
-            dRemainingBalance: remainingBalance - prevEntry?.remainingBalance,
-            principal: principalPayment,
-            dPrincipal: principalPayment - prevEntry?.principal,
-            interest: interest,
-            dInterest: interest - prevEntry?.interest,
-        });
+			timeStamp: new Date(millis),
+			totalAmount: paymentPerCycle,
+			remainingBalance: remainingBalance,
+			dRemainingBalance: remainingBalance - prevEntry?.remainingBalance,
+			principal: principalPayment,
+			dPrincipal: principalPayment - prevEntry?.principal,
+			interest: interest,
+			dInterest: interest - prevEntry?.interest,
+		});
 
-        millis += millisPerCycle;
-        remainingBalance -= principalPayment;
+		millis += millisPerCycle;
+		remainingBalance -= principalPayment;
 	}
 
 	if (remainingBalance < 0) {
@@ -65,15 +65,15 @@ export function getPaymentData(
 		const penultimateEntry = paymentData.slice(-1)[0]
 		const finalBalance = penultimateEntry.remainingBalance;
 		paymentData.push({
-            timeStamp: new Date(millis + millisPerCycle),
-            totalAmount: finalBalance + escrowAdjustment,
-            remainingBalance: 0,
-            dRemainingBalance: 0 - penultimateEntry.remainingBalance,
-            principal: finalBalance,
-            dPrincipal: finalBalance - penultimateEntry.principal,
-            interest: 0,
-            dInterest: 0 - penultimateEntry.interest,
-        });
+			timeStamp: new Date(millis + millisPerCycle),
+			totalAmount: finalBalance + escrowAdjustment,
+			remainingBalance: 0,
+			dRemainingBalance: 0 - penultimateEntry.remainingBalance,
+			principal: finalBalance,
+			dPrincipal: finalBalance - penultimateEntry.principal,
+			interest: 0,
+			dInterest: 0 - penultimateEntry.interest,
+		});
 	}
 
 	return paymentData;
