@@ -1,34 +1,37 @@
 import { useState } from 'react'
-import './App.scss'
+import './index.css'
 
-function Table(props: {showing: boolean, scaleLength: number, numFrets: number, exitTable: () => void}) {
+function Table(props: { showing: boolean, scaleLength: number, numFrets: number, exitTable: () => void }) {
   const fretPositions = new Array<number>();
-  for (let fretNum = 1; fretNum <= props.numFrets; fretNum++)
-  {
+  for (let fretNum = 1; fretNum <= props.numFrets; fretNum++) {
     fretPositions.push(props.scaleLength * (1 - 0.5 ** (fretNum / 12)));
   }
 
   return (
-    <div id="fret-table" style={{ display: props.showing ? 'unset' : 'none' }}>
-      <input type='button' id="close-button" value="Close" onClick={() => props.exitTable()} />
-      <table>
+    <div id="fret-table"
+      className={`${props.showing ? '' : 'hidden'}`}>
+      <button type='button' id="close-button" onClick={() => props.exitTable()}>
+        Close
+      </button>
+      <table className="border-spacing-0 m-auto">
         <thead>
           <tr>
-            <th>Fret Number</th>
-            <th>Position</th>
-            <th>Done Fretting?</th>
+            <th className="px-1">Fret Number</th>
+            <th className="px-1">Position</th>
+            <th className="px-1">Done Fretting?</th>
           </tr>
         </thead>
         <tbody>
-        {
-          fretPositions.map((pos, idx) => <tr key={`row-${idx + 1}`}>
-            <td>{idx + 1}</td>
-            <td>{pos.toFixed(2)}</td>
-            <td>
-              <input type="checkbox" />
-            </td>
-          </tr>)
-        }
+          {
+            fretPositions.map((pos, idx) => <tr key={`row-${idx + 1}`}>
+              <td className="border-y border-y-white">{idx + 1}</td>
+              <td className="border-y border-y-white">{pos.toFixed(2)}</td>
+              <td className="border-y border-y-white">
+                <input type="checkbox"
+                  className="w-5 h-5" />
+              </td>
+            </tr>)
+          }
         </tbody>
       </table>
     </div>
@@ -40,31 +43,50 @@ function App() {
   const [numFrets, setNumFrets] = useState(19);
   const [showTable, setShowTable] = useState(false);
 
+  const tableShowClass = !showTable ? '' : 'hidden';
+
   return (
     <>
-      <header style={{display: showTable ? 'none' : 'unset'}}>
-        <h2>Fretting Companion</h2>
+      <header className={tableShowClass}>
+        <h2 className="text-2xl">Fretting Companion</h2>
       </header>
       {/* If showing table, un-show inputs */}
-      <div id="inputs" style={{display: showTable ? 'none' : 'unset'}}>
+      <div id="inputs"
+        className={`${tableShowClass} text-left text-lg`}
+      >
         <div className="app-input">
-          <label htmlFor="scale-length">Scale Length</label>
-          <input type="number"
+          <label
+            className="pr-1 font-bold"
+            htmlFor="scale-length">
+            Scale Length
+          </label>
+          <input
+            className="border border-white"
+            type="number"
             id="scale-length"
             value={scaleLength}
             onChange={e => setScaleLength(+e.target.value)} />
         </div>
         <div className="app-input">
-          <label htmlFor="num-frets">Number of Frets</label>
-          <input type="number"
+          <label
+            className="pr-1 font-bold"
+            htmlFor="num-frets">
+            Number of Frets
+          </label>
+          <input
+            className="border border-white"
+            type="number"
             id="scale-length"
             value={numFrets}
             onChange={e => setNumFrets(+e.target.value)} />
         </div>
-        <input type="button"
-          value="Create Table"
-          onClick={() => {setShowTable(true)}} />
       </div>
+      <button
+        className={tableShowClass}
+        type="button"
+        onClick={() => { setShowTable(true) }}>
+        Create Table
+      </button>
       <Table
         showing={showTable}
         scaleLength={scaleLength}
