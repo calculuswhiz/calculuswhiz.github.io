@@ -1,65 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Microphone Demo</title>
 	<meta charset="utf-8">
-	<script src="../../javascripts/jquery-3.3.1.min.js"></script>
 	<script src="../../javascripts/Oscilloscope.js"></script>
-	<script type="text/javascript">
-		function ready()
-		{
-			let canvas = $('#ScopeScreen')[0];
-			let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-			let scope = new Oscilloscope(
-			{ 
-				audioContext : audioContext, 
-				canvas : canvas,
-				fftSize : Number($('#FFTMenu option:selected').val()),
-				beamColor : $('#ScopeColor').val(),
-				domain : Oscilloscope.domainType[$('#DomainMenu option:selected').val()]
-			});
-			// It will analyze without connecting to destination.
-			
-			const minFreq = 20;
-			const maxFreq = 10000;
-			const avgFreq = (minFreq + maxFreq) / 2;
-			let bandPassFilter = audioContext.createBiquadFilter();
-			bandPassFilter.frequency = avgFreq;
-			bandPassFilter.Q = avgFreq - minFreq;
-			bandPassFilter.type = 'bandpass';
-			
-			scope.setFrequencyWindow(minFreq, maxFreq);
-
-			// Request microphone
-			navigator.mediaDevices
-				.getUserMedia({ audio : true })
-				.then(function (stream)
-				{
-					let streamNode = audioContext.createMediaStreamSource(stream);
-					let analyserNode = scope.getNode();
-					streamNode.connect(analyserNode);
-					analyserNode.connect(bandPassFilter);
-				});
-			
-			$('#ScopeColor').keyup(function ()
-			{
-				scope.beamColor = $('#ScopeColor').val();
-			});
-			
-			$('#FFTMenu').change(function ()
-			{
-				scope.setFFTSize(Number($('#FFTMenu option:selected').val()));
-			});
-			
-			$('#DomainMenu').change(function ()
-			{
-				scope.domain = Oscilloscope.domainType[$('#DomainMenu option:selected').val()];
-			});
-			
-			$('#Activator').remove();
-		}
-	</script>
+	<script src="./index.js"></script>
 </head>
+
 <body>
 	<div id="Scope">
 		<div class="TitleLabel">Scope</div>
@@ -89,4 +37,5 @@
 		</div>
 	</div>
 </body>
+
 </html>
