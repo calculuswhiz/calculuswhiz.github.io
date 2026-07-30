@@ -1,0 +1,29 @@
+#StickingPoints {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+#ListArea {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.combo {
+  cursor: pointer;
+  background-color: rgb(0, 200, 0);
+  margin: 5px;
+  padding: 2px;
+  width: 100px;
+  /* Selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: sans-serif;
+}
