@@ -1,66 +1,58 @@
 // Music theory
-const Scale = 
-[
-    ['A'], ['A#', 'Bb'], 
-    ['B'], 
-    ['C'], ['C#', 'Db'], 
-    ['D'], ['D#', 'Eb'], 
-    ['E'], 
-    ['F'], ['F#', 'Gb'], 
-    ['G'], ['G#', 'Ab']
+const Scale = [
+  ['A'], ['A#', 'Bb'],
+  ['B'],
+  ['C'], ['C#', 'Db'],
+  ['D'], ['D#', 'Eb'],
+  ['E'],
+  ['F'], ['F#', 'Gb'],
+  ['G'], ['G#', 'Ab']
 ];
 
 // Add reverse indexing
-let ScaleReverse = {};
-for (let i = 0, len = Scale.length; i < len; i++)
-{
-    let note = Scale[i];
-    for (let j = 0, len = note.length; j < len; j++)
-    {
-        let enharmonic = note[j];
-        ScaleReverse[enharmonic] = i;
-    }
+const ScaleReverse = {};
+for (const [i, note] of Scale.entries()) {
+  for (const [j, enharmonic] of note.entries())
+    ScaleReverse[enharmonic] = i;
 }
 
-let ConcertPitch = 440;
+const ConcertPitch = 440;
 
-const Intervals = 
-{
-    P1: 0, uni: 0, D2: 0,
-    m2: 1, A1: 1, S: 1,
-    M2: 2, D3: 2, T: 2,
-    m3: 3, A2: 3,
-    M3: 4, D4: 4,
-    P4: 5, A3: 5,
-    D5: 6, A4: 6, TT: 6,
-    P5: 7, D6: 7,
-    m6: 8, A5: 8,
-    M6: 9, D7: 9,
-    m7: 10, A6: 10,
-    M7: 11, D8: 11,
-    oct: 12, P8: 12,
+const Intervals = {
+  P1: 0, uni: 0, D2: 0,
+  m2: 1, A1: 1, S: 1,
+  M2: 2, D3: 2, T: 2,
+  m3: 3, A2: 3,
+  M3: 4, D4: 4,
+  P4: 5, A3: 5,
+  D5: 6, A4: 6, TT: 6,
+  P5: 7, D6: 7,
+  m6: 8, A5: 8,
+  M6: 9, D7: 9,
+  m7: 10, A6: 10,
+  M7: 11, D8: 11,
+  oct: 12, P8: 12,
 
-    convertExtended : function (ext)
-    {
-        let mod = ext[0];
-        let int = parseInt(ext.substring(1)) - 7;
+  convertExtended: (ext) => {
+    const mod = ext[0];
+    const int = parseInt(ext.substring(1)) - 7;
 
-        return Intervals[mod + int];
-    }
+    return Intervals[mod + int];
+  }
 };
 
 const ReverseIntervals = ['Root/Oct', 'm2/9', 'M2/9', 'm3/10', 'M3/10', 'P4/11', 'TT', 'P5/12', 'm6/13', 'M6/13', 'm7/14', 'M7/14'];
 
 // Define chords by semitones.
-let ChordIntervals = 
+const ChordIntervals =
 {
-    Root : [],
+  Root: [],
 
-    // The triads
-    Major : [Intervals.M3, Intervals.P5],
-    Minor : [Intervals.m3, Intervals.P5],
-    Aug : [Intervals.M3, Intervals.A5],
-    Dim : [Intervals.m3, Intervals.D5],
+  // The triads
+  Major: [Intervals.M3, Intervals.P5],
+  Minor: [Intervals.m3, Intervals.P5],
+  Aug: [Intervals.M3, Intervals.A5],
+  Dim: [Intervals.m3, Intervals.D5],
 };
 
 // Sevenths
@@ -76,17 +68,16 @@ ChordIntervals['AugMaj7'] = ChordIntervals.Aug.concat(Intervals.M7);
 // Extended
 ChordIntervals['Dom9'] = ChordIntervals.Dom7.concat(Intervals.convertExtended('M9'));
 ChordIntervals['Dom11'] = ChordIntervals.Dom7
-    // Omit m3
-    .filter(int => int != Intervals.m3)
-    .concat(Intervals.convertExtended('M9'), Intervals.convertExtended('P11'));
+  // Omit m3
+  .filter(int => int != Intervals.m3)
+  .concat(Intervals.convertExtended('M9'), Intervals.convertExtended('P11'));
 // Omit P11
 ChordIntervals['Dom13'] = ChordIntervals.Dom7.concat(Intervals.convertExtended('M9'), Intervals.convertExtended('P13'));
 
 // Transformation items
-for (let chordName in ChordIntervals)
-{
-    // Add roots
-    ChordIntervals[chordName] = [Intervals.P1].concat(ChordIntervals[chordName]);
-    // Add chordName property and roots
-    ChordIntervals[chordName].chordName = chordName;
+for (const chordName in ChordIntervals) {
+  // Add roots
+  ChordIntervals[chordName] = [Intervals.P1].concat(ChordIntervals[chordName]);
+  // Add chordName property and roots
+  ChordIntervals[chordName].chordName = chordName;
 }
