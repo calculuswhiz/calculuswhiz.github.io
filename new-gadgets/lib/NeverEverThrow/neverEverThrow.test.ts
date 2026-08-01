@@ -23,6 +23,7 @@ describe("NeverEverThrow", () => {
       const mapped = result.mapOk((x) => !x);
       if (!mapped.isOk)
         throw new Error("Expected Ok result");
+
       expect(mapped.value).toBe(false);
     });
 
@@ -94,19 +95,48 @@ describe("NeverEverThrow", () => {
       test("chained with Result", async () => {
         const result = okAsync(3);
         const okResult1 = await result
-          .andThen(x => resultAsync(waitAndReturn(ok(x ** 2), 20)))
+          .andThen(x => resultAsync(
+            waitAndReturn(ok(x ** 2), 20),
+            () => new Error("Should not happen")
+          ))
           .andThen(x => ok(x + 3));
         if (!okResult1.isOk)
           throw new Error("Expected Ok result");
         expect(okResult1.value).toBe(12);
 
         const okResult2 = await result
-          .andThen(x => resultAsync(waitAndReturn(ok(x + 3), 20)))
+          .andThen(x => resultAsync(
+            waitAndReturn(ok(x + 3), 20),
+            () => new Error("Should not happen")
+          ))
           .andThen(x => ok(x ** 2));
         if (!okResult2.isOk)
           throw new Error("Expected Ok result");
         expect(okResult2.value).toBe(36);
       });
+    });
+
+    test("accumulate with propagation", async () => {
+      const result = basicAsyncResult(true);
+      const okResult = await result.accumulate(x => ok(!x));
+      if (!okResult.isOk)
+        throw new Error("Expected Ok result");
+      const [first, second] = okResult.value;
+      expect(first).toBe(true);
+      expect(second).toBe(false);
+    });
+
+    test("accumulate with no propagation", async () => {
+      let landMine = false;
+      const result = basicAsyncResult(false);
+      const errResult = await result.accumulate(x => {
+        landMine = true;
+        return ok(!x);
+      });
+      if (!errResult.isErr)
+        throw new Error("Expected Err result");
+      expect(errResult.error).toBe(false);
+      expect(landMine).toBe(false);
     });
   });
 
@@ -117,6 +147,29 @@ describe("NeverEverThrow", () => {
       if (!okResult.isOk)
         throw new Error("Expected Ok result");
       expect(okResult.value).toBe(false);
+    });
+
+    test("accumulateAsync with propagation", async () => {
+      const result = basicResult(true);
+      const okResult = await result.accumulateAsync(x => okAsync(!x));
+      if (!okResult.isOk)
+        throw new Error("Expected Ok result");
+      const [first, second] = okResult.value;
+      expect(first).toBe(true);
+      expect(second).toBe(false);
+    });
+
+    test("accumulateAsync with no propagation", async () => {
+      let landMine = false;
+      const result = basicResult(false);
+      const errResult = await result.accumulateAsync(x => {
+        landMine = true;
+        return okAsync(!x);
+      });
+      if (!errResult.isErr)
+        throw new Error("Expected Err result");
+      expect(errResult.error).toBe(false);
+      expect(landMine).toBe(false);
     });
   });
 });

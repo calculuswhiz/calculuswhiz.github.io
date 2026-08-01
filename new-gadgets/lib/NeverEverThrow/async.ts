@@ -1,13 +1,19 @@
-import { err, ok, type Result } from "./sync";
+import { Err, Ok, type Result } from "./sync";
 
+type EitherSyncOrAsync<T, E> = Result<T, E> | ResultAsync<T, E>;
 type MaybePromise<T> = Promise<T> | T;
 
 /** The asynchronous version of Result. To get a result, await the instance.
  * Any of the methods can be awaited as well.
  * To create a ResultAsync from a Promise, use the helper method {@link resultAsync}. The error
- * will be defined by the .catch(), which should return an Error
- */
+ * will be defined by the .catch(), which should return an Error.
+ * 
+*/
+/* We cannot use two different types for the error and value.
+ The promise must resolve to a Result<T, E>. It cannot be known until it
+ is resolved. */
 export class ResultAsync<T, E> implements PromiseLike<Result<T, E>> {
+  /** Have to maintain an internal promise. */
   private _promise: Promise<Result<T, E>>;
 
   constructor(promise: Promise<Result<T, E>>) {
@@ -22,35 +28,57 @@ export class ResultAsync<T, E> implements PromiseLike<Result<T, E>> {
   };
 
   /** Unwrap if Ok, otherwise give supplied value */
-  async unwrapOr<U>(defaultValue: U) {
-    return (await this).unwrapOr(defaultValue);
+  async unwrapOr<U>(defaultValue: U): Promise<T | U> {
+    return (await this._promise).unwrapOr(defaultValue);
   }
 
   /** If the result is Ok, map to another value */
   mapOk<U>(fn: (arg: T) => MaybePromise<U>): ResultAsync<U, E> {
     return new ResultAsync(this._promise.then(
       async result => result.isOk
-        ? ok(await fn(result.value))
-        : err(result.error)
+        ? new Ok(await fn(result.value))
+        : result
     ));
   }
 
   /** Chain another result-producing function if Ok, otherwise propagate the error */
-  andThen<U, F>(fn: (arg: T) => ResultAsync<U, F> | Result<U, F>)
-    : ResultAsync<U, E | F> {
+  andThen<U, F>(
+    fn: (arg: T) => EitherSyncOrAsync<U, F>
+  ): ResultAsync<U, E | F> {
     return new ResultAsync<U, E | F>(this._promise.then(
       async result => result.isErr
-        ? err(result.error)
+        ? result
         : await fn(result.value)
     ));
   }
 
+  /** Similar to andThen, but accumulates success results. If any in the chain
+   * fail, the first error is returned.
+   */
+  accumulate<U, F>(
+    fn: (arg: T) => EitherSyncOrAsync<U, F>
+  ): ResultAsync<readonly [T, U], E | F> {
+    return new ResultAsync<readonly [T, U], E | F>(this._promise.then(
+      async result => {
+        if (result.isErr)
+          return result;
+
+        const nextResult = await fn(result.value);
+        return nextResult.isErr
+          ? nextResult
+          : new Ok([result.value, nextResult.value] as const)
+      }
+    ));
+  }
+
   /** If the result is Err, map to another value */
-  mapErr<F>(fn: (arg: E) => MaybePromise<F>): ResultAsync<T, F> {
+  mapErr<F>(
+    fn: (arg: E) => MaybePromise<F>
+  ): ResultAsync<T, F> {
     return new ResultAsync(this._promise.then(
       async result => result.isOk
-        ? ok(result.value)
-        : err(await fn(result.error))
+        ? result
+        : new Err(await fn(result.error))
     ));
   }
 
@@ -65,19 +93,25 @@ export class ResultAsync<T, E> implements PromiseLike<Result<T, E>> {
 export type OkAsync<T> = ResultAsync<T, never>;
 export type ErrAsync<E> = ResultAsync<never, E>;
 
-/** Create a {@link ResultAsync} from a promise.
+/** 
+ * Create a {@link ResultAsync} from a promise.
  * Error handling is done by the .catch() of the promise.
  */
 export function resultAsync<T, E>(
-  promise: Promise<Result<T, E>>
+  promise: Promise<Result<T, E>>,
+  errHandler: (err: unknown) => E
 ): ResultAsync<T, E> {
-  return new ResultAsync(promise);
+  return new ResultAsync(
+    promise
+      .then(result => result)
+      .catch(error => new Err(errHandler(error)))
+  );
 }
 
 export function okAsync<T>(value: T): OkAsync<T> {
-  return new ResultAsync(Promise.resolve(ok(value)));
+  return new ResultAsync(Promise.resolve(new Ok(value)));
 }
 
 export function errAsync<E>(error: E): ErrAsync<E> {
-  return new ResultAsync(Promise.resolve(err(error)));
+  return new ResultAsync(Promise.resolve(new Err(error)));
 }
