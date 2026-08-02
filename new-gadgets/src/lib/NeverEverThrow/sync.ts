@@ -1,5 +1,5 @@
 import type { If } from "../helpers";
-import { ResultAsync } from "./async";
+import { ResultAsync, type OkAsync } from "./async";
 
 /** 
  * We use this interface instead of one class with conditionals.
@@ -50,15 +50,13 @@ export class Ok<T> implements ResultCommon<true, T, never> {
   readonly isOk = true;
   readonly isErr = false;
 
-  constructor(readonly value: T) {
-    this.value = value;
-  }
+  constructor(readonly value: T) { }
 
   unwrapOr = () => this.value
 
   mapOk = <U>(fn: (arg: T) => U) => new Ok(fn(this.value))
 
-  mapOkAsync = <U>(fn: (arg: T) => Promise<U>) => {
+  mapOkAsync = <U>(fn: (arg: T) => Promise<U>): OkAsync<U> => {
     return new ResultAsync<U, never>(
       Promise.resolve(this.value).then(fn)
         .catch(error => error)
@@ -83,11 +81,12 @@ export class Ok<T> implements ResultCommon<true, T, never> {
   accumulateAsync = <U, F>(fn: (arg: T) => ResultAsync<U, F>) => {
     return new ResultAsync<readonly [T, U], F>(
       Promise.resolve(this.value).then(
-        value => fn(value).then(
-          result => result.isErr
+        async value => {
+          const result = await fn(value);
+          return result.isErr
             ? result
-            : new Ok([this.value, result.value] as const)
-        )
+            : new Ok([this.value, result.value] as const);
+        }
       ).catch(error => error)
     );
   }
@@ -101,9 +100,7 @@ export class Err<E> implements ResultCommon<false, never, E> {
   readonly isOk = false;
   readonly isErr = true;
 
-  constructor(readonly error: E) {
-    this.error = error;
-  }
+  constructor(readonly error: E) { }
 
   unwrapOr = <U>(defaultValue: U) => defaultValue
 

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Web Tuner</title>
+	<meta charset="utf-8">
+</head>
+
+<body class="font-mono p-2">
+	<div>
+		Note: On mobile, displayed pitch may be lower by 1.5 semitones. <br />
+		If this is the case, set Concert A to 403.48 to remedy the issue<br />
+	</div>
+	<table class="border border-black">
+		<colgroup>
+			<col />
+			<col class="bg-gray-200" />
+		</colgroup>
+		<tbody>
+			<tr>
+				<td class="text-center border border-dotted border-gray">
+					Note
+				</td>
+				<td class="text-center border border-dotted border-gray">
+					<span id="Note">???</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-center border border-dotted border-gray">
+					Cents</td>
+				<td class="text-center border border-dotted border-gray">
+					<span id="Cents">???</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-center border border-dotted border-gray">
+					Pitch (Hz)
+				</td>
+				<td class="text-center border border-dotted border-gray">
+					<span id="Pitch"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-center border border-dotted border-gray">
+					Certainty
+				</td>
+				<td class="text-center border border-dotted border-gray">
+					<span id="Certainty"></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	Concert A: <input type="text" class="border" id="ConcertA" value="440"><br />
+	Graph offset (half steps from A): <input type="text" class="border" id="GraphOffset" value="1"><br />
+	<div id='cent-i-meter'></div>
+	<button id="Activator" class="border bg-gray-200">
+		Activate it!
+	</button><br />
+	<canvas width="600" height="800" class="seismometer" id='seismo1'></canvas><br />
+	<script type="module" src="./index.ts"></script>
+</body>
+
+</html>
