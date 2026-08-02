@@ -4,16 +4,12 @@
 <head>
 	<title>Web Tuner</title>
 	<meta charset="utf-8">
-<link rel="stylesheet" crossorigin href="../chunk-gqx2ggx9.css"><script type="module" crossorigin src="../chunk-1e5mqws1.js"></script></head>
+<link rel="stylesheet" crossorigin href="../chunk-w7k7m01s.css"><script type="module" crossorigin src="../chunk-1xdvt6c9.js"></script></head>
 
-<body class="font-mono p-2">
-	<div>
-		Note: On mobile, displayed pitch may be lower by 1.5 semitones. <br />
-		If this is the case, set Concert A to 403.48 to remedy the issue<br />
-	</div>
+<body class="font-mono p-2 flex flex-col">
 	<table class="border border-black">
 		<colgroup>
-			<col />
+			<col class="w-120" />
 			<col class="bg-gray-200" />
 		</colgroup>
 		<tbody>
@@ -50,13 +46,15 @@
 			</tr>
 		</tbody>
 	</table>
-	Concert A: <input type="text" class="border" id="ConcertA" value="440"><br />
-	Graph offset (half steps from A): <input type="text" class="border" id="GraphOffset" value="1"><br />
-	<div id='cent-i-meter'></div>
-	<button id="Activator" class="border bg-gray-200">
-		Activate it!
-	</button><br />
-	<canvas width="600" height="800" class="seismometer" id='seismo1'></canvas><br />
+	<div id='cent-i-meter' class="text-center"></div>
+	<button id="Activator" class="border bg-gray-200 fixed top-0 left-0 w-full h-full text-4xl">
+		Start listening
+	</button>
+	<canvas width="600" height="400" class="seismometer grow m-auto md:max-w-1/2" id='seismo1'></canvas>
+	<div class="flex m-auto">
+		<div class="pr-2">Concert A: <input type="text" class="border" id="ConcertA" value="440"></div>
+		<div>Graph offset (half steps from A): <input type="text" class="border" id="GraphOffset" value="1"></div>
+	</div>
 	
 </body>
 

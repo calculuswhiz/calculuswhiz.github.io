@@ -61,9 +61,8 @@ export class Seismometer {
     const deltaY = yMax - yMin;
     const numberOfLines = this.numberOfLines;
 
-    if (ctx == null) {
+    if (ctx == null) 
       throw new Error('Canvas context is null');
-    }
 
     // Draw background color:
     ctx.fillStyle = this.bgColor;
@@ -73,7 +72,7 @@ export class Seismometer {
     ctx.strokeStyle = this.fgColor;
     ctx.fillStyle = this.fgColor;
     ctx.lineWidth = 1;
-    ctx.font = '10px sans-serif';
+    ctx.font = '13px sans-serif';
 
     // Draw gridlines:
     for (let i = 0; i < numberOfLines; i++) {

@@ -1,8 +1,7 @@
 export const allowableFFTSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768];
 
 // I found this YIN implementation by Alejandro Perez, but I found a lot of things to optimize for efficiency.
-let threshold: number;
-export function yinPitch(inputBuffer: Uint8Array, sampleRate: number): { p: number; pitch: number } {
+export function yinPitch(inputBuffer: Uint8Array, threshold: number, sampleRate: number): { p: number; pitch: number } {
   const halfBufferLength = inputBuffer.length / 2;
   const meanBuffer = new Float32Array(halfBufferLength);
   meanBuffer[0] = 1;
@@ -56,21 +55,19 @@ export function yinPitch(inputBuffer: Uint8Array, sampleRate: number): { p: numb
 export class PitchAnalyser {
   analyser: AnalyserNode;
   dataBuffer: Uint8Array<ArrayBuffer>;
+  threshold: number;
 
   constructor(props: { audioContext: AudioContext; fftSize?: number; threshold?: number }) {
     this.analyser = props.audioContext.createAnalyser();
     this.analyser.fftSize = props.fftSize ?? 2048;
     this.dataBuffer = new Uint8Array(this.analyser.frequencyBinCount);
-    if (props.threshold == null)
-      threshold = 0.05;
-    else
-      threshold = props.threshold;
+    this.threshold = props.threshold ?? 0.05;
   }
 
   getPitchFromSource() {
     // For time-domain analysis
     this.analyser.getByteTimeDomainData(this.dataBuffer);
 
-    return yinPitch(this.dataBuffer, this.analyser.context.sampleRate);
+    return yinPitch(this.dataBuffer, this.threshold, this.analyser.context.sampleRate);
   }
 }
