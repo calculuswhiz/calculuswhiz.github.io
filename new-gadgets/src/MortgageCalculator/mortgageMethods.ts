@@ -1,3 +1,5 @@
+import { err, ok } from "@/lib/NeverEverThrow/sync";
+
 export type ActivityFields = {
 	timeStamp: Date;
 	totalAmount: number;
@@ -22,9 +24,9 @@ export function getPaymentData(
 		+ (compoundRate * principal)) * (1 + noCalcPercent / 100);
 
 	if (paymentPerCycle <= paymentThreshold) {
-		throw Error(
+		return err(Error(
 			`Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.`
-		);
+		));
 	}
 
 	const millisPerCycle = millisPerYear / paymentCycles;
@@ -39,7 +41,7 @@ export function getPaymentData(
 		const principalPayment = paymentPerCycle - interest - escrowAdjustment;
 
 		if (principalPayment <= 0) {
-			throw Error('Negative principal payment detected. Terminating.');
+			return err(Error('Negative principal payment detected. Terminating.'));
 		}
 
 		const prevEntry = paymentData.slice(-1)[0];
@@ -48,11 +50,11 @@ export function getPaymentData(
 			timeStamp: new Date(millis),
 			totalAmount: paymentPerCycle,
 			remainingBalance: remainingBalance,
-			dRemainingBalance: remainingBalance - prevEntry?.remainingBalance,
+			dRemainingBalance: remainingBalance - (prevEntry?.remainingBalance ?? 0),
 			principal: principalPayment,
-			dPrincipal: principalPayment - prevEntry?.principal,
+			dPrincipal: principalPayment - (prevEntry?.principal ?? 0),
 			interest: interest,
-			dInterest: interest - prevEntry?.interest,
+			dInterest: interest - (prevEntry?.interest ?? 0),
 		});
 
 		millis += millisPerCycle;
@@ -63,18 +65,18 @@ export function getPaymentData(
 		// Zero out the balance
 
 		const penultimateEntry = paymentData.slice(-1)[0]
-		const finalBalance = penultimateEntry.remainingBalance;
+		const finalBalance = penultimateEntry?.remainingBalance ?? 0;
 		paymentData.push({
 			timeStamp: new Date(millis + millisPerCycle),
 			totalAmount: finalBalance + escrowAdjustment,
 			remainingBalance: 0,
-			dRemainingBalance: 0 - penultimateEntry.remainingBalance,
+			dRemainingBalance: 0 - (penultimateEntry?.remainingBalance ?? 0),
 			principal: finalBalance,
-			dPrincipal: finalBalance - penultimateEntry.principal,
+			dPrincipal: finalBalance - (penultimateEntry?.principal ?? 0),
 			interest: 0,
-			dInterest: 0 - penultimateEntry.interest,
+			dInterest: 0 - (penultimateEntry?.interest ?? 0),
 		});
 	}
 
-	return paymentData;
+	return ok(paymentData);
 }
