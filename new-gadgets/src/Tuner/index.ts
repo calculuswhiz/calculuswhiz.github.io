@@ -115,7 +115,9 @@ export function ready() {
     {
       bgColor: 'black',
       fgColor: 'white',
-      seismocolor: 'cyan'
+      seismocolor: 'cyan',
+      fontSize: 20,
+      fontFamily: 'monospace'
     }
   );
 

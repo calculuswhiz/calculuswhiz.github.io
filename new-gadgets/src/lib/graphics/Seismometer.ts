@@ -7,6 +7,7 @@ export class Seismometer {
   valueMap: Record<number, string>;
   bgColor: string;
   fgColor: string;
+  font: string;
   seismocolor: string;
   dataSet: Float32Array;
 
@@ -17,6 +18,8 @@ export class Seismometer {
     maxJump: number;
     valueMap?: Record<number, string>;
   }, styleProps: {
+    fontSize?: number;
+    fontFamily?: string;
     bgColor?: string;
     fgColor?: string;
     seismocolor?: string;
@@ -29,9 +32,10 @@ export class Seismometer {
     this.maxJump = graphProps.maxJump;
     this.valueMap = graphProps.valueMap || {};
 
-    this.bgColor = (styleProps && styleProps.bgColor) ? styleProps.bgColor : 'white';
-    this.fgColor = (styleProps && styleProps.fgColor) ? styleProps.fgColor : 'black';
-    this.seismocolor = (styleProps && styleProps.seismocolor) ? styleProps.seismocolor : 'red';
+    this.bgColor = styleProps.bgColor ?? 'white';
+    this.fgColor = styleProps.fgColor ?? 'black';
+    this.seismocolor = styleProps.seismocolor ?? 'red';
+    this.font = `${styleProps.fontSize ?? 13}px ${styleProps.fontFamily ?? 'sans-serif'}`;
 
     this.dataSet = new Float32Array(canvas.width);
 
@@ -72,7 +76,7 @@ export class Seismometer {
     ctx.strokeStyle = this.fgColor;
     ctx.fillStyle = this.fgColor;
     ctx.lineWidth = 1;
-    ctx.font = '13px sans-serif';
+    ctx.font = this.font;
 
     // Draw gridlines:
     for (let i = 0; i < numberOfLines; i++) {

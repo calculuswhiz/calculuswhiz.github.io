@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --hot src/Tuner/index.html",
+    "dev": "bun --hot src/**/index.html",
     "start": "NODE_ENV=production bun src/index.ts",
     "build": "bun run build.ts"
   },
