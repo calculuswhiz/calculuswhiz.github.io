@@ -20,9 +20,10 @@ export class ResultAsync<T, E> implements PromiseLike<Result<T, E>> {
     this._promise = promise;
   }
 
+  // oxlint-disable-next-line unicorn/no-thenable This is intended as a PromiseLike, so we need to implement then()
   then<TResult1, TResult2>(
-    res?: ((value: Result<T, E>) => MaybePromise<TResult1>),
-    rej?: ((reason: any) => MaybePromise<TResult2>)
+    res?: (value: Result<T, E>) => MaybePromise<TResult1>,
+    rej?: (reason: any) => MaybePromise<TResult2>
   ): PromiseLike<TResult1 | TResult2> {
     return this._promise.then(res, rej);
   };
@@ -52,22 +53,12 @@ export class ResultAsync<T, E> implements PromiseLike<Result<T, E>> {
     ));
   }
 
-  /** Similar to andThen, but accumulates success results. If any in the chain
-   * fail, the first error is returned.
-   */
-  accumulate<U, F>(
-    fn: (arg: T) => EitherSyncOrAsync<U, F>
-  ): ResultAsync<readonly [T, U], E | F> {
-    return new ResultAsync<readonly [T, U], E | F>(this._promise.then(
-      async result => {
-        if (result.isErr)
-          return result;
-
-        const nextResult = await fn(result.value);
-        return nextResult.isErr
-          ? nextResult
-          : new Ok([result.value, nextResult.value] as const)
-      }
+  /** Chain  */
+  orElse<U, F>(fn: (arg: E) => EitherSyncOrAsync<U, F>): ResultAsync<T | U, F> {
+    return new ResultAsync<T | U, F>(this._promise.then(
+      async result => result.isOk
+        ? result
+        : await fn(result.error)
     ));
   }
 
@@ -99,12 +90,15 @@ export type ErrAsync<E> = ResultAsync<never, E>;
  */
 export function resultAsync<T, E>(
   promise: Promise<Result<T, E>>,
-  errHandler: (err: unknown) => E
+  errHandler?: (err: unknown) => E
 ): ResultAsync<T, E> {
   return new ResultAsync(
     promise
-      .then(result => result)
-      .catch(error => new Err(errHandler(error)))
+      .catch(error => new Err(
+        errHandler != null
+          ? errHandler(error)
+          : error as E
+      ))
   );
 }
 

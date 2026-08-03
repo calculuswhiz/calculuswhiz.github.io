@@ -22,18 +22,12 @@ export type ResultCommon<TOk extends boolean, T, E> = {
   andThenAsync<U, F>(
     fn: (arg: T) => ResultAsync<U, F>
   ): If<TOk, ResultAsync<U, F>, Err<E>>;
-  /** Similar to andThen, but accumulates success results. If any in the chain
-   * fail, the first error is returned.
-   */
-  accumulate<U, F>(
-    fn: (arg: T) => Result<U, F>
-  ): Result<readonly [T, U], E | F>;
-  /** Similar to andThenAsync, but accumulates success results. If any in the chain
-   * fail, the first error is returned.
-   */
-  accumulateAsync<U, F>(
-    fn: (arg: T) => ResultAsync<U, F>
-  ): ResultAsync<readonly [T, U], F> | Err<E>;
+  /** Chain another result-producing function if Err, otherwise propagate the Ok value */
+  orElse<U, F>(fn: (arg: E) => Result<U, F>): If<TOk, Ok<T>, Result<U, F>>;
+  /** Similar to orElse, but turns the result into an asynchronous one */
+  orElseAsync<U, F>(
+    fn: (arg: E) => ResultAsync<U, F>
+  ): If<TOk, Ok<T>, ResultAsync<U, F>>;
   /** If the result is Ok, map to another value */
   mapOk<U>(fn: (arg: T) => U): If<TOk, Ok<U>, Err<E>>;
   /** Similar to mapOk, but returns a Promise-wrapped result */
@@ -71,25 +65,8 @@ export class Ok<T> implements ResultCommon<true, T, never> {
     fn: (arg: T) => ResultAsync<U, F>
   ) => fn(this.value)
 
-  accumulate = <U, F>(fn: (arg: T) => Result<U, F>) => {
-    const result = fn(this.value);
-    return result.isErr
-      ? result
-      : new Ok([this.value, result.value] as const);
-  }
-
-  accumulateAsync = <U, F>(fn: (arg: T) => ResultAsync<U, F>) => {
-    return new ResultAsync<readonly [T, U], F>(
-      Promise.resolve(this.value).then(
-        async value => {
-          const result = await fn(value);
-          return result.isErr
-            ? result
-            : new Ok([this.value, result.value] as const);
-        }
-      ).catch(error => error)
-    );
-  }
+  orElse = () => this
+  orElseAsync = () => this
 
   mapErr = () => this
 
@@ -105,12 +82,10 @@ export class Err<E> implements ResultCommon<false, never, E> {
   unwrapOr = <U>(defaultValue: U) => defaultValue
 
   andThen = () => this
-
   andThenAsync = () => this
 
-  accumulate = () => this
-
-  accumulateAsync = () => this
+  orElse = <U, F>(fn: (arg: E) => Result<U, F>) => fn(this.error)
+  orElseAsync = <U, F>(fn: (arg: E) => ResultAsync<U, F>) => fn(this.error)
 
   mapOk = () => this
   mapOkAsync = () => this
