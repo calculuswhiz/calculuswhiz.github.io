@@ -9,9 +9,12 @@
     "correctness": "error"
   },
   "rules": {
-    "no-unexpected-multiline": "error",
+    "eslint/no-unexpected-multiline": "error"
   },
   "env": {
     "builtin": true
-  }
+  },
+  "ignorePatterns": [
+    "dist/"
+  ]
 }

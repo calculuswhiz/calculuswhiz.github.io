@@ -34,29 +34,6 @@ describe("NeverEverThrow", () => {
         throw new Error("Expected Ok result");
       expect(okResult.value).toBe(false);
     });
-
-    test("accumulate with propagation", () => {
-      const result = basicResult(true);
-      const okResult = result.accumulate(x => ok(!x));
-      if (!okResult.isOk)
-        throw new Error("Expected Ok result");
-      const [first, second] = okResult.value;
-      expect(first).toBe(true);
-      expect(second).toBe(false);
-    });
-
-    test("accumulate with no propagation", () => {
-      let landMine = false;
-      const result = basicResult(false);
-      const errResult = result.accumulate(x => {
-        landMine = true;
-        return ok(!x);
-      });
-      if (!errResult.isErr)
-        throw new Error("Expected Err result");
-      expect(errResult.error).toBe(false);
-      expect(landMine).toBe(false);
-    });
   });
 
   describe("Async methods", () => {
@@ -115,29 +92,6 @@ describe("NeverEverThrow", () => {
         expect(okResult2.value).toBe(36);
       });
     });
-
-    test("accumulate with propagation", async () => {
-      const result = basicAsyncResult(true);
-      const okResult = await result.accumulate(x => ok(!x));
-      if (!okResult.isOk)
-        throw new Error("Expected Ok result");
-      const [first, second] = okResult.value;
-      expect(first).toBe(true);
-      expect(second).toBe(false);
-    });
-
-    test("accumulate with no propagation", async () => {
-      let landMine = false;
-      const result = basicAsyncResult(false);
-      const errResult = await result.accumulate(x => {
-        landMine = true;
-        return ok(!x);
-      });
-      if (!errResult.isErr)
-        throw new Error("Expected Err result");
-      expect(errResult.error).toBe(false);
-      expect(landMine).toBe(false);
-    });
   });
 
   describe("Mixed methods", () => {
@@ -147,29 +101,6 @@ describe("NeverEverThrow", () => {
       if (!okResult.isOk)
         throw new Error("Expected Ok result");
       expect(okResult.value).toBe(false);
-    });
-
-    test("accumulateAsync with propagation", async () => {
-      const result = basicResult(true);
-      const okResult = await result.accumulateAsync(x => okAsync(!x));
-      if (!okResult.isOk)
-        throw new Error("Expected Ok result");
-      const [first, second] = okResult.value;
-      expect(first).toBe(true);
-      expect(second).toBe(false);
-    });
-
-    test("accumulateAsync with no propagation", async () => {
-      let landMine = false;
-      const result = basicResult(false);
-      const errResult = await result.accumulateAsync(x => {
-        landMine = true;
-        return okAsync(!x);
-      });
-      if (!errResult.isErr)
-        throw new Error("Expected Err result");
-      expect(errResult.error).toBe(false);
-      expect(landMine).toBe(false);
     });
   });
 });

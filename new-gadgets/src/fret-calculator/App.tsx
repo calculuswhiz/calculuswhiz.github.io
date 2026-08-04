@@ -48,39 +48,39 @@ function App() {
   return (
     <>
       <header className={tableShowClass}>
-        <h2 className="text-2xl">Fretting Companion</h2>
+        <h2 className="text-2xl font-bold">Fret Slotting Companion</h2>
       </header>
       {/* If showing table, un-show inputs */}
-      <div id="inputs"
-        className={`${tableShowClass} text-left text-lg`}
-      >
-        <div className="app-input">
-          <label
-            className="pr-1 font-bold"
-            htmlFor="scale-length">
-            Scale Length
-          </label>
-          <input
-            className="border border-white"
-            type="number"
-            id="scale-length"
-            value={scaleLength}
-            onChange={e => setScaleLength(+e.target.value)} />
-        </div>
-        <div className="app-input">
-          <label
-            className="pr-1 font-bold"
-            htmlFor="num-frets">
-            Number of Frets
-          </label>
-          <input
-            className="border border-white"
-            type="number"
-            id="scale-length"
-            value={numFrets}
-            onChange={e => setNumFrets(+e.target.value)} />
-        </div>
-      </div>
+      <table id="inputs" className={`${tableShowClass} text-left text-lg`}>
+        <tbody>
+          <tr>
+            <td className="pr-1 font-bold">
+              <label htmlFor="scale-length">Scale Length</label>
+            </td>
+            <td>
+              <input
+                className="border border-white"
+                type="number"
+                id="scale-length"
+                value={scaleLength}
+                onChange={e => setScaleLength(+e.target.value)} />
+            </td>
+          </tr>
+          <tr>
+            <td className="pr-1 font-bold">
+              <label htmlFor="num-frets">Number of Frets</label>
+            </td>
+            <td>
+              <input
+                className="border border-white"
+                type="number"
+                id="num-frets"
+                value={numFrets}
+                onChange={e => setNumFrets(+e.target.value)} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <button
         className={tableShowClass}
         type="button"
