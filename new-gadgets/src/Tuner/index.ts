@@ -1,4 +1,4 @@
-import "./tuner.css";
+import "../standard.css";
 import { _nn } from "../lib/AssertNonNull";
 import { Seismometer } from "../lib/graphics/Seismometer";
 import { PitchAnalyser } from "../lib/music/pitch";

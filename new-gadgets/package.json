@@ -11,8 +11,10 @@
     "build": "bun run build.ts"
   },
   "dependencies": {
+    "@types/showdown": "^2.0.6",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "showdown": "^2.1.0"
   },
   "devDependencies": {
     "bun-plugin-tailwind": "^0.1.2",

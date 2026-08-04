@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './index.css'
+import "../standard.css";
 
 function Table(props: { showing: boolean, scaleLength: number, numFrets: number, exitTable: () => void }) {
   const fretPositions = new Array<number>();

@@ -85,7 +85,7 @@ function AggregateItem(props: {
 
   return <span className="cursor-default grow">
     <h3
-      className="bg-amber-100"
+      className="bg-amber-700"
       title={props.help != null ? "Click to Show Help" : ""}
       onClick={e => {
         setShowHelp(!showHelp);
@@ -220,22 +220,22 @@ function App() {
               className='border-collapse border'>
               <thead className='font-bold'>
                 <tr>
-                  <td className="border-b border-black pr-5 bg-amber-400">Cycle</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Date</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Payment</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Principal</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Δ Principal</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Interest</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Δ Interest</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Escrow/other</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Remaining Principal</td>
-                  <td className="border-b border-black pr-5 bg-amber-400">Δ R. Principal</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Cycle</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Date</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Payment</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Principal</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Δ Principal</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Interest</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Δ Interest</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Escrow/other</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Remaining Principal</td>
+                  <td className="border-b border-black pr-5 bg-amber-500 p-1">Δ R. Principal</td>
                 </tr>
               </thead>
               <tbody>
                 {
                   realPaymentData.map((payment, idx) => (
-                    <tr className="odd:bg-gray-200 even:bg-white" key={payment.timeStamp.toString()}>
+                    <tr className="odd:bg-gray-500 even:bg-gray-700" key={payment.timeStamp.toString()}>
                       <td className="p-1">{idx + 1}</td>
                       <td className="p-1">{formatDate(payment.timeStamp)}</td>
                       <td className="p-1">{formatDollars(payment.totalAmount)}</td>
