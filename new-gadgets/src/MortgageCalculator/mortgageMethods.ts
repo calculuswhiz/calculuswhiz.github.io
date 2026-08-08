@@ -1,5 +1,3 @@
-import { err, ok } from "@/lib/NeverEverThrow/sync";
-
 export type ActivityFields = {
 	timeStamp: Date;
 	totalAmount: number;
@@ -24,9 +22,7 @@ export function getPaymentData(
 		+ (compoundRate * principal)) * (1 + noCalcPercent / 100);
 
 	if (paymentPerCycle <= paymentThreshold) {
-		return err(Error(
-			`Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.`
-		));
+		return { error: `Payment ${paymentPerCycle} is below the threshold ${paymentThreshold}. Cannot calculate.` };
 	}
 
 	const millisPerCycle = millisPerYear / paymentCycles;
@@ -40,9 +36,8 @@ export function getPaymentData(
 		const interest = compoundRate * remainingBalance;
 		const principalPayment = paymentPerCycle - interest - escrowAdjustment;
 
-		if (principalPayment <= 0) {
-			return err(Error('Negative principal payment detected. Terminating.'));
-		}
+		if (principalPayment <= 0)
+			return { error: `Negative principal payment detected. Terminating.` };
 
 		const prevEntry = paymentData.slice(-1)[0];
 
@@ -78,5 +73,5 @@ export function getPaymentData(
 		});
 	}
 
-	return ok(paymentData);
+	return paymentData;
 }

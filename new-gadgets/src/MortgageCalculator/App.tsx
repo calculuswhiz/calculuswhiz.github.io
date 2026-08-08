@@ -128,10 +128,17 @@ function App() {
     if (principal === 0)
       return [];
 
-    return getPaymentData(
+    const paymentDataResult = getPaymentData(
       principal, compoundRate, paymentPerCycle,
       escrowAdjustment, annualPaymentCycles
-    ).logErr().unwrapOr([]);
+    );
+
+    if ('error' in paymentDataResult) {
+      failedParams.push([false, paymentDataResult.error]);
+      return [];
+    }
+
+    return paymentDataResult;
   }
 
   // Real payment
