@@ -7,11 +7,6 @@ import { ResultAsync, type OkAsync } from "./async";
  * Any speed tradeoff should favor runtime over static analysis.
  */
 export type ResultCommon<TOk extends boolean, T, E> = {
-  /** Result is OK. Usually easier to check isErr instead */
-  readonly isOk: TOk;
-  /** Defined for convenience. Opposite of isOk. */
-  readonly isErr: If<TOk, false, true>;
-
   /** Unwrap if Ok, otherwise give supplied value */
   unwrapOr<U>(defaultValue: U): If<TOk, T, U>;
   /** Chain another result-producing function if Ok, otherwise propagate the error */
@@ -40,61 +35,96 @@ export type ResultCommon<TOk extends boolean, T, E> = {
   logErr(): If<TOk, Ok<T>, Err<E>>;
 };
 
-export class Ok<T> implements ResultCommon<true, T, never> {
+export type ResultProps<TOk> = {
+  readonly isOk: TOk;
+  readonly isErr: TOk extends true ? false : true;
+};
+
+export class Ok<T> implements ResultCommon<true, T, never>, ResultProps<true> {
   readonly isOk = true;
   readonly isErr = false;
 
   constructor(readonly value: T) { }
 
-  unwrapOr = () => this.value
+  unwrapOr() {
+    return this.value;
+  }
 
-  mapOk = <U>(fn: (arg: T) => U) => new Ok(fn(this.value))
+  mapOk<U>(fn: (arg: T) => U) {
+    return new Ok(fn(this.value));
+  }
 
-  mapOkAsync = <U>(fn: (arg: T) => Promise<U>): OkAsync<U> => {
+  mapOkAsync<U>(fn: (arg: T) => Promise<U>): OkAsync<U> {
     return new ResultAsync<U, never>(
       Promise.resolve(this.value).then(fn)
         .catch(error => error)
     );
   }
 
-  andThen = <U, F>(
+  andThen<U, F>(
     fn: (arg: T) => Result<U, F>
-  ) => fn(this.value)
+  ) {
+    return fn(this.value);
+  }
 
-  andThenAsync = <U, F>(
+  andThenAsync<U, F>(
     fn: (arg: T) => ResultAsync<U, F>
-  ) => fn(this.value)
+  ) {
+    return fn(this.value);
+  }
 
-  orElse = () => this
-  orElseAsync = () => this
+  orElse() {
+    return this;
+  }
+  orElseAsync() {
+    return this;
+  }
 
-  mapErr = () => this
+  mapErr() {
+    return this;
+  }
 
-  logErr = () => this
+  logErr() {
+    return this;
+  }
 }
 
-export class Err<E> implements ResultCommon<false, never, E> {
+export class Err<E> implements ResultCommon<false, never, E>, ResultProps<false> {
   readonly isOk = false;
   readonly isErr = true;
 
   constructor(readonly error: E) { }
 
-  unwrapOr = <U>(defaultValue: U) => defaultValue
+  unwrapOr<U>(defaultValue: U) {
+    return defaultValue;
+  }
 
-  andThen = () => this
-  andThenAsync = () => this
+  andThen() {
+    return this;
+  }
+  andThenAsync() {
+    return this;
+  }
 
-  orElse = <U, F>(fn: (arg: E) => Result<U, F>) => fn(this.error)
-  orElseAsync = <U, F>(fn: (arg: E) => ResultAsync<U, F>) => fn(this.error)
+  orElse<U, F>(fn: (arg: E) => Result<U, F>) {
+    return fn(this.error);
+  }
+  orElseAsync<U, F>(fn: (arg: E) => ResultAsync<U, F>) {
+    return fn(this.error);
+  }
 
-  mapOk = () => this
-  mapOkAsync = () => this
+  mapOk() {
+    return this;
+  }
+  mapOkAsync() {
+    return this;
+  }
 
-  mapErr = <U>(
-    fn: (arg: E) => U
-  ) => new Err(fn(this.error))
+  mapErr<U>(fn: (arg: E) => U) {
+    return new Err(fn(this.error));
+  }
 
-  logErr = () => {
+  logErr() {
     console.error(this.error);
     return this;
   }

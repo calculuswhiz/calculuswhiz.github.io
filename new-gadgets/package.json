@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/showdown": "^2.0.6",
+    "neverthrow": "^8.2.0",
     "react": "^19",
     "react-dom": "^19",
     "showdown": "^2.1.0"
