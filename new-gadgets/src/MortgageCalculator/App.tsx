@@ -20,15 +20,15 @@ function formatDate(date: Date) {
 }
 
 function NumericInput(props: {
-  label: string; value: number;
+  label: string; value: string;
   decimals?: number;
-  setter: React.Dispatch<React.SetStateAction<number>>
+  setter: React.Dispatch<React.SetStateAction<string>>
 }) {
   return <div className='table-row'>
     <label className='table-cell pb-1'>{props.label}</label>
     <input
-      value={props.value.toFixed(props.decimals ?? 0)}
-      onChange={e => props.setter(+parseFloat(parseFloat(e.target.value).toFixed(props.decimals ?? 0)))}
+      value={props.value}
+      onChange={e => props.setter(e.target.value)}
       className='table-cell pb-1 border border-black' />
   </div>;
 }
@@ -104,15 +104,26 @@ function AggregateItem(props: {
 }
 
 function App() {
-  const [annualPaymentCycles, setAnnualPaymentCycles] = useState(12);
-  const [loanPercent, setLoanPercent] = useState(5);
-  const [principal, setPrincipal] = useState(100_000);
-  const [initialPayment, setInitialPayment] = useState(0);
-  const [paymentPerCycle, setPaymentPerCycle] = useState(1000);
-  const [escrowAdjustment, setEscrowAdjustment] = useState(200);
+  const [rawAnnualPaymentCycles, setAnnualPaymentCycles] = useState("12");
+  const [rawLoanPercent, setLoanPercent] = useState("5");
+  const [rawPrincipal, setPrincipal] = useState("100_000");
+  const [rawInitialPayment, setInitialPayment] = useState("0");
+  const [rawPaymentPerCycle, setPaymentPerCycle] = useState("1000");
+  const [rawEscrowAdjustment, setEscrowAdjustment] = useState("200");
 
-  const effectivePrincipal = principal - initialPayment;
-  const compoundRate = loanPercent / 100 / annualPaymentCycles;
+  const [
+    annualPaymentCycles, loanPercent, principal, initialPayment, paymentPerCycle, escrowAdjustment
+  ] = [
+      parseFloat(rawAnnualPaymentCycles),
+      parseFloat(rawLoanPercent),
+      parseFloat(rawPrincipal),
+      parseFloat(rawInitialPayment),
+      parseFloat(rawPaymentPerCycle),
+      parseFloat(rawEscrowAdjustment)
+    ];
+
+  const effectivePrincipal = parseFloat(rawPrincipal) - parseFloat(rawInitialPayment);
+  const compoundRate = parseFloat(rawLoanPercent) / 100 / parseFloat(rawAnnualPaymentCycles);
 
   const parameterValidators: [boolean, string][] = [
     [annualPaymentCycles > 0, "Annual Payments is not > 0"],
@@ -159,27 +170,27 @@ function App() {
     <div className="flex flex-wrap">
       <div className="table p-2 border border-black">
         <NumericInput
-          label="# Annual Payments" value={annualPaymentCycles}
+          label="# Annual Payments" value={rawAnnualPaymentCycles}
           setter={setAnnualPaymentCycles}
         />
         <NumericInput
-          label="Loan Rate (%)" value={loanPercent}
+          label="Loan Rate (%)" value={rawLoanPercent}
           decimals={4}
           setter={setLoanPercent} />
         <TemplateTextDiv
           template="-- (Per cycle: ?%)"
           displayItems={[(loanPercent / annualPaymentCycles).toFixed(4)]} />
         <NumericInput
-          label="Starting Principal ($)" value={principal}
+          label="Starting Principal ($)" value={rawPrincipal}
           setter={setPrincipal} />
         <NumericInput
-          label="Initial Payment ($)" value={initialPayment}
+          label="Initial Payment ($)" value={rawInitialPayment}
           setter={setInitialPayment} />
         <NumericInput
-          label="Payment per cycle ($)" value={paymentPerCycle}
+          label="Payment per cycle ($)" value={rawPaymentPerCycle}
           setter={setPaymentPerCycle} />
         <NumericInput
-          label="Escrow Adjustment (per cycle) ($)" value={escrowAdjustment}
+          label="Escrow Adjustment (per cycle) ($)" value={rawEscrowAdjustment}
           setter={setEscrowAdjustment} />
       </div>
       <div className="flex flex-col p-2 border grow">
@@ -218,7 +229,7 @@ function App() {
     {
       failedParams.length > 0
         ? <ul>
-          {failedParams.map(fp => <li key={fp[1]}>{fp[1]}</li>)}
+          {[...new Set(failedParams.map(fp => fp[1]))].map(fp => <li key={fp}>{fp}</li>)}
         </ul>
         : <div id="data-display">
           <div id="data-display-container"
